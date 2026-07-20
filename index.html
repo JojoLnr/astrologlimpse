@@ -42,12 +42,11 @@
     </form>
     <p id="success-message" class="success">You're on the list!</p>
 </div>
-
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  // Added getDoc and updateDoc here
+  import { getFirestore, doc, setDoc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  // Your actual Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyC406s8oXgyxjUUkZrjc9ABSs99Vgyn5L0",
     authDomain: "astrologlimpse.firebaseapp.com",
@@ -61,27 +60,39 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // Looking for "signup-form" to match the HTML ID above
   document.getElementById("signup-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     
     const emailInput = document.getElementById("email").value.trim().toLowerCase();
     const zodiacInput = document.getElementById("zodiac").value.toLowerCase();
+    
+    // Create a reference to the specific document
+    const docRef = doc(db, "subscribers", emailInput);
 
     try {
-      // Using setDoc to make the email the document ID, preventing duplicate subscriptions
-      await setDoc(doc(db, "subscribers", emailInput), {
-        email: emailInput,
-        paying: false,
-        subscribedAt: serverTimestamp(),
-        zodiacSign: zodiacInput
-      });
+      // 1. Check if the email already exists in the database
+      const docSnap = await getDoc(docRef);
 
-      // Hide the form and show the UI success message
+      if (docSnap.exists()) {
+        // 2a. If they exist, ONLY update the zodiac sign. 
+        // This protects the 'paying' status and original signup date.
+        await updateDoc(docRef, {
+          zodiacSign: zodiacInput
+        });
+      } else {
+        // 2b. If they don't exist, create the brand new profile
+        await setDoc(docRef, {
+          email: emailInput,
+          paying: false,
+          subscribedAt: serverTimestamp(),
+          zodiacSign: zodiacInput
+        });
+      }
+
       document.getElementById('signup-form').style.display = 'none';
       document.getElementById('success-message').style.display = 'block';
     } catch (error) {
-      console.error("Error adding subscription: ", error);
+      console.error("Error managing subscription: ", error);
       alert("Something went wrong. Please try again.");
     }
   });
