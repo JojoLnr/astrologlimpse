@@ -24,53 +24,67 @@
     <form id="signup-form">
         <input type="email" id="email" placeholder="Your email address" required>
         <select id="zodiac" required>
-            <option value="" disabled selected>Select your Zodiac sign</option>
-            <option value="aries">Aries</option>
-            <option value="taurus">Taurus</option>
-            <option value="gemini">Gemini</option>
-            <!-- Add remaining signs -->
-        </select>
+    <option value="" disabled selected>Select your Zodiac sign</option>
+    <option value="aries">Aries</option>
+    <option value="taurus">Taurus</option>
+    <option value="gemini">Gemini</option>
+    <option value="cancer">Cancer</option>
+    <option value="leo">Leo</option>
+    <option value="virgo">Virgo</option>
+    <option value="libra">Libra</option>
+    <option value="scorpio">Scorpio</option>
+    <option value="sagittarius">Sagittarius</option>
+    <option value="capricorn">Capricorn</option>
+    <option value="aquarius">Aquarius</option>
+    <option value="pisces">Pisces</option>
+</select>
         <button type="submit">Subscribe Free</button>
     </form>
     <p id="success-message" class="success">You're on the list!</p>
 </div>
 
-<!-- Firebase SDK (Modular v9) -->
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // REPLACE WITH YOUR FIREBASE CONFIG
-    const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_PROJECT.firebaseapp.com",
-        projectId: "YOUR_PROJECT",
-        storageBucket: "YOUR_PROJECT.appspot.com",
-        messagingSenderId: "YOUR_SENDER_ID",
-        appId: "YOUR_APP_ID"
-    };
+  // Your actual Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyC406s8oXgyxjUUkZrjc9ABSs99Vgyn5L0",
+    authDomain: "astrologlimpse.firebaseapp.com",
+    projectId: "astrologlimpse",
+    storageBucket: "astrologlimpse.firebasestorage.app",
+    messagingSenderId: "817221650162",
+    appId: "1:817221650162:web:cd792fa99a0bb087f4326b",
+    measurementId: "G-0181W9VKL9"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-    document.getElementById('signup-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('email').value;
-        const zodiac = document.getElementById('zodiac').value;
+  // Looking for "signup-form" to match the HTML ID above
+  document.getElementById("signup-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    
+    const emailInput = document.getElementById("email").value.trim().toLowerCase();
+    const zodiacInput = document.getElementById("zodiac").value.toLowerCase();
 
-        try {
-            await addDoc(collection(db, "subscribers"), {
-                email: email,
-                zodiac: zodiac,
-                signupDate: serverTimestamp()
-            });
-            document.getElementById('signup-form').style.display = 'none';
-            document.getElementById('success-message').style.display = 'block';
-        } catch (e) {
-            console.error("Error adding document: ", e);
-            alert("Something went wrong. Please try again.");
-        }
-    });
+    try {
+      // Using setDoc to make the email the document ID, preventing duplicate subscriptions
+      await setDoc(doc(db, "subscribers", emailInput), {
+        email: emailInput,
+        paying: false,
+        subscribedAt: serverTimestamp(),
+        zodiacSign: zodiacInput
+      });
+
+      // Hide the form and show the UI success message
+      document.getElementById('signup-form').style.display = 'none';
+      document.getElementById('success-message').style.display = 'block';
+    } catch (error) {
+      console.error("Error adding subscription: ", error);
+      alert("Something went wrong. Please try again.");
+    }
+  });
 </script>
 </body>
 </html>
