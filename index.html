@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astrologlimpse - Daily Horoscope</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #fafafa; margin: 0; }
+        .container { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 400px; width: 100%; text-align: center; }
+        h1 { margin-top: 0; color: #333; }
+        p { color: #666; margin-bottom: 24px; }
+        input, select, button { width: 100%; padding: 12px; margin-bottom: 16px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
+        button { background-color: #000; color: #fff; border: none; cursor: pointer; font-weight: bold; }
+        button:hover { background-color: #333; }
+        .success { color: green; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Daily Insights</h1>
+    <p>Get your free daily horoscope delivered every morning.</p>
+    
+    <form id="signup-form">
+        <input type="email" id="email" placeholder="Your email address" required>
+        <select id="zodiac" required>
+            <option value="" disabled selected>Select your Zodiac sign</option>
+            <option value="aries">Aries</option>
+            <option value="taurus">Taurus</option>
+            <option value="gemini">Gemini</option>
+            <!-- Add remaining signs -->
+        </select>
+        <button type="submit">Subscribe Free</button>
+    </form>
+    <p id="success-message" class="success">You're on the list!</p>
+</div>
+
+<!-- Firebase SDK (Modular v9) -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // REPLACE WITH YOUR FIREBASE CONFIG
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT.firebaseapp.com",
+        projectId: "YOUR_PROJECT",
+        storageBucket: "YOUR_PROJECT.appspot.com",
+        messagingSenderId: "YOUR_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    document.getElementById('signup-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const zodiac = document.getElementById('zodiac').value;
+
+        try {
+            await addDoc(collection(db, "subscribers"), {
+                email: email,
+                zodiac: zodiac,
+                signupDate: serverTimestamp()
+            });
+            document.getElementById('signup-form').style.display = 'none';
+            document.getElementById('success-message').style.display = 'block';
+        } catch (e) {
+            console.error("Error adding document: ", e);
+            alert("Something went wrong. Please try again.");
+        }
+    });
+</script>
+</body>
+</html>
