@@ -379,22 +379,28 @@
         // 1. Dynamic Broadsheet View Trigger logic
         const urlParams = new URLSearchParams(window.location.search);
         const payload = urlParams.get('payload');
-
+        
         if (payload) {
             try {
                 const decodedData = JSON.parse(decodeURIComponent(payload));
                 
                 // Toggle display modes
                 document.getElementById('landing-view').style.display = 'none';
-                document.getElementById('dispatch-view').style.display = 'flex';
-
-                // Inject dynamic content if available in payload
+                document.getElementById('dispatch-view').style.display = 'block';
+        
+                // Inject dynamic content into the broadsheet slots
                 if (decodedData.title) {
-                    document.getElementById('dispatch-title').innerText = decodedData.title;
+                    document.getElementById('journal-title').innerText = decodedData.title;
                     document.title = decodedData.title + " - Astroglimpse";
                 }
-                if (decodedData.content) {
-                    document.getElementById('dispatch-body').innerHTML = decodedData.content;
+                if (decodedData.overview) {
+                    document.getElementById('astronomical-content').innerText = decodedData.overview;
+                }
+                if (decodedData.hermetic) {
+                    document.getElementById('hermetic-content').innerText = decodedData.hermetic;
+                }
+                if (decodedData.structural) {
+                    document.getElementById('structural-content').innerText = decodedData.structural;
                 }
             } catch (error) {
                 console.error("Failed to parse dispatch payload:", error);
