@@ -4,313 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="page-title">Astroglimpse - The Cosmic Dispatch</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Montserrat:wght@300;400;500;600&display=swap');
-
-        :root {
-            /* Deep Space Palette */
-            --navy-deep: #050811;
-            --navy-card: #0A0F1D;
-            
-            /* Signature Golds */
-            --gold-champagne: #D8C397;
-            --gold-light: #F3E6C8;
-            --gold-muted: #8E7A4E;
-            --gold-border: rgba(216, 195, 151, 0.4);
-            
-            /* Parchment Contrast */
-            --parchment-bg: #FBF9F4;
-            --parchment-card: #F2EEDD;
-            
-            /* Typography Colors */
-            --text-dark: #0F172A;
-            --text-dark-muted: #475569;
-            --text-light: #F8FAFC;
-            --text-light-muted: #94A3B8;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            background-color: var(--navy-deep);
-            color: var(--text-light);
-            font-family: 'Cormorant Garamond', serif;
-            padding: 25px 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        /* -------------------------------------------------------------
-           VIEW CONTAINERS
-        ------------------------------------------------------------- */
-        #landing-view {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-        }
-
-        #dispatch-view {
-            display: none; /* Hidden by default */
-            width: 100%;
-            justify-content: center;
-        }
-
-        /* Outer Journal Broadsheet Frame */
-        .journal-container {
-            max-width: 1240px;
-            width: 100%;
-            background-color: var(--navy-card);
-            border: 2px solid var(--gold-champagne);
-            padding: 12px;
-            box-shadow: 0 35px 80px rgba(0,0,0,0.95);
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Landing Page Specific Sizing */
-        .landing-container {
-            max-width: 500px;
-            margin: auto;
-        }
-
-        /* The Inner Border System */
-        .journal-inner {
-            border: 1px solid var(--gold-border);
-            padding: 40px 25px;
-            position: relative;
-            background: radial-gradient(circle at center, rgba(216, 195, 151, 0.05) 0%, transparent 60%);
-        }
-
-        /* -------------------------------------------------------------
-           CODED SVG ILLUSTRATIONS (Astrolabes & Mandalas)
-        ------------------------------------------------------------- */
-        .corner-mandala {
-            position: absolute;
-            top: 0; left: 0;
-            width: 220px; height: 220px;
-            pointer-events: none; opacity: 0.6;
-        }
-
-        .corner-mandala-bottom {
-            position: absolute;
-            bottom: 0; right: 0;
-            width: 220px; height: 220px;
-            pointer-events: none; opacity: 0.6;
-            transform: rotate(180deg);
-        }
-
-        .ambient-stars {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 0; opacity: 0.4;
-        }
-
-        /* Masthead */
-        .masthead {
-            text-align: center;
-            border-bottom: 2px solid var(--gold-champagne);
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .landing-masthead {
-            border-bottom: none;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        .gemini-glyph {
-            width: 65px; height: 65px;
-            margin: 0 auto 12px; display: block;
-            filter: drop-shadow(0 0 8px rgba(216, 195, 151, 0.3));
-        }
-
-        .masthead-title {
-            font-family: 'Cinzel', serif;
-            font-size: 3.5rem;
-            color: var(--gold-champagne);
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            line-height: 1;
-            margin: 6px 0;
-        }
-
-        .landing-title { font-size: 2.2rem; }
-
-        .masthead-sub {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.4em;
-            color: var(--text-light-muted);
-            margin-top: 15px;
-        }
-
-        /* -------------------------------------------------------------
-           LANDING PAGE FORM STYLES
-        ------------------------------------------------------------- */
-        .form-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            position: relative;
-            z-index: 2;
-            margin-top: 20px;
-        }
-
-        .form-container input, .form-container select {
-            background: rgba(5, 8, 17, 0.8);
-            border: 1px solid var(--gold-border);
-            color: var(--gold-champagne);
-            padding: 14px;
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.2rem;
-            border-radius: 0;
-            outline: none;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-container input::placeholder { color: var(--text-light-muted); }
-        .form-container input:focus, .form-container select:focus { border-color: var(--gold-champagne); }
-        
-        .form-container button {
-            background: var(--gold-champagne);
-            color: var(--navy-deep);
-            border: none;
-            padding: 16px;
-            font-family: 'Cinzel', serif;
-            font-size: 1.1rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .form-container button:hover { background: var(--gold-light); transform: translateY(-1px); }
-
-        .success-msg {
-            color: var(--gold-champagne);
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.9rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            margin-top: 20px;
-            display: none;
-        }
-
-        /* -------------------------------------------------------------
-           BROADSHEET GRID & CONTENT STYLES
-        ------------------------------------------------------------- */
-        .broadsheet-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 25px;
-            position: relative;
-            z-index: 2;
-        }
-        @media (min-width: 960px) { .broadsheet-grid { grid-template-columns: 1fr 1fr; } }
-        .dark-panel { background: rgba(5, 8, 17, 0.6); border: 1px solid var(--gold-border); padding: 30px; display: flex; flex-direction: column; gap: 22px; }
-        .parchment-panel { background-color: var(--parchment-bg); color: var(--text-dark); border: 2px solid var(--gold-muted); padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; flex-direction: column; gap: 22px; }
-        
-        .character-art-frame { width: 100%; display: flex; flex-direction: column; align-items: center; margin-bottom: 10px; }
-        .art-border-system { border: 1px solid var(--gold-champagne); padding: 10px; background: transparent; position: relative; width: 100%; max-width: 360px; }
-        .placeholder-svg { display: block; width: 100%; height: auto; border: 1px solid var(--gold-border); background-color: rgba(216, 195, 151, 0.03); }
-        .art-caption { font-family: 'Cinzel', serif; font-size: 0.85rem; color: var(--gold-champagne); letter-spacing: 0.25em; margin-top: 15px; text-transform: uppercase; }
-        
-        .astrolabe-box { width: 100%; display: flex; justify-content: center; margin: 25px 0; }
-        .astrolabe-svg { width: 260px; height: 260px; animation: slow-spin 150s linear infinite; }
-        @keyframes slow-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        .section-title-dark { font-family: 'Cinzel', serif; font-size: 1.4rem; color: var(--gold-champagne); text-transform: uppercase; letter-spacing: 0.12em; border-bottom: 1px solid var(--gold-border); padding-bottom: 6px; margin-bottom: 10px; text-align: center; }
-        .section-title-parchment { font-family: 'Cinzel', serif; font-size: 1.4rem; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.12em; border-bottom: 1px solid rgba(15, 23, 42, 0.2); padding-bottom: 6px; margin-bottom: 10px; text-align: center; }
-        .subsection-title { font-family: 'Cinzel', serif; font-size: 1.1rem; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 10px; }
-        .subsection-title-dark { font-family: 'Cinzel', serif; font-size: 1.1rem; color: var(--gold-champagne); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 10px; }
-        
-        .prose-dark { font-size: 1.1rem; line-height: 1.8; color: #E2E8F0; text-align: justify; margin-bottom: 15px; }
-        .prose-parchment { font-size: 1.1rem; line-height: 1.8; color: var(--text-dark); text-align: justify; margin-bottom: 15px; }
-        
-        .ephemeris-matrix { width: 100%; border-collapse: collapse; margin: 15px 0; font-family: 'Montserrat', sans-serif; font-size: 0.8rem; color: var(--text-light-muted); text-transform: uppercase; letter-spacing: 0.1em; }
-        .ephemeris-matrix th, .ephemeris-matrix td { border: 1px solid var(--gold-border); padding: 8px; text-align: center; }
-        .ephemeris-matrix th { color: var(--gold-champagne); font-family: 'Cinzel', serif; font-weight: 600; }
-        
-        .divider-svg { width: 100%; height: 14px; fill: none; stroke: var(--gold-muted); stroke-width: 1; margin: 10px 0; }
-        
-        .protocol-list { list-style: none; padding: 0; margin-top: 10px; }
-        .protocol-list li { position: relative; padding-left: 20px; margin-bottom: 12px; font-size: 1.05rem; line-height: 1.6; }
-        .protocol-list li::before { content: ''; position: absolute; left: 0; top: 8px; width: 6px; height: 6px; background-color: var(--text-dark); transform: rotate(45deg); }
-    </style>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- External Modular Stylesheet -->
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
     <!-- VIEW 1: DYNAMIC BROADSHEET VIEW -->
     <!-- Triggered by URL parameter, otherwise hidden -->
-    <div id="dispatch-view" style="display: none; width: 100%; max-width: 900px; margin: 0 auto; background-color: #050811; border: 1px solid #D8C397; padding: 40px; color: #E2E8F0; font-family: 'Georgia', serif; box-sizing: border-box;">
-
-    <!-- Header Section -->
-    <div style="text-align: center; border-bottom: 1px solid rgba(216, 195, 151, 0.4); padding-bottom: 20px; margin-bottom: 30px;">
-        <div id="sign-glyph" style="font-size: 24px; color: #D8C397; border: 1px solid #D8C397; border-radius: 50%; width: 40px; height: 40px; line-height: 40px; margin: 0 auto 15px auto;">✧</div>
-        <h1 id="journal-title" style="font-family: 'Cinzel', serif; font-size: 36px; color: #D8C397; letter-spacing: 0.1em; text-transform: uppercase; margin: 0;">The Cosmic Journal</h1>
-        <p style="font-size: 10px; letter-spacing: 0.3em; color: #94A3B8; text-transform: uppercase; margin-top: 10px;">Esoteric Astrological Intelligence</p>
-    </div>
-
-    <!-- Two-Column Broadsheet Layout -->
-    <div style="display: flex; gap: 40px;">
-
-        <!-- Left Column (Overview & Tables) -->
-        <div style="flex: 1; border-right: 1px solid rgba(216, 195, 151, 0.2); padding-right: 30px;">
-            <div style="border: 1px solid #D8C397; padding: 30px; text-align: center; margin-bottom: 20px;">
-                <span id="sign-glyph-large" style="font-size: 48px; color: #D8C397;">✧</span>
-            </div>
-            <h3 id="sign-title" style="color: #D8C397; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; text-align: center;">Daily Dispatch</h3>
-
-            <h2 style="color: #D8C397; font-size: 16px; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 40px;">Astronomical Overview</h2>
-            <div id="astronomical-content" style="font-size: 12px; line-height: 1.8; text-align: justify;">
-                Fetching celestial data...
+    <div id="dispatch-view" class="journal-container" style="display: none;">
+        <div class="journal-inner">
+            <!-- Header Section -->
+            <div style="text-align: center; border-bottom: 1px solid rgba(216, 195, 151, 0.4); padding-bottom: 20px; margin-bottom: 30px;">
+                <div id="sign-glyph" style="font-size: 24px; color: #D8C397; border: 1px solid #D8C397; border-radius: 50%; width: 40px; height: 40px; line-height: 40px; margin: 0 auto 15px auto;">✧</div>
+                <h1 id="journal-title" style="font-family: 'Cinzel', serif; font-size: 36px; color: #D8C397; letter-spacing: 0.1em; text-transform: uppercase; margin: 0;">The Cosmic Journal</h1>
+                <p style="font-size: 10px; letter-spacing: 0.3em; color: #94A3B8; text-transform: uppercase; margin-top: 10px;">Esoteric Astrological Intelligence</p>
             </div>
 
-            <h2 style="color: #D8C397; font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 40px;">Essential Dignities & Matrix</h2>
-            <table style="width: 100%; border-collapse: collapse; font-size: 10px; text-align: center; color: #94A3B8; border-top: 1px solid rgba(216,195,151,0.4); border-bottom: 1px solid rgba(216,195,151,0.4);">
-                <tr style="border-bottom: 1px solid rgba(216,195,151,0.2);">
-                    <th style="padding: 10px 0; font-weight: normal; letter-spacing: 0.1em;">TRANSIT</th>
-                    <th style="padding: 10px 0; font-weight: normal; letter-spacing: 0.1em;">DEGREE</th>
-                    <th style="padding: 10px 0; font-weight: normal; letter-spacing: 0.1em;">ASPECT</th>
-                </tr>
-                <tr>
-                    <td style="padding: 10px 0;">MERCURY</td>
-                    <td>12° 45'</td>
-                    <td>SEXTILE NATAL VENUS</td>
-                </tr>
-            </table>
+            <!-- Two-Column Broadsheet Layout -->
+            <div class="broadsheet-grid">
+
+                <!-- Left Column (Overview & Tables) -->
+                <div style="border-right: 1px solid rgba(216, 195, 151, 0.2); padding-right: 30px;">
+                    <div style="border: 1px solid #D8C397; padding: 30px; text-align: center; margin-bottom: 20px;">
+                        <span id="sign-glyph-large" style="font-size: 48px; color: #D8C397;">✧</span>
+                    </div>
+                    <h3 id="sign-title" style="color: #D8C397; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; text-align: center;">Daily Dispatch</h3>
+
+                    <h2 style="color: #D8C397; font-size: 16px; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 40px;">Astronomical Overview</h2>
+                    <div id="astronomical-content" style="font-size: 12px; line-height: 1.8; text-align: justify;">
+                        Fetching celestial data...
+                    </div>
+
+                    <h2 style="color: #D8C397; font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 40px;">Essential Dignities & Matrix</h2>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 10px; text-align: center; color: #94A3B8; border-top: 1px solid rgba(216,195,151,0.4); border-bottom: 1px solid rgba(216,195,151,0.4);">
+                        <tr style="border-bottom: 1px solid rgba(216,195,151,0.2);">
+                            <th style="padding: 10px 0; font-weight: normal; letter-spacing: 0.1em;">TRANSIT</th>
+                            <th style="padding: 10px 0; font-weight: normal; letter-spacing: 0.1em;">DEGREE</th>
+                            <th style="padding: 10px 0; font-weight: normal; letter-spacing: 0.1em;">ASPECT</th>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px 0;">MERCURY</td>
+                            <td>12° 45'</td>
+                            <td>SEXTILE NATAL VENUS</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Right Column (Delineations & Protocols) -->
+                <div style="padding-left: 10px;">
+                    <h2 style="color: #D8C397; font-size: 16px; text-transform: uppercase; letter-spacing: 0.1em; text-align: center; margin-bottom: 30px;">Hermetic Delineations</h2>
+
+                    <h3 style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0;">Venusian Transits & The Alchemy of the Heart</h3>
+                    <div id="hermetic-content" style="font-size: 12px; line-height: 1.8; text-align: justify; margin-bottom: 30px;">
+                        Fetching celestial data...
+                    </div>
+
+                    <div style="text-align: center; color: #D8C397; margin: 30px 0; font-size: 10px;">✧</div>
+
+                    <h3 style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em;">Structural Realignments in the Midheaven</h3>
+                    <div id="structural-content" style="font-size: 12px; line-height: 1.8; text-align: justify;">
+                        Fetching celestial data...
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <!-- Right Column (Delineations & Protocols) -->
-        <div style="flex: 1.5; padding-left: 10px;">
-            <h2 style="color: #D8C397; font-size: 16px; text-transform: uppercase; letter-spacing: 0.1em; text-align: center; margin-bottom: 30px;">Hermetic Delineations</h2>
-
-            <h3 style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0;">Venusian Transits & The Alchemy of the Heart</h3>
-            <div id="hermetic-content" style="font-size: 12px; line-height: 1.8; text-align: justify; margin-bottom: 30px;">
-                Fetching celestial data...
-            </div>
-
-            <div style="text-align: center; color: #D8C397; margin: 30px 0; font-size: 10px;">✧</div>
-
-            <h3 style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em;">Structural Realignments in the Midheaven</h3>
-            <div id="structural-content" style="font-size: 12px; line-height: 1.8; text-align: justify;">
-                Fetching celestial data...
-            </div>
-        </div>
     </div>
-</div>
 
     <!-- VIEW 2: STATIC LANDING PAGE & SIGNUP FORM -->
     <div id="landing-view">
@@ -357,121 +121,7 @@
         </div>
     </div>
 
-    <!-- FUNCTIONAL SCRIPT LOGIC -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getFirestore, doc, setDoc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyC406s8oXgyxjUUkZrjc9ABSs99Vgyn5L0",
-            authDomain: "astrologlimpse.firebaseapp.com",
-            projectId: "astrologlimpse",
-            storageBucket: "astrologlimpse.firebasestorage.app",
-            messagingSenderId: "817221650162",
-            appId: "1:817221650162:web:cd792fa99a0bb087f4326b",
-            measurementId: "G-0181W9VKL9"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        // 1. Dynamic Broadsheet View Trigger logic (Checking URL for '?sign=')
-        const urlParams = new URLSearchParams(window.location.search);
-        const signParam = urlParams.get('sign');
-        
-        if (signParam) {
-            // Hide landing view, show dispatch view
-            document.getElementById('landing-view').style.display = 'none';
-            document.getElementById('dispatch-view').style.display = 'block';
-
-            // Clean the parameter to ensure it matches your database keys (e.g., 'gemini')
-            const cleanSign = signParam.toLowerCase().trim();
-            
-            // Map simple astrological glyphs for aesthetic (optional but nice)
-            const glyphs = {
-                aries: "♈︎", taurus: "♉︎", gemini: "♊︎", cancer: "♋︎",
-                leo: "♌︎", virgo: "♍︎", libra: "♎︎", scorpio: "♏︎",
-                sagittarius: "♐︎", capricorn: "♑︎", aquarius: "♒︎", pisces: "♓︎"
-            };
-
-            if (glyphs[cleanSign]) {
-                document.getElementById('sign-glyph').innerText = glyphs[cleanSign];
-                document.getElementById('sign-glyph-large').innerText = glyphs[cleanSign];
-                document.getElementById('sign-title').innerText = `Daily Dispatch for ${cleanSign.charAt(0).toUpperCase() + cleanSign.slice(1)}`;
-            }
-
-            // Fetch the document directly from Firestore
-            const fetchHoroscope = async () => {
-                try {
-                    const docRef = doc(db, "horoscopes", cleanSign);
-                    const docSnap = await getDoc(docRef);
-
-                    if (docSnap.exists()) {
-                        const data = docSnap.data();
-                        
-                        // Inject dynamic content into the broadsheet slots
-                        if (data.astro_title) {
-                            document.getElementById('journal-title').innerText = data.astro_title;
-                            document.title = data.astro_title + " - Astroglimpse";
-                        }
-                        if (data.astro_p1) {
-                            document.getElementById('astronomical-content').innerText = data.astro_p1;
-                        }
-                        if (data.venus_p1) {
-                            document.getElementById('hermetic-content').innerText = data.venus_p1;
-                        }
-                        if (data.structural_p1) {
-                            document.getElementById('structural-content').innerText = data.structural_p1;
-                        }
-                    } else {
-                        document.getElementById('astronomical-content').innerText = "Cosmic signals are currently obscured. No data available for this sign today.";
-                        document.getElementById('hermetic-content').innerText = "Awaiting celestial transmission...";
-                        document.getElementById('structural-content').innerText = "Awaiting celestial transmission...";
-                    }
-                } catch (error) {
-                    console.error("Failed to fetch dispatch from database:", error);
-                    document.getElementById('astronomical-content').innerText = "A disruption occurred in the cosmic web. Unable to load data.";
-                }
-            };
-            
-            fetchHoroscope();
-        }
-
-        // 2. Form Submission logic (for when on landing page)
-        const signupForm = document.getElementById("signup-form");
-        if (signupForm) {
-            signupForm.addEventListener("submit", async (e) => {
-                e.preventDefault();
-                
-                const emailInput = document.getElementById("email").value.trim().toLowerCase();
-                const zodiacInput = document.getElementById("zodiac").value.toLowerCase();
-                
-                const docRef = doc(db, "subscribers", emailInput);
-
-                try {
-                    const docSnap = await getDoc(docRef);
-
-                    if (docSnap.exists()) {
-                        await updateDoc(docRef, { zodiacSign: zodiacInput });
-                    } else {
-                        await setDoc(docRef, {
-                            email: emailInput,
-                            paying: false,
-                            subscribedAt: serverTimestamp(),
-                            zodiacSign: zodiacInput
-                        });
-                    }
-
-                    // Hide form and show stylized success message
-                    signupForm.style.display = 'none';
-                    document.getElementById('success-message').style.display = 'block';
-                } catch (error) {
-                    console.error("Error managing subscription: ", error);
-                    alert("A disruption occurred in the cosmic web. Please try again.");
-                }
-            });
-        }
-    </script>
+    <!-- Modular Script Link -->
+    <script type="module" src="js/app.js"></script>
 </body>
 </html>
