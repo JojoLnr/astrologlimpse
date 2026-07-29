@@ -254,100 +254,63 @@
 
     <!-- VIEW 1: DYNAMIC BROADSHEET VIEW -->
     <!-- Triggered by email payload, otherwise hidden -->
-    <div id="dispatch-view">
-        <div class="journal-container">
-            <!-- Background Artwork -->
-            <svg class="corner-mandala" viewBox="0 0 200 200"><path d="M0,0 L200,0 A200,200 0 0,1 0,200 Z" fill="none" stroke="#D8C397" stroke-width="1.5"/><path d="M0,0 L180,0 A180,180 0 0,1 0,180 Z" fill="none" stroke="#D8C397" stroke-width="0.5" stroke-dasharray="3 5"/><path d="M0,0 L150,0 A150,150 0 0,1 0,150 Z" fill="none" stroke="#D8C397" stroke-width="1"/><path d="M0,0 L110,0 A110,110 0 0,1 0,110 Z" fill="none" stroke="#D8C397" stroke-width="0.5"/><line x1="0" y1="0" x2="200" y2="0" stroke="#D8C397" stroke-width="0.5"/><line x1="0" y1="0" x2="193" y2="51" stroke="#D8C397" stroke-width="0.5"/><line x1="0" y1="0" x2="173" y2="100" stroke="#D8C397" stroke-width="0.5"/><line x1="0" y1="0" x2="141" y2="141" stroke="#D8C397" stroke-width="0.5"/><line x1="0" y1="0" x2="100" y2="173" stroke="#D8C397" stroke-width="0.5"/><line x1="0" y1="0" x2="51" y2="193" stroke="#D8C397" stroke-width="0.5"/><line x1="0" y1="0" x2="0" y2="200" stroke="#D8C397" stroke-width="0.5"/><rect x="165" y="15" width="6" height="6" fill="none" stroke="#D8C397" stroke-width="1" transform="rotate(45 168 18)"/><rect x="150" y="55" width="6" height="6" fill="none" stroke="#D8C397" stroke-width="1" transform="rotate(45 153 58)"/><rect x="120" y="95" width="6" height="6" fill="none" stroke="#D8C397" stroke-width="1" transform="rotate(45 123 98)"/><rect x="75" y="125" width="6" height="6" fill="none" stroke="#D8C397" stroke-width="1" transform="rotate(45 78 128)"/><rect x="25" y="145" width="6" height="6" fill="none" stroke="#D8C397" stroke-width="1" transform="rotate(45 28 148)"/></svg>
-            <svg class="corner-mandala-bottom" viewBox="0 0 200 200"><path d="M0,0 L200,0 A200,200 0 0,1 0,200 Z" fill="none" stroke="#D8C397" stroke-width="1.5"/><path d="M0,0 L180,0 A180,180 0 0,1 0,180 Z" fill="none" stroke="#D8C397" stroke-width="0.5" stroke-dasharray="3 5"/><path d="M0,0 L150,0 A150,150 0 0,1 0,150 Z" fill="none" stroke="#D8C397" stroke-width="1"/><line x1="0" y1="0" x2="173" y2="100" stroke="#D8C397" stroke-width="0.5"/><line x1="0" y1="0" x2="141" y2="141" stroke="#D8C397" stroke-width="0.5"/><line x1="0" y1="0" x2="100" y2="173" stroke="#D8C397" stroke-width="0.5"/></svg>
-            <svg class="ambient-stars" xmlns="http://www.w3.org/2000/svg"><circle cx="10%" cy="15%" r="1.5" fill="#D8C397"/><circle cx="85%" cy="12%" r="2" fill="#D8C397"/><circle cx="45%" cy="8%" r="1" fill="#D8C397"/><path d="M 90% 40% L 91% 41% L 90% 42% L 89% 41% Z" fill="#D8C397"/><circle cx="8%" cy="75%" r="2" fill="#D8C397"/><circle cx="95%" cy="85%" r="1.5" fill="#D8C397"/></svg>
+    <div id="dispatch-view" style="display: none; width: 100%; max-width: 900px; margin: 0 auto; background-color: #050811; border: 1px solid #D8C397; padding: 40px; color: #E2E8F0; font-family: 'Georgia', serif; box-sizing: border-box;">
 
-            <div class="journal-inner">
-                <!-- Masthead -->
-                <header class="masthead">
-                    <svg class="gemini-glyph" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="40" cy="40" r="36" fill="none" stroke="#D8C397" stroke-width="0.8" opacity="0.6"/>
-                        <circle cx="40" cy="40" r="32" fill="none" stroke="#D8C397" stroke-width="0.4" stroke-dasharray="2 3"/>
-                        <path d="M 24 28 C 24 17, 56 17, 56 28" fill="none" stroke="#D8C397" stroke-width="2"/>
-                        <path d="M 24 52 C 24 63, 56 63, 56 52" fill="none" stroke="#D8C397" stroke-width="2"/>
-                        <line x1="31" y1="24" x2="31" y2="56" stroke="#D8C397" stroke-width="2"/>
-                        <line x1="49" y1="24" x2="49" y2="56" stroke="#D8C397" stroke-width="2"/>
-                    </svg>
-                    <h1 class="masthead-title" id="dispatch-title">The Cosmic Journal</h1>
-                    <div class="masthead-sub">Esoteric Astrological Intelligence</div>
-                </header>
+    <!-- Header Section -->
+    <div style="text-align: center; border-bottom: 1px solid rgba(216, 195, 151, 0.4); padding-bottom: 20px; margin-bottom: 30px;">
+        <div style="font-size: 24px; color: #D8C397; border: 1px solid #D8C397; border-radius: 50%; width: 40px; height: 40px; line-height: 40px; margin: 0 auto 15px auto;">♊︎</div>
+        <h1 id="journal-title" style="font-family: 'Cinzel', serif; font-size: 36px; color: #D8C397; letter-spacing: 0.1em; text-transform: uppercase; margin: 0;">The Cosmic Journal</h1>
+        <p style="font-size: 10px; letter-spacing: 0.3em; color: #94A3B8; text-transform: uppercase; margin-top: 10px;">Esoteric Astrological Intelligence - July 2026</p>
+    </div>
 
-                <main class="broadsheet-grid" id="dispatch-body">
-                    <!-- Default Hardcoded Content (Replaced if payload present) -->
-                    <div class="dark-panel">
-                        <div class="character-art-frame">
-                            <div class="art-border-system">
-                                <svg class="placeholder-svg" viewBox="0 0 360 260" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M 180 20 L 180 240 M 20 130 L 340 130" stroke="#D8C397" stroke-width="0.2" stroke-dasharray="2 4"/>
-                                    <rect x="20" y="20" width="320" height="220" stroke="#D8C397" stroke-width="0.5"/>
-                                    <circle cx="180" cy="130" r="48" fill="#0A0F1D" stroke="#D8C397" stroke-width="1"/>
-                                    <circle cx="180" cy="130" r="40" fill="none" stroke="#D8C397" stroke-width="0.5" stroke-dasharray="1 3"/>
-                                    <text x="180" y="131" fill="#D8C397" font-size="76" text-anchor="middle" dominant-baseline="central">♊︎</text>
-                                </svg>
-                            </div>
-                            <div class="art-caption">Ontological Duality of the Twins</div>
-                        </div>
+    <!-- Two-Column Broadsheet Layout -->
+    <div style="display: flex; gap: 40px;">
 
-                        <h2 class="section-title-dark">Astronomical Overview</h2>
-                        <p class="prose-dark">The current celestial weather dictates a profound transmutation of the mutable air qualities inherent to the Gemini archetype. As the heliacal rising of Mercury intersects with the natal degree of your chart's ascendant axis, we observe a phenomenon known as karmic retro-causality echoing through the spheres. This is an energetic signature that refuses superficial engagement.</p>
-                        <p class="prose-dark">The squaring of Saturn in Pisces to the mutable nodes demands a rigorous, almost surgical excavation of your subconscious linguistic patterns. The polarity between the Third House of immediate cognitive processing and the Ninth House of philosophical synthesis is currently stretched to a hyper-tensive degree. You are being asked to bridge the microcosm of daily data collection with the macrocosm of spiritual truth.</p>
+        <!-- Left Column (Overview & Tables) -->
+        <div style="flex: 1; border-right: 1px solid rgba(216, 195, 151, 0.2); padding-right: 30px;">
+            <div style="border: 1px solid #D8C397; padding: 30px; text-align: center; margin-bottom: 20px;">
+                <span style="font-size: 48px; color: #D8C397;">♊︎</span>
+            </div>
+            <h3 style="color: #D8C397; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; text-align: center;">Ontological Duality of the Twins</h3>
 
-                        <h3 class="subsection-title-dark">Essential Dignities & Matrix</h3>
-                        <table class="ephemeris-matrix">
-                            <tr><th>Transit</th><th>Degree</th><th>Aspect</th></tr>
-                            <tr><td>Mercury</td><td>12° 45'</td><td>Sextile Natal Venus</td></tr>
-                            <tr><td>Saturn (R)</td><td>19° 02'</td><td>Square Nodes</td></tr>
-                            <tr><td>Pluto (R)</td><td>01° 14'</td><td>Trine Ascendant</td></tr>
-                        </table>
+            <h2 style="color: #D8C397; font-size: 16px; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 40px;">Astronomical Overview</h2>
+            <div id="astronomical-content" style="font-size: 12px; line-height: 1.8; text-align: justify;">
+                <!-- Dynamic text injects here -->
+            </div>
 
-                        <p class="prose-dark">Observe the Plutonic retrograde through the preliminary degrees of Aquarius. This is dissolving the obsolete neurological wiring that previously bound your intellect to outmoded forms of validation. As the ruler of your chart negotiates this tension, expect sudden, illuminating ruptures in how you perceive collaborative ventures.</p>
+            <h2 style="color: #D8C397; font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 40px;">Essential Dignities & Matrix</h2>
+            <table style="width: 100%; border-collapse: collapse; font-size: 10px; text-align: center; color: #94A3B8; border-top: 1px solid rgba(216,195,151,0.4); border-bottom: 1px solid rgba(216,195,151,0.4);">
+                <tr style="border-bottom: 1px solid rgba(216,195,151,0.2);">
+                    <th style="padding: 10px 0; font-weight: normal; letter-spacing: 0.1em;">TRANSIT</th>
+                    <th style="padding: 10px 0; font-weight: normal; letter-spacing: 0.1em;">DEGREE</th>
+                    <th style="padding: 10px 0; font-weight: normal; letter-spacing: 0.1em;">ASPECT</th>
+                </tr>
+                <tr>
+                    <td style="padding: 10px 0;">MERCURY</td>
+                    <td>12° 45'</td>
+                    <td>SEXTILE NATAL VENUS</td>
+                </tr>
+            </table>
+        </div>
 
-                        <div class="astrolabe-box">
-                            <svg class="astrolabe-svg" viewBox="0 0 200 200">
-                                <circle cx="100" cy="100" r="95" fill="none" stroke="#D8C397" stroke-width="1"/>
-                                <circle cx="100" cy="100" r="85" fill="none" stroke="#D8C397" stroke-width="0.5" stroke-dasharray="2 4"/>
-                                <circle cx="100" cy="100" r="70" fill="none" stroke="#D8C397" stroke-width="1"/>
-                                <circle cx="100" cy="100" r="55" fill="none" stroke="#D8C397" stroke-width="0.2"/>
-                                <polygon points="100,30 110,90 170,100 110,110 100,170 90,110 30,100 90,90" fill="none" stroke="#D8C397" stroke-width="0.8"/>
-                                <polygon points="100,50 135,65 150,100 135,135 100,150 65,135 50,100 65,65" fill="none" stroke="#D8C397" stroke-width="0.4"/>
-                                <circle cx="100" cy="100" r="18" fill="none" stroke="#D8C397" stroke-width="1"/>
-                                <circle cx="100" cy="100" r="14" fill="none" stroke="#D8C397" stroke-width="0.5" stroke-dasharray="1 2"/>
-                                <circle cx="100" cy="15" r="3" fill="#D8C397"/>
-                                <circle cx="170" cy="149" r="2" fill="#D8C397"/>
-                                <circle cx="30" cy="51" r="2.5" fill="#D8C397"/>
-                            </svg>
-                        </div>
-                    </div>
+        <!-- Right Column (Delineations & Protocols) -->
+        <div style="flex: 1.5; padding-left: 10px;">
+            <h2 style="color: #D8C397; font-size: 16px; text-transform: uppercase; letter-spacing: 0.1em; text-align: center; margin-bottom: 30px;">Hermetic Delineations</h2>
 
-                    <div class="parchment-panel">
-                        <h2 class="section-title-parchment">Hermetic Delineations</h2>
-                        <h3 class="subsection-title">Venusian Transits & The Alchemy of the Heart</h3>
-                        <p class="prose-parchment">As Venus transits the fixed fire of Leo, entering the decan traditionally ruled by Jupiter, the energetic signature of your interpersonal dynamics shifts from analytical detachment to one of sovereign, radiant demand. However, the exact quincunx to Pluto in Aquarius introduces a subcutaneous layer of power dynamics. It is crucial to recognize where the ego's desire for validation masks a deeper, unhealed wound of invisibility. True relational mastery this month requires absolute transparency regarding your intrinsic needs, stripped of any manipulative intellectualizing.</p>
-                        <p class="prose-parchment">Do not allow the swiftness of your mind to outpace the vulnerability of your heart. When you feel the urge to over-explain a boundary, practice silence instead. Let the boundary stand on its own gravitational weight.</p>
-                        <svg class="divider-svg" viewBox="0 0 200 20"><path d="M0,10 L80,10 M120,10 L200,10 M100,2 L106,10 L100,18 L94,10 Z"/></svg>
-                        
-                        <h3 class="subsection-title">Structural Realignments in the Midheaven</h3>
-                        <p class="prose-parchment">The architectural integrity of your long-term ambitions is currently under the celestial microscope. Saturn’s retrograde motion is actively dissolving the scaffolding around projects that lack true spiritual gravity or long-term systemic viability. You may feel a temporary vacuum of purpose, or a sudden disinterest in pursuits that previously commanded your focus. Understand that this is a necessary clearing.</p>
-                        <p class="prose-parchment">The cosmos is enforcing a mandate of essentialism. Any professional endeavor that requires you to fracture your authenticity for the sake of palatability will become energetically unsustainable. Consolidate your resources. Refine your foundational algorithms, both metaphorically and literally, before attempting to scale your public-facing offerings.</p>
-                        <svg class="divider-svg" viewBox="0 0 200 20"><path d="M0,10 L80,10 M120,10 L200,10 M100,2 L106,10 L100,18 L94,10 Z"/></svg>
+            <h3 style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0;">Venusian Transits & The Alchemy of the Heart</h3>
+            <div id="hermetic-content" style="font-size: 12px; line-height: 1.8; text-align: justify; margin-bottom: 30px;">
+                <!-- Dynamic text injects here -->
+            </div>
 
-                        <h3 class="subsection-title">Somatic Protocols & Ritual Integrations</h3>
-                        <p class="prose-parchment">To navigate this dense energetic matrix, physical anchoring is non-negotiable. The hyperactivity of the mutable air signs must be grounded through deliberate somatic intervention.</p>
-                        <ul class="protocol-list">
-                            <li><strong>Crystalline Resonance:</strong> Utilize unpolished Black Tourmaline at the base of your workspace to siphon off ambient electromagnetic static and psychic interference.</li>
-                            <li><strong>Breath Modulation:</strong> Implement a 4-7-8 breathing ratio during the planetary hours of Mercury to forcibly decelerate the central nervous system and induce parasympathetic dominance.</li>
-                            <li><strong>Strategic Isolation:</strong> Enforce a strict containment field around your creative projects. Premature sharing will dissipate the necessary pressure required for a catalytic breakthrough.</li>
-                            <li><strong>Dietary Adjustments:</strong> Incorporate root vegetables and heavy, earth-element dense minerals to counteract the tendency toward energetic unmooring.</li>
-                        </ul>
-                    </div>
-                </main>
+            <div style="text-align: center; color: #D8C397; margin: 30px 0; font-size: 10px;">✧</div>
+
+            <h3 style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em;">Structural Realignments in the Midheaven</h3>
+            <div id="structural-content" style="font-size: 12px; line-height: 1.8; text-align: justify;">
+                <!-- Dynamic text injects here -->
             </div>
         </div>
     </div>
+</div>
 
     <!-- VIEW 2: STATIC LANDING PAGE & SIGNUP FORM -->
     <div id="landing-view">
