@@ -25,10 +25,15 @@ body {
     overflow-x: hidden;
 }
 
+/* Outer Broadsheet Ornamental Frame */
 .app-container {
     max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
+    margin: 20px auto;
+    padding: 2.5rem;
+    border: 2px solid var(--accent-gold);
+    outline: 1px solid var(--accent-gold);
+    outline-offset: -8px;
+    background: var(--bg-primary);
 }
 
 /* Views Management */
@@ -70,7 +75,7 @@ body {
     margin: 0 auto;
 }
 
-.signup-form input {
+.signup-form input, .signup-form select {
     flex: 1;
     padding: 0.8rem 1.2rem;
     background: var(--bg-secondary);
@@ -80,7 +85,7 @@ body {
     font-size: 1rem;
 }
 
-.signup-form input:focus {
+.signup-form input:focus, .signup-form select:focus {
     outline: none;
     border-color: var(--accent-gold);
 }
@@ -120,6 +125,21 @@ body {
     font-size: 1.1rem;
     max-width: 700px;
     margin: 0 auto;
+}
+
+/* Broadsheet Two-Column Grid Alignment matching template */
+.dispatch-grid-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+    margin-bottom: 3rem;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .dispatch-grid-main {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Grids & Sections */
@@ -174,6 +194,25 @@ body {
     padding: 2rem;
     margin-bottom: 3rem;
     text-align: center;
+}
+
+/* Tables */
+.dignities-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+.dignities-table th, .dignities-table td {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+    text-align: left;
+}
+
+.dignities-table th {
+    color: var(--accent-gold);
+    font-family: var(--font-heading);
 }
 
 /* Footer Navigation Links */
