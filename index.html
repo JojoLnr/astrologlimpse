@@ -3,99 +3,475 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Astrologlimpse - Daily Horoscope</title>
+    <title id="page-title">Astroglimpse - The Cosmic Dispatch</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #fafafa; margin: 0; }
-        .container { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 400px; width: 100%; text-align: center; }
-        h1 { margin-top: 0; color: #333; }
-        p { color: #666; margin-bottom: 24px; }
-        input, select, button { width: 100%; padding: 12px; margin-bottom: 16px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
-        button { background-color: #000; color: #fff; border: none; cursor: pointer; font-weight: bold; }
-        button:hover { background-color: #333; }
-        .success { color: green; display: none; }
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Montserrat:wght@300;400;500;600&display=swap');
+
+        :root {
+            /* Deep Space Palette */
+            --navy-deep: #050811;
+            --navy-card: #0A0F1D;
+            
+            /* Signature Golds */
+            --gold-champagne: #D8C397;
+            --gold-light: #F3E6C8;
+            --gold-muted: #8E7A4E;
+            --gold-border: rgba(216, 195, 151, 0.4);
+            
+            /* Parchment Contrast */
+            --parchment-bg: #FBF9F4;
+            --parchment-card: #F2EEDD;
+            
+            /* Typography Colors */
+            --text-dark: #0F172A;
+            --text-dark-muted: #475569;
+            --text-light: #F8FAFC;
+            --text-light-muted: #94A3B8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--navy-deep);
+            color: var(--text-light);
+            font-family: 'Cormorant Garamond', serif;
+            padding: 25px 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* -------------------------------------------------------------
+           VIEW CONTAINERS
+        ------------------------------------------------------------- */
+        #landing-view {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        #dispatch-view {
+            display: none; /* Hidden by default */
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* Outer Journal Broadsheet Frame */
+        .journal-container {
+            max-width: 1240px;
+            width: 100%;
+            background-color: var(--navy-card);
+            border: 2px solid var(--gold-champagne);
+            padding: 12px;
+            box-shadow: 0 35px 80px rgba(0,0,0,0.95);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Landing Page Specific Sizing */
+        .landing-container {
+            max-width: 500px;
+            margin: auto;
+        }
+
+        /* The Inner Border System */
+        .journal-inner {
+            border: 1px solid var(--gold-border);
+            padding: 40px 25px;
+            position: relative;
+            background: radial-gradient(circle at center, rgba(216, 195, 151, 0.05) 0%, transparent 60%);
+        }
+
+        /* -------------------------------------------------------------
+           CODED SVG ILLUSTRATIONS (Astrolabes & Mandalas)
+        ------------------------------------------------------------- */
+        .corner-mandala {
+            position: absolute;
+            top: 0; left: 0;
+            width: 220px; height: 220px;
+            pointer-events: none; opacity: 0.6;
+        }
+
+        .corner-mandala-bottom {
+            position: absolute;
+            bottom: 0; right: 0;
+            width: 220px; height: 220px;
+            pointer-events: none; opacity: 0.6;
+            transform: rotate(180deg);
+        }
+
+        .ambient-stars {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0; opacity: 0.4;
+        }
+
+        /* Masthead */
+        .masthead {
+            text-align: center;
+            border-bottom: 2px solid var(--gold-champagne);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .landing-masthead {
+            border-bottom: none;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .gemini-glyph {
+            width: 65px; height: 65px;
+            margin: 0 auto 12px; display: block;
+            filter: drop-shadow(0 0 8px rgba(216, 195, 151, 0.3));
+        }
+
+        .masthead-title {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            color: var(--gold-champagne);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            line-height: 1;
+            margin: 6px 0;
+        }
+
+        .landing-title { font-size: 2.2rem; }
+
+        .masthead-sub {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4em;
+            color: var(--text-light-muted);
+            margin-top: 15px;
+        }
+
+        /* -------------------------------------------------------------
+           LANDING PAGE FORM STYLES
+        ------------------------------------------------------------- */
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            position: relative;
+            z-index: 2;
+            margin-top: 20px;
+        }
+
+        .form-container input, .form-container select {
+            background: rgba(5, 8, 17, 0.8);
+            border: 1px solid var(--gold-border);
+            color: var(--gold-champagne);
+            padding: 14px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            border-radius: 0;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-container input::placeholder { color: var(--text-light-muted); }
+        .form-container input:focus, .form-container select:focus { border-color: var(--gold-champagne); }
+        
+        .form-container button {
+            background: var(--gold-champagne);
+            color: var(--navy-deep);
+            border: none;
+            padding: 16px;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .form-container button:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+        .success-msg {
+            color: var(--gold-champagne);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-top: 20px;
+            display: none;
+        }
+
+        /* -------------------------------------------------------------
+           BROADSHEET GRID & CONTENT STYLES
+        ------------------------------------------------------------- */
+        .broadsheet-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            position: relative;
+            z-index: 2;
+        }
+        @media (min-width: 960px) { .broadsheet-grid { grid-template-columns: 1fr 1fr; } }
+        .dark-panel { background: rgba(5, 8, 17, 0.6); border: 1px solid var(--gold-border); padding: 30px; display: flex; flex-direction: column; gap: 22px; }
+        .parchment-panel { background-color: var(--parchment-bg); color: var(--text-dark); border: 2px solid var(--gold-muted); padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; flex-direction: column; gap: 22px; }
+        
+        .character-art-frame { width: 100%; display: flex; flex-direction: column; align-items: center; margin-bottom: 10px; }
+        .art-border-system { border: 1px solid var(--gold-champagne); padding: 10px; background: transparent; position: relative; width: 100%; max-width: 360px; }
+        .placeholder-svg { display: block; width: 100%; height: auto; border: 1px solid var(--gold-border); background-color: rgba(216, 195, 151, 0.03); }
+        .art-caption { font-family: 'Cinzel', serif; font-size: 0.85rem; color: var(--gold-champagne); letter-spacing: 0.25em; margin-top: 15px; text-transform: uppercase; }
+        
+        .astrolabe-box { width: 100%; display: flex; justify-content: center; margin: 25px 0; }
+        .astrolabe-svg { width: 260px; height: 260px; animation: slow-spin 150s linear infinite; }
+        @keyframes slow-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .section-title-dark { font-family: 'Cinzel', serif; font-size: 1.4rem; color: var(--gold-champagne); text-transform: uppercase; letter-spacing: 0.12em; border-bottom: 1px solid var(--gold-border); padding-bottom: 6px; margin-bottom: 10px; text-align: center; }
+        .section-title-parchment { font-family: 'Cinzel', serif; font-size: 1.4rem; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.12em; border-bottom: 1px solid rgba(15, 23, 42, 0.2); padding-bottom: 6px; margin-bottom: 10px; text-align: center; }
+        .subsection-title { font-family: 'Cinzel', serif; font-size: 1.1rem; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 10px; }
+        .subsection-title-dark { font-family: 'Cinzel', serif; font-size: 1.1rem; color: var(--gold-champagne); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 10px; }
+        
+        .prose-dark { font-size: 1.1rem; line-height: 1.8; color: #E2E8F0; text-align: justify; margin-bottom: 15px; }
+        .prose-parchment { font-size: 1.1rem; line-height: 1.8; color: var(--text-dark); text-align: justify; margin-bottom: 15px; }
+        
+        .ephemeris-matrix { width: 100%; border-collapse: collapse; margin: 15px 0; font-family: 'Montserrat', sans-serif; font-size: 0.8rem; color: var(--text-light-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+        .ephemeris-matrix th, .ephemeris-matrix td { border: 1px solid var(--gold-border); padding: 8px; text-align: center; }
+        .ephemeris-matrix th { color: var(--gold-champagne); font-family: 'Cinzel', serif; font-weight: 600; }
+        
+        .divider-svg { width: 100%; height: 14px; fill: none; stroke: var(--gold-muted); stroke-width: 1; margin: 10px 0; }
+        
+        .protocol-list { list-style: none; padding: 0; margin-top: 10px; }
+        .protocol-list li { position: relative; padding-left: 20px; margin-bottom: 12px; font-size: 1.05rem; line-height: 1.6; }
+        .protocol-list li::before { content: ''; position: absolute; left: 0; top: 8px; width: 6px; height: 6px; background-color: var(--text-dark); transform: rotate(45deg); }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Daily Insights</h1>
-    <p>Get your free daily horoscope delivered every morning.</p>
-    
-    <form id="signup-form">
-        <input type="email" id="email" placeholder="Your email address" required>
-        <select id="zodiac" required>
-    <option value="" disabled selected>Select your Zodiac sign</option>
-    <option value="aries">Aries</option>
-    <option value="taurus">Taurus</option>
-    <option value="gemini">Gemini</option>
-    <option value="cancer">Cancer</option>
-    <option value="leo">Leo</option>
-    <option value="virgo">Virgo</option>
-    <option value="libra">Libra</option>
-    <option value="scorpio">Scorpio</option>
-    <option value="sagittarius">Sagittarius</option>
-    <option value="capricorn">Capricorn</option>
-    <option value="aquarius">Aquarius</option>
-    <option value="pisces">Pisces</option>
-</select>
-        <button type="submit">Subscribe Free</button>
-    </form>
-    <p id="success-message" class="success">You're on the list!</p>
-</div>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  // Added getDoc and updateDoc here
-  import { getFirestore, doc, setDoc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    <!-- VIEW 1: DYNAMIC BROADSHEET VIEW -->
+    <!-- Triggered by email payload, otherwise hidden -->
+    <div id="dispatch-view">
+        <div class="journal-container">
+            <!-- Background Artwork -->
+            <svg class="corner-mandala" viewBox="0 0 200 200"><path d="M0,0 L200,0 A200,200 0 0,1 0,200 Z" fill="none" stroke="#D8C397" stroke-width="1.5"/><path d="M0,0 L180,0 A180,180 0 0,1 0,180 Z" fill="none" stroke="#D8C397" stroke-width="0.5" stroke-dasharray="3 5"/><path d="M0,0 L150,0 A150,150 0 0,1 0,150 Z" fill="none" stroke="#D8C397" stroke-width="1"/><path d="M0,0 L110,0 A110,110 0 0,1 0,110 Z" fill="none" stroke="#D8C397" stroke-width="0.5"/><line x1="0" y1="0" x2="200" y2="0" stroke="#D8C397" stroke-width="0.5"/><line x1="0" y1="0" x2="193" y2="51" stroke="#D8C397" stroke-width="0.5"/><line x1="0" y1="0" x2="173" y2="100" stroke="#D8C397" stroke-width="0.5"/><line x1="0" y1="0" x2="141" y2="141" stroke="#D8C397" stroke-width="0.5"/><line x1="0" y1="0" x2="100" y2="173" stroke="#D8C397" stroke-width="0.5"/><line x1="0" y1="0" x2="51" y2="193" stroke="#D8C397" stroke-width="0.5"/><line x1="0" y1="0" x2="0" y2="200" stroke="#D8C397" stroke-width="0.5"/><rect x="165" y="15" width="6" height="6" fill="none" stroke="#D8C397" stroke-width="1" transform="rotate(45 168 18)"/><rect x="150" y="55" width="6" height="6" fill="none" stroke="#D8C397" stroke-width="1" transform="rotate(45 153 58)"/><rect x="120" y="95" width="6" height="6" fill="none" stroke="#D8C397" stroke-width="1" transform="rotate(45 123 98)"/><rect x="75" y="125" width="6" height="6" fill="none" stroke="#D8C397" stroke-width="1" transform="rotate(45 78 128)"/><rect x="25" y="145" width="6" height="6" fill="none" stroke="#D8C397" stroke-width="1" transform="rotate(45 28 148)"/></svg>
+            <svg class="corner-mandala-bottom" viewBox="0 0 200 200"><path d="M0,0 L200,0 A200,200 0 0,1 0,200 Z" fill="none" stroke="#D8C397" stroke-width="1.5"/><path d="M0,0 L180,0 A180,180 0 0,1 0,180 Z" fill="none" stroke="#D8C397" stroke-width="0.5" stroke-dasharray="3 5"/><path d="M0,0 L150,0 A150,150 0 0,1 0,150 Z" fill="none" stroke="#D8C397" stroke-width="1"/><line x1="0" y1="0" x2="173" y2="100" stroke="#D8C397" stroke-width="0.5"/><line x1="0" y1="0" x2="141" y2="141" stroke="#D8C397" stroke-width="0.5"/><line x1="0" y1="0" x2="100" y2="173" stroke="#D8C397" stroke-width="0.5"/></svg>
+            <svg class="ambient-stars" xmlns="http://www.w3.org/2000/svg"><circle cx="10%" cy="15%" r="1.5" fill="#D8C397"/><circle cx="85%" cy="12%" r="2" fill="#D8C397"/><circle cx="45%" cy="8%" r="1" fill="#D8C397"/><path d="M 90% 40% L 91% 41% L 90% 42% L 89% 41% Z" fill="#D8C397"/><circle cx="8%" cy="75%" r="2" fill="#D8C397"/><circle cx="95%" cy="85%" r="1.5" fill="#D8C397"/></svg>
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyC406s8oXgyxjUUkZrjc9ABSs99Vgyn5L0",
-    authDomain: "astrologlimpse.firebaseapp.com",
-    projectId: "astrologlimpse",
-    storageBucket: "astrologlimpse.firebasestorage.app",
-    messagingSenderId: "817221650162",
-    appId: "1:817221650162:web:cd792fa99a0bb087f4326b",
-    measurementId: "G-0181W9VKL9"
-  };
+            <div class="journal-inner">
+                <!-- Masthead -->
+                <header class="masthead">
+                    <svg class="gemini-glyph" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="40" cy="40" r="36" fill="none" stroke="#D8C397" stroke-width="0.8" opacity="0.6"/>
+                        <circle cx="40" cy="40" r="32" fill="none" stroke="#D8C397" stroke-width="0.4" stroke-dasharray="2 3"/>
+                        <path d="M 24 28 C 24 17, 56 17, 56 28" fill="none" stroke="#D8C397" stroke-width="2"/>
+                        <path d="M 24 52 C 24 63, 56 63, 56 52" fill="none" stroke="#D8C397" stroke-width="2"/>
+                        <line x1="31" y1="24" x2="31" y2="56" stroke="#D8C397" stroke-width="2"/>
+                        <line x1="49" y1="24" x2="49" y2="56" stroke="#D8C397" stroke-width="2"/>
+                    </svg>
+                    <h1 class="masthead-title" id="dispatch-title">The Cosmic Journal</h1>
+                    <div class="masthead-sub">Esoteric Astrological Intelligence</div>
+                </header>
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+                <main class="broadsheet-grid" id="dispatch-body">
+                    <!-- Default Hardcoded Content (Replaced if payload present) -->
+                    <div class="dark-panel">
+                        <div class="character-art-frame">
+                            <div class="art-border-system">
+                                <svg class="placeholder-svg" viewBox="0 0 360 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M 180 20 L 180 240 M 20 130 L 340 130" stroke="#D8C397" stroke-width="0.2" stroke-dasharray="2 4"/>
+                                    <rect x="20" y="20" width="320" height="220" stroke="#D8C397" stroke-width="0.5"/>
+                                    <circle cx="180" cy="130" r="48" fill="#0A0F1D" stroke="#D8C397" stroke-width="1"/>
+                                    <circle cx="180" cy="130" r="40" fill="none" stroke="#D8C397" stroke-width="0.5" stroke-dasharray="1 3"/>
+                                    <text x="180" y="131" fill="#D8C397" font-size="76" text-anchor="middle" dominant-baseline="central">♊︎</text>
+                                </svg>
+                            </div>
+                            <div class="art-caption">Ontological Duality of the Twins</div>
+                        </div>
 
-  document.getElementById("signup-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    
-    const emailInput = document.getElementById("email").value.trim().toLowerCase();
-    const zodiacInput = document.getElementById("zodiac").value.toLowerCase();
-    
-    // Create a reference to the specific document
-    const docRef = doc(db, "subscribers", emailInput);
+                        <h2 class="section-title-dark">Astronomical Overview</h2>
+                        <p class="prose-dark">The current celestial weather dictates a profound transmutation of the mutable air qualities inherent to the Gemini archetype. As the heliacal rising of Mercury intersects with the natal degree of your chart's ascendant axis, we observe a phenomenon known as karmic retro-causality echoing through the spheres. This is an energetic signature that refuses superficial engagement.</p>
+                        <p class="prose-dark">The squaring of Saturn in Pisces to the mutable nodes demands a rigorous, almost surgical excavation of your subconscious linguistic patterns. The polarity between the Third House of immediate cognitive processing and the Ninth House of philosophical synthesis is currently stretched to a hyper-tensive degree. You are being asked to bridge the microcosm of daily data collection with the macrocosm of spiritual truth.</p>
 
-    try {
-      // 1. Check if the email already exists in the database
-      const docSnap = await getDoc(docRef);
+                        <h3 class="subsection-title-dark">Essential Dignities & Matrix</h3>
+                        <table class="ephemeris-matrix">
+                            <tr><th>Transit</th><th>Degree</th><th>Aspect</th></tr>
+                            <tr><td>Mercury</td><td>12° 45'</td><td>Sextile Natal Venus</td></tr>
+                            <tr><td>Saturn (R)</td><td>19° 02'</td><td>Square Nodes</td></tr>
+                            <tr><td>Pluto (R)</td><td>01° 14'</td><td>Trine Ascendant</td></tr>
+                        </table>
 
-      if (docSnap.exists()) {
-        // 2a. If they exist, ONLY update the zodiac sign. 
-        // This protects the 'paying' status and original signup date.
-        await updateDoc(docRef, {
-          zodiacSign: zodiacInput
-        });
-      } else {
-        // 2b. If they don't exist, create the brand new profile
-        await setDoc(docRef, {
-          email: emailInput,
-          paying: false,
-          subscribedAt: serverTimestamp(),
-          zodiacSign: zodiacInput
-        });
-      }
+                        <p class="prose-dark">Observe the Plutonic retrograde through the preliminary degrees of Aquarius. This is dissolving the obsolete neurological wiring that previously bound your intellect to outmoded forms of validation. As the ruler of your chart negotiates this tension, expect sudden, illuminating ruptures in how you perceive collaborative ventures.</p>
 
-      document.getElementById('signup-form').style.display = 'none';
-      document.getElementById('success-message').style.display = 'block';
-    } catch (error) {
-      console.error("Error managing subscription: ", error);
-      alert("Something went wrong. Please try again.");
-    }
-  });
-</script>
+                        <div class="astrolabe-box">
+                            <svg class="astrolabe-svg" viewBox="0 0 200 200">
+                                <circle cx="100" cy="100" r="95" fill="none" stroke="#D8C397" stroke-width="1"/>
+                                <circle cx="100" cy="100" r="85" fill="none" stroke="#D8C397" stroke-width="0.5" stroke-dasharray="2 4"/>
+                                <circle cx="100" cy="100" r="70" fill="none" stroke="#D8C397" stroke-width="1"/>
+                                <circle cx="100" cy="100" r="55" fill="none" stroke="#D8C397" stroke-width="0.2"/>
+                                <polygon points="100,30 110,90 170,100 110,110 100,170 90,110 30,100 90,90" fill="none" stroke="#D8C397" stroke-width="0.8"/>
+                                <polygon points="100,50 135,65 150,100 135,135 100,150 65,135 50,100 65,65" fill="none" stroke="#D8C397" stroke-width="0.4"/>
+                                <circle cx="100" cy="100" r="18" fill="none" stroke="#D8C397" stroke-width="1"/>
+                                <circle cx="100" cy="100" r="14" fill="none" stroke="#D8C397" stroke-width="0.5" stroke-dasharray="1 2"/>
+                                <circle cx="100" cy="15" r="3" fill="#D8C397"/>
+                                <circle cx="170" cy="149" r="2" fill="#D8C397"/>
+                                <circle cx="30" cy="51" r="2.5" fill="#D8C397"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="parchment-panel">
+                        <h2 class="section-title-parchment">Hermetic Delineations</h2>
+                        <h3 class="subsection-title">Venusian Transits & The Alchemy of the Heart</h3>
+                        <p class="prose-parchment">As Venus transits the fixed fire of Leo, entering the decan traditionally ruled by Jupiter, the energetic signature of your interpersonal dynamics shifts from analytical detachment to one of sovereign, radiant demand. However, the exact quincunx to Pluto in Aquarius introduces a subcutaneous layer of power dynamics. It is crucial to recognize where the ego's desire for validation masks a deeper, unhealed wound of invisibility. True relational mastery this month requires absolute transparency regarding your intrinsic needs, stripped of any manipulative intellectualizing.</p>
+                        <p class="prose-parchment">Do not allow the swiftness of your mind to outpace the vulnerability of your heart. When you feel the urge to over-explain a boundary, practice silence instead. Let the boundary stand on its own gravitational weight.</p>
+                        <svg class="divider-svg" viewBox="0 0 200 20"><path d="M0,10 L80,10 M120,10 L200,10 M100,2 L106,10 L100,18 L94,10 Z"/></svg>
+                        
+                        <h3 class="subsection-title">Structural Realignments in the Midheaven</h3>
+                        <p class="prose-parchment">The architectural integrity of your long-term ambitions is currently under the celestial microscope. Saturn’s retrograde motion is actively dissolving the scaffolding around projects that lack true spiritual gravity or long-term systemic viability. You may feel a temporary vacuum of purpose, or a sudden disinterest in pursuits that previously commanded your focus. Understand that this is a necessary clearing.</p>
+                        <p class="prose-parchment">The cosmos is enforcing a mandate of essentialism. Any professional endeavor that requires you to fracture your authenticity for the sake of palatability will become energetically unsustainable. Consolidate your resources. Refine your foundational algorithms, both metaphorically and literally, before attempting to scale your public-facing offerings.</p>
+                        <svg class="divider-svg" viewBox="0 0 200 20"><path d="M0,10 L80,10 M120,10 L200,10 M100,2 L106,10 L100,18 L94,10 Z"/></svg>
+
+                        <h3 class="subsection-title">Somatic Protocols & Ritual Integrations</h3>
+                        <p class="prose-parchment">To navigate this dense energetic matrix, physical anchoring is non-negotiable. The hyperactivity of the mutable air signs must be grounded through deliberate somatic intervention.</p>
+                        <ul class="protocol-list">
+                            <li><strong>Crystalline Resonance:</strong> Utilize unpolished Black Tourmaline at the base of your workspace to siphon off ambient electromagnetic static and psychic interference.</li>
+                            <li><strong>Breath Modulation:</strong> Implement a 4-7-8 breathing ratio during the planetary hours of Mercury to forcibly decelerate the central nervous system and induce parasympathetic dominance.</li>
+                            <li><strong>Strategic Isolation:</strong> Enforce a strict containment field around your creative projects. Premature sharing will dissipate the necessary pressure required for a catalytic breakthrough.</li>
+                            <li><strong>Dietary Adjustments:</strong> Incorporate root vegetables and heavy, earth-element dense minerals to counteract the tendency toward energetic unmooring.</li>
+                        </ul>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW 2: STATIC LANDING PAGE & SIGNUP FORM -->
+    <div id="landing-view">
+        <div class="journal-container landing-container">
+            <svg class="ambient-stars" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="10%" cy="15%" r="1.5" fill="#D8C397"/><circle cx="85%" cy="12%" r="2" fill="#D8C397"/><circle cx="45%" cy="8%" r="1" fill="#D8C397"/><path d="M 90% 40% L 91% 41% L 90% 42% L 89% 41% Z" fill="#D8C397"/><circle cx="8%" cy="75%" r="2" fill="#D8C397"/><circle cx="95%" cy="85%" r="1.5" fill="#D8C397"/>
+            </svg>
+            
+            <div class="journal-inner">
+                <header class="masthead landing-masthead">
+                    <svg class="gemini-glyph" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="40" cy="40" r="36" fill="none" stroke="#D8C397" stroke-width="0.8" opacity="0.6"/>
+                        <circle cx="40" cy="40" r="32" fill="none" stroke="#D8C397" stroke-width="0.4" stroke-dasharray="2 3"/>
+                        <path d="M 24 28 C 24 17, 56 17, 56 28" fill="none" stroke="#D8C397" stroke-width="2"/>
+                        <path d="M 24 52 C 24 63, 56 63, 56 52" fill="none" stroke="#D8C397" stroke-width="2"/>
+                        <line x1="31" y1="24" x2="31" y2="56" stroke="#D8C397" stroke-width="2"/>
+                        <line x1="49" y1="24" x2="49" y2="56" stroke="#D8C397" stroke-width="2"/>
+                    </svg>
+                    <h1 class="masthead-title landing-title">Daily Insights</h1>
+                    <div class="masthead-sub">Get your free horoscope delivered every morning.</div>
+                </header>
+
+                <form id="signup-form" class="form-container">
+                    <input type="email" id="email" placeholder="Your email address" required>
+                    <select id="zodiac" required>
+                        <option value="" disabled selected>Select your Zodiac sign</option>
+                        <option value="aries">Aries</option>
+                        <option value="taurus">Taurus</option>
+                        <option value="gemini">Gemini</option>
+                        <option value="cancer">Cancer</option>
+                        <option value="leo">Leo</option>
+                        <option value="virgo">Virgo</option>
+                        <option value="libra">Libra</option>
+                        <option value="scorpio">Scorpio</option>
+                        <option value="sagittarius">Sagittarius</option>
+                        <option value="capricorn">Capricorn</option>
+                        <option value="aquarius">Aquarius</option>
+                        <option value="pisces">Pisces</option>
+                    </select>
+                    <button type="submit">Subscribe Free</button>
+                </form>
+                <p id="success-message" class="success-msg">Transmission received. You're on the list.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FUNCTIONAL SCRIPT LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC406s8oXgyxjUUkZrjc9ABSs99Vgyn5L0",
+            authDomain: "astrologlimpse.firebaseapp.com",
+            projectId: "astrologlimpse",
+            storageBucket: "astrologlimpse.firebasestorage.app",
+            messagingSenderId: "817221650162",
+            appId: "1:817221650162:web:cd792fa99a0bb087f4326b",
+            measurementId: "G-0181W9VKL9"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // 1. Dynamic Broadsheet View Trigger logic
+        const urlParams = new URLSearchParams(window.location.search);
+        const payload = urlParams.get('payload');
+
+        if (payload) {
+            try {
+                const decodedData = JSON.parse(decodeURIComponent(payload));
+                
+                // Toggle display modes
+                document.getElementById('landing-view').style.display = 'none';
+                document.getElementById('dispatch-view').style.display = 'flex';
+
+                // Inject dynamic content if available in payload
+                if (decodedData.title) {
+                    document.getElementById('dispatch-title').innerText = decodedData.title;
+                    document.title = decodedData.title + " - Astroglimpse";
+                }
+                if (decodedData.content) {
+                    document.getElementById('dispatch-body').innerHTML = decodedData.content;
+                }
+            } catch (error) {
+                console.error("Failed to parse dispatch payload:", error);
+            }
+        }
+
+        // 2. Form Submission logic (for when on landing page)
+        const signupForm = document.getElementById("signup-form");
+        if (signupForm) {
+            signupForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                
+                const emailInput = document.getElementById("email").value.trim().toLowerCase();
+                const zodiacInput = document.getElementById("zodiac").value.toLowerCase();
+                
+                const docRef = doc(db, "subscribers", emailInput);
+
+                try {
+                    const docSnap = await getDoc(docRef);
+
+                    if (docSnap.exists()) {
+                        await updateDoc(docRef, { zodiacSign: zodiacInput });
+                    } else {
+                        await setDoc(docRef, {
+                            email: emailInput,
+                            paying: false,
+                            subscribedAt: serverTimestamp(),
+                            zodiacSign: zodiacInput
+                        });
+                    }
+
+                    // Hide form and show stylized success message
+                    signupForm.style.display = 'none';
+                    document.getElementById('success-message').style.display = 'block';
+                } catch (error) {
+                    console.error("Error managing subscription: ", error);
+                    alert("A disruption occurred in the cosmic web. Please try again.");
+                }
+            });
+        }
+    </script>
 </body>
 </html>
