@@ -411,18 +411,18 @@
                         const data = docSnap.data();
                         
                         // Inject dynamic content into the broadsheet slots
-                        if (data.title) {
-                            document.getElementById('journal-title').innerText = data.title;
-                            document.title = data.title + " - Astroglimpse";
+                        if (data.astro_title) {
+                            document.getElementById('journal-title').innerText = data.astro_title;
+                            document.title = data.astro_title + " - Astroglimpse";
                         }
-                        if (data.overview) {
-                            document.getElementById('astronomical-content').innerText = data.overview;
+                        if (data.astro_p1) {
+                            document.getElementById('astronomical-content').innerText = data.astro_p1;
                         }
-                        if (data.hermetic) {
-                            document.getElementById('hermetic-content').innerText = data.hermetic;
+                        if (data.venus_p1) {
+                            document.getElementById('hermetic-content').innerText = data.venus_p1;
                         }
-                        if (data.structural) {
-                            document.getElementById('structural-content').innerText = data.structural;
+                        if (data.structural_p1) {
+                            document.getElementById('structural-content').innerText = data.structural_p1;
                         }
                     } else {
                         document.getElementById('astronomical-content').innerText = "Cosmic signals are currently obscured. No data available for this sign today.";
