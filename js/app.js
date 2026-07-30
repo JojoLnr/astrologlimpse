@@ -14,14 +14,38 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+// Helper to safely populate elements if they exist in the DOM
+const setElementText = (id, text) => {
+    const el = document.getElementById(id);
+    if (el && text) {
+        if (text.includes('<br>')) {
+            el.innerHTML = text; // Allow line breaks for dates
+        } else {
+            el.innerText = text;
+        }
+    }
+};
+
+// Helper to parse the matrix transit strings (e.g. "Mercury | 12° 45' | Sextile Natal Venus")
+const populateMatrixRow = (rowId, dataString) => {
+    const rowEl = document.getElementById(rowId);
+    if (rowEl && dataString) {
+        const parts = dataString.split('|').map(s => s.trim());
+        if(parts.length === 3) {
+            rowEl.innerHTML = `<td>${parts[0]}</td><td>${parts[1]}</td><td>${parts[2]}</td>`;
+        }
+    }
+};
+
 document.addEventListener("DOMContentLoaded", () => {
     const urlParams = new URLSearchParams(window.location.search);
     const signParam = urlParams.get('sign');
     
+    const landingView = document.getElementById('landing-view');
+    const dispatchView = document.getElementById('dispatch-view');
+
+    // Display Routing
     if (signParam) {
-        const landingView = document.getElementById('landing-view');
-        const dispatchView = document.getElementById('dispatch-view');
-        
         if (landingView) landingView.classList.remove('active');
         if (dispatchView) dispatchView.classList.add('active');
 
@@ -34,13 +58,8 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         const signGlyph = document.getElementById('sign-glyph');
-        const signGlyphLarge = document.getElementById('sign-glyph-large');
-        const signTitle = document.getElementById('sign-title');
-
-        if (glyphs[cleanSign]) {
-            if (signGlyph) signGlyph.innerText = glyphs[cleanSign];
-            if (signGlyphLarge) signGlyphLarge.innerText = glyphs[cleanSign];
-            if (signTitle) signTitle.innerText = `Daily Dispatch for ${cleanSign.charAt(0).toUpperCase() + cleanSign.slice(1)}`;
+        if (glyphs[cleanSign] && signGlyph) {
+            signGlyph.innerText = glyphs[cleanSign];
         }
 
         const fetchHoroscope = async () => {
@@ -48,62 +67,75 @@ document.addEventListener("DOMContentLoaded", () => {
                 const docRef = doc(db, "horoscopes", cleanSign);
                 const docSnap = await getDoc(docRef);
 
-                // Mapping all template nodes
-                const astroContent = document.getElementById('astronomical-content');
-                const hermeticContent = document.getElementById('hermetic-content');
-                const structuralContent = document.getElementById('structural-content');
-                const careerContent = document.getElementById('career-content');
-                const loveContent = document.getElementById('love-content');
-                const wellnessContent = document.getElementById('wellness-content');
-                const tarotContent = document.getElementById('tarot-content');
-                const mantraContent = document.getElementById('mantra-content');
-                const keyDatesContent = document.getElementById('key-dates-content');
-                const dignitiesTableBody = document.getElementById('dignities-table-body');
-
                 if (docSnap.exists()) {
                     const data = docSnap.data();
                     
-                    if (data.astro_title) {
-                        const journalTitle = document.getElementById('journal-title');
-                        if (journalTitle) journalTitle.innerText = data.astro_title;
-                        document.title = data.astro_title + " - Astroglimpse";
-                    }
-                    if (data.astro_p1 && astroContent) astroContent.innerText = data.astro_p1;
-                    if (data.venus_p1 && hermeticContent) hermeticContent.innerText = data.venus_p1;
-                    if (data.structural_p1 && structuralContent) structuralContent.innerText = data.structural_p1;
-                    if (data.career_text && careerContent) careerContent.innerText = data.career_text;
-                    if (data.love_text && loveContent) loveContent.innerText = data.love_text;
-                    if (data.wellness_text && wellnessContent) wellnessContent.innerText = data.wellness_text;
-                    if (data.tarot_text && tarotContent) tarotContent.innerText = data.tarot_text;
-                    if (data.mantra && mantraContent) mantraContent.innerText = data.mantra;
-                    if (data.key_dates && keyDatesContent) keyDatesContent.innerText = data.key_dates;
+                    // Masthead
+                    if (data.masthead_sub) setElementText('masthead-sub', data.masthead_sub);
+                    
+                    // Astronomical Overview
+                    setElementText('duality-caption', data.duality_caption);
+                    setElementText('astro-title', data.astro_title);
+                    setElementText('astro-p1', data.astro_p1);
+                    setElementText('astro-p2', data.astro_p2);
+                    setElementText('astro-p3', data.astro_p3);
 
-                    // Render Dynamic Transits Matrix Table if provided
-                    if (data.transits && Array.isArray(data.transits) && dignitiesTableBody) {
-                        dignitiesTableBody.innerHTML = data.transits.map(t => `
-                            <tr>
-                                <td>${t.transit || ''}</td>
-                                <td>${t.degree || ''}</td>
-                                <td>${t.aspect || ''}</td>
-                            </tr>
-                        `).join('');
-                    }
+                    // Matrix Table
+                    populateMatrixRow('matrix-row1', data.matrix_row1_transit);
+                    populateMatrixRow('matrix-row2', data.matrix_row2_transit);
+                    populateMatrixRow('matrix-row3', data.matrix_row3_transit);
+
+                    // Hermetic Delineations
+                    setElementText('hermetic-title', data.hermetic_title);
+                    setElementText('venus-title', data.venus_title);
+                    setElementText('venus-p1', data.venus_p1);
+                    setElementText('venus-p2', data.venus_p2);
+                    
+                    // Structural Realignments
+                    setElementText('structural-title', data.structural_title);
+                    setElementText('structural-p1', data.structural_p1);
+                    setElementText('structural-p2', data.structural_p2);
+
+                    // Somatic Protocols
+                    setElementText('somatic-title', data.somatic_title);
+                    setElementText('somatic-p1-title', data.somatic_p1_title + ":");
+                    setElementText('somatic-p1-desc', data.somatic_p1_desc);
+                    setElementText('somatic-p2-title', data.somatic_p2_title + ":");
+                    setElementText('somatic-p2-desc', data.somatic_p2_desc);
+                    setElementText('somatic-p3-title', data.somatic_p3_title + ":");
+                    setElementText('somatic-p3-desc', data.somatic_p3_desc);
+                    setElementText('somatic-p4-title', data.somatic_p4_title + ":");
+                    setElementText('somatic-p4-desc', data.somatic_p4_desc);
+
+                    // Insights Section
+                    setElementText('insight-career-sub', data.insight_career_sub);
+                    setElementText('insight-career-desc', data.insight_career_desc);
+                    setElementText('insight-love-sub', data.insight_love_sub);
+                    setElementText('insight-love-desc', data.insight_love_desc);
+                    setElementText('insight-wellness-sub', data.insight_wellness_sub);
+                    setElementText('insight-wellness-desc', data.insight_wellness_desc);
+
+                    // Tarot & Dates
+                    setElementText('tarot-card-name', data.tarot_card_name);
+                    setElementText('tarot-card-sub', data.tarot_card_sub);
+                    setElementText('tarot-card-desc', data.tarot_card_desc);
+                    setElementText('mantra-text', data.mantra_text);
+                    setElementText('key-dates-text', data.key_dates_text);
+                    
                 } else {
-                    if (astroContent) astroContent.innerText = "Cosmic signals are currently obscured. No data available for this sign today.";
-                    if (hermeticContent) hermeticContent.innerText = "Awaiting celestial transmission...";
-                    if (structuralContent) structuralContent.innerText = "Awaiting celestial transmission...";
+                    setElementText('astro-p1', "Cosmic signals are currently obscured. No data available for this sign today.");
                 }
             } catch (error) {
                 console.error("Failed to fetch dispatch from database:", error);
-                const astroContent = document.getElementById('astronomical-content');
-                if (astroContent) astroContent.innerText = "A disruption occurred in the cosmic web. Unable to load data.";
+                setElementText('astro-p1', "A disruption occurred in the cosmic web. Unable to load data.");
             }
         };
         
         fetchHoroscope();
     } else {
-        const landingView = document.getElementById('landing-view');
+        // If there's no URL parameter, force the user to the landing page form
         if (landingView) landingView.classList.add('active');
+        if (dispatchView) dispatchView.classList.remove('active');
     }
 
     // Subscriber Signup Form Logic
