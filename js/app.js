@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc, updateDoc, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyC406s8oXgyxjUUkZrjc9ABSs99Vgyn5L0",
@@ -69,7 +69,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    
+                    // Safely increment the view count for this specific sign
+                    await updateDoc(docRef, {
+                        viewCount: increment(1)
+                    });
                     // Masthead
                     if (data.masthead_sub) setElementText('masthead-sub', data.masthead_sub);
                     
