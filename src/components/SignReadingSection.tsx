@@ -1,6 +1,7 @@
 import { Sparkles, Heart, Briefcase, Brain, Dumbbell, Gem, Calendar } from 'lucide-react';
 import type { SignReading } from '@/lib/types';
 import type { ZodiacSign } from './ZodiacSelector';
+import { ContentBlurGate } from './ContentBlurGate';
 
 const signGlyphs: Record<string, string> = {
   Aries: '♈\uFE0E', Taurus: '♉\uFE0E', Gemini: '♊\uFE0E', Cancer: '♋\uFE0E',
@@ -11,9 +12,11 @@ const signGlyphs: Record<string, string> = {
 export default function SignReadingSection({
   sign,
   reading,
+  isBlurred = false,
 }: {
   sign: ZodiacSign;
   reading: SignReading | null;
+  isBlurred?: boolean;
 }) {
   if (!reading) return null;
 
@@ -50,71 +53,73 @@ export default function SignReadingSection({
           <hr className="gold-rule mx-auto mt-6 max-w-md" />
         </div>
 
-        {/* Two-column: main reading + sidebar */}
-        <div className="mt-12 grid gap-10 lg:grid-cols-[1fr_280px]">
-          {/* Main column · open text blocks separated by rules */}
-          <div>
-            {blocks.map((block, i) => {
-              const Icon = block.icon;
-              return (
-                <div key={block.label} className={i > 0 ? 'mt-8' : ''}>
-                  {i > 0 && <hr className="gold-rule mb-8" />}
-                  <div className="flex items-center gap-2.5">
-                    <Icon className="h-4 w-4 text-gold-500" strokeWidth={1.5} />
-                    <h3 className="font-display text-sm font-semibold uppercase tracking-[0.15em] text-navy-800">
-                      {block.label}
-                    </h3>
+        <ContentBlurGate isBlurred={isBlurred}>
+          {/* Two-column: main reading + sidebar */}
+          <div className="mt-12 grid gap-10 lg:grid-cols-[1fr_280px]">
+            {/* Main column · open text blocks separated by rules */}
+            <div>
+              {blocks.map((block, i) => {
+                const Icon = block.icon;
+                return (
+                  <div key={block.label} className={i > 0 ? 'mt-8' : ''}>
+                    {i > 0 && <hr className="gold-rule mb-8" />}
+                    <div className="flex items-center gap-2.5">
+                      <Icon className="h-4 w-4 text-gold-500" strokeWidth={1.5} />
+                      <h3 className="font-display text-sm font-semibold uppercase tracking-[0.15em] text-navy-800">
+                        {block.label}
+                      </h3>
+                    </div>
+                    <p className="mt-3 font-serif text-lg leading-relaxed text-navy-800/85">
+                      {block.text}
+                    </p>
                   </div>
-                  <p className="mt-3 font-serif text-lg leading-relaxed text-navy-800/85">
-                    {block.text}
-                  </p>
+                );
+              })}
+            </div>
+
+            {/* Sidebar */}
+            <aside className="space-y-8">
+              {/* Mantra */}
+              <div>
+                <div className="flex items-center gap-2.5">
+                  <Sparkles className="h-4 w-4 text-gold-500" strokeWidth={1.5} />
+                  <h3 className="font-display text-sm font-semibold uppercase tracking-[0.15em] text-navy-800">
+                    Your Mantra
+                  </h3>
                 </div>
-              );
-            })}
+                <p className="mt-3 font-serif text-xl italic leading-snug text-navy-900">
+                  "{reading.mantra}"
+                </p>
+              </div>
+              <hr className="gold-rule" />
+
+              {/* Crystal */}
+              <div>
+                <div className="flex items-center gap-2.5">
+                  <Gem className="h-4 w-4 text-gold-500" strokeWidth={1.5} />
+                  <h3 className="font-display text-sm font-semibold uppercase tracking-[0.15em] text-navy-800">
+                    Your Crystal
+                  </h3>
+                </div>
+                <p className="mt-3 font-serif text-lg text-navy-800/85">{reading.crystal}</p>
+              </div>
+              <hr className="gold-rule" />
+
+              {/* Key Dates */}
+              <div>
+                <div className="flex items-center gap-2.5">
+                  <Calendar className="h-4 w-4 text-gold-500" strokeWidth={1.5} />
+                  <h3 className="font-display text-sm font-semibold uppercase tracking-[0.15em] text-navy-800">
+                    Key Dates
+                  </h3>
+                </div>
+                <p className="mt-3 font-serif text-base leading-relaxed text-navy-800/80">
+                  {reading.key_dates}
+                </p>
+              </div>
+            </aside>
           </div>
-
-          {/* Sidebar */}
-          <aside className="space-y-8">
-            {/* Mantra */}
-            <div>
-              <div className="flex items-center gap-2.5">
-                <Sparkles className="h-4 w-4 text-gold-500" strokeWidth={1.5} />
-                <h3 className="font-display text-sm font-semibold uppercase tracking-[0.15em] text-navy-800">
-                  Your Mantra
-                </h3>
-              </div>
-              <p className="mt-3 font-serif text-xl italic leading-snug text-navy-900">
-                "{reading.mantra}"
-              </p>
-            </div>
-            <hr className="gold-rule" />
-
-            {/* Crystal */}
-            <div>
-              <div className="flex items-center gap-2.5">
-                <Gem className="h-4 w-4 text-gold-500" strokeWidth={1.5} />
-                <h3 className="font-display text-sm font-semibold uppercase tracking-[0.15em] text-navy-800">
-                  Your Crystal
-                </h3>
-              </div>
-              <p className="mt-3 font-serif text-lg text-navy-800/85">{reading.crystal}</p>
-            </div>
-            <hr className="gold-rule" />
-
-            {/* Key Dates */}
-            <div>
-              <div className="flex items-center gap-2.5">
-                <Calendar className="h-4 w-4 text-gold-500" strokeWidth={1.5} />
-                <h3 className="font-display text-sm font-semibold uppercase tracking-[0.15em] text-navy-800">
-                  Key Dates
-                </h3>
-              </div>
-              <p className="mt-3 font-serif text-base leading-relaxed text-navy-800/80">
-                {reading.key_dates}
-              </p>
-            </div>
-          </aside>
-        </div>
+        </ContentBlurGate>
       </div>
     </section>
   );

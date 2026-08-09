@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ContentBlurGate } from './ContentBlurGate';
 
 export const ZODIAC_SIGNS = [
   'Aries', 'Taurus', 'Gemini', 'Cancer',
@@ -17,9 +18,11 @@ const signGlyphs: Record<string, string> = {
 export default function ZodiacSelector({
   selected,
   onSelect,
+  isBlurred = false,
 }: {
   selected: ZodiacSign | null;
   onSelect: (sign: ZodiacSign) => void;
+  isBlurred?: boolean;
 }) {
   const [hovered, setHovered] = useState<string | null>(null);
 
@@ -35,43 +38,45 @@ export default function ZodiacSelector({
         The layout below adapts to your sign · revealing a tailored reading alongside the collective forecast.
       </p>
 
-      <div className="mt-8 grid grid-cols-6 gap-1.5 sm:gap-2 md:max-w-2xl md:mx-auto">
-        {ZODIAC_SIGNS.map((sign) => {
-          const isSelected = selected === sign;
-          const isHovered = hovered === sign;
-          return (
-            <button
-              key={sign}
-              onClick={() => onSelect(sign)}
-              onMouseEnter={() => setHovered(sign)}
-              onMouseLeave={() => setHovered(null)}
-              className={`group flex flex-col items-center gap-1 rounded-lg py-3 transition-all duration-200 ${
-                isSelected
-                  ? 'bg-gold-400/15 ring-1 ring-gold-400/40'
-                  : isHovered
-                    ? 'bg-navy-700/40'
-                    : 'bg-transparent'
-              }`}
-            >
-              <span
-  className={`font-display text-xl transition-colors ${
-    isSelected ? 'text-gold-300' : isHovered ? 'text-gold-300' : 'text-cream-200/40'
-  }`}
-  style={{ fontVariantEmoji: 'text', fontFamily: "'Cinzel', Georgia, serif", fontStyle: 'normal' }}
->
-  {signGlyphs[sign]}
-</span>
-              <span
-                className={`font-display text-[8px] uppercase tracking-wider transition-colors ${
-                  isSelected ? 'text-gold-300' : isHovered ? 'text-cream-100/70' : 'text-cream-200/30'
+      <ContentBlurGate isBlurred={isBlurred}>
+        <div className="mt-8 grid grid-cols-6 gap-1.5 sm:gap-2 md:max-w-2xl md:mx-auto">
+          {ZODIAC_SIGNS.map((sign) => {
+            const isSelected = selected === sign;
+            const isHovered = hovered === sign;
+            return (
+              <button
+                key={sign}
+                onClick={() => onSelect(sign)}
+                onMouseEnter={() => setHovered(sign)}
+                onMouseLeave={() => setHovered(null)}
+                className={`group flex flex-col items-center gap-1 rounded-lg py-3 transition-all duration-200 ${
+                  isSelected
+                    ? 'bg-gold-400/15 ring-1 ring-gold-400/40'
+                    : isHovered
+                      ? 'bg-navy-700/40'
+                      : 'bg-transparent'
                 }`}
               >
-                {sign}
-              </span>
-            </button>
-          );
-        })}
-      </div>
+                <span
+                  className={`font-display text-xl transition-colors ${
+                    isSelected ? 'text-gold-300' : isHovered ? 'text-gold-300' : 'text-cream-200/40'
+                  }`}
+                  style={{ fontVariantEmoji: 'text', fontFamily: "'Cinzel', Georgia, serif", fontStyle: 'normal' }}
+                >
+                  {signGlyphs[sign]}
+                </span>
+                <span
+                  className={`font-display text-[8px] uppercase tracking-wider transition-colors ${
+                    isSelected ? 'text-gold-300' : isHovered ? 'text-cream-100/70' : 'text-cream-200/30'
+                  }`}
+                >
+                  {sign}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </ContentBlurGate>
     </section>
   );
 }

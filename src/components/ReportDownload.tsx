@@ -3,6 +3,7 @@ import { Download, FileText } from 'lucide-react';
 import type { CosmicData } from '@/lib/types';
 import type { ZodiacSign } from './ZodiacSelector';
 import { SectionHeading, OrnamentDivider } from './SectionHeading';
+import { ContentBlurGate } from './ContentBlurGate';
 
 function formatDate(dateStr: string) {
   return new Date(dateStr + 'T12:00:00').toLocaleDateString('en-US', {
@@ -25,9 +26,11 @@ const SIGN_GLYPHS: Record<string, string> = {
 export default function ReportDownload({
   data,
   selectedSign,
+  isBlurred = false,
 }: {
   data: CosmicData;
   selectedSign: ZodiacSign | null;
+  isBlurred?: boolean;
 }) {
   const reportRef = useRef<HTMLDivElement>(null);
   const [generating, setGenerating] = useState(false);
@@ -254,7 +257,6 @@ ${printContents}
 </html>`);
     win.document.close();
 
-    // Clean up after a delay
     setTimeout(() => setGenerating(false), 1000);
     void dateSlug;
     void signSlug;
@@ -272,31 +274,34 @@ ${printContents}
         subtitle="Download a beautifully formatted recap of your personalized reading and the current cosmic forecast. Keep it, print it, or share it."
         onParchment
       />
-      <div className="mt-10 rounded-lg border border-gold-500/25 bg-navy-800/30 p-8">
-        <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start sm:gap-8">
-          <span className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full border-2 border-gold-400/25">
-            <FileText className="h-8 w-8 text-gold-300" strokeWidth={1.2} />
-          </span>
-          <div className="flex-1 text-center sm:text-left">
-            <h3 className="font-display text-xl font-semibold prose-title">
-              Your Celestial Recap
-            </h3>
-            <p className="mt-2 font-serif text-base leading-relaxed prose-body">
-              A complete PDF report including{selectedSign ? ` your ${selectedSign} reading,` : ''} the current lunar phase,
-              all active transits, the collective tarot spread, elemental guidance, shadow work prompts,
-              mantras, crystal pairings, void-of-course moon windows, and upcoming cosmic events.
-            </p>
-            <button
-              onClick={handleDownload}
-              disabled={generating}
-              className="mt-6 inline-flex items-center gap-2 rounded-md bg-gold-400 px-6 py-3 font-display text-[11px] font-semibold uppercase tracking-[0.2em] text-navy-950 transition-all hover:bg-gold-300 hover:shadow-lg hover:shadow-gold-400/20 disabled:opacity-60"
-            >
-              <Download className="h-4 w-4" />
-              {generating ? 'Preparing PDF...' : 'Download PDF Report'}
-            </button>
+
+      <ContentBlurGate isBlurred={isBlurred}>
+        <div className="mt-10 rounded-lg border border-gold-500/25 bg-navy-800/30 p-8">
+          <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start sm:gap-8">
+            <span className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full border-2 border-gold-400/25">
+              <FileText className="h-8 w-8 text-gold-300" strokeWidth={1.2} />
+            </span>
+            <div className="flex-1 text-center sm:text-left">
+              <h3 className="font-display text-xl font-semibold prose-title">
+                Your Celestial Recap
+              </h3>
+              <p className="mt-2 font-serif text-base leading-relaxed prose-body">
+                A complete PDF report including{selectedSign ? ` your ${selectedSign} reading,` : ''} the current lunar phase,
+                all active transits, the collective tarot spread, elemental guidance, shadow work prompts,
+                mantras, crystal pairings, void-of-course moon windows, and upcoming cosmic events.
+              </p>
+              <button
+                onClick={handleDownload}
+                disabled={generating}
+                className="mt-6 inline-flex items-center gap-2 rounded-md bg-gold-400 px-6 py-3 font-display text-[11px] font-semibold uppercase tracking-[0.2em] text-navy-950 transition-all hover:bg-gold-300 hover:shadow-lg hover:shadow-gold-400/20 disabled:opacity-60"
+              >
+                <Download className="h-4 w-4" />
+                {generating ? 'Preparing PDF...' : 'Download PDF Report'}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </ContentBlurGate>
 
       {/* Hidden print-only report content */}
       <div ref={reportRef} style={{ position: 'absolute', left: '-9999px', top: 0, width: '210mm', overflow: 'hidden', opacity: 0, pointerEvents: 'none' }}>
