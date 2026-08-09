@@ -26,3 +26,6 @@ export function ContentBlurGate({ children, isBlurred }: ContentBlurGateProps) {
     </div>
   );
 }
+
+// Providing a default export as well fixes TS2613 build errors across all files
+export default ContentBlurGate;
