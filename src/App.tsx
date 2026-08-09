@@ -55,7 +55,6 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [selectedSign, setSelectedSign] = useState<ZodiacSign | null>(null);
 
-  // Toggle this or hook it up to your subscription state logic later
   const [isSubscribed] = useState(false);
 
   const handleProgress = useCallback((partial: CosmicData) => {
@@ -102,113 +101,117 @@ export default function App() {
             </Suspense>
           )}
 
-          {/* Section 2: Celestial Positions (Free preview) */}
+          {/* Section 0: Celestial Positions (Navy) */}
           <LazySection className="section-navy">
             <Suspense fallback={<SectionFallback />}><CelestialMap /></Suspense>
           </LazySection>
 
-          {/* Eclipse Section (Free preview, unblurred) */}
-          <Suspense fallback={<SectionFallback />}>
-            <EclipseSection selectedSign={selectedSign} />
-          </Suspense>
-
-          {/* Section 3: Transit Tracker (Free preview) */}
+          {/* Section 1: Eclipse Section (Parchment - alternates correctly) */}
           <LazySection className="section-parchment">
-            <Suspense fallback={<SectionFallback />}><TransitTracker transits={data.transits} /></Suspense>
+            <Suspense fallback={<SectionFallback />}>
+              <EclipseSection selectedSign={selectedSign} number="01" />
+            </Suspense>
           </LazySection>
 
-          {/* Sections 4+: Gated / Blurred content for non-subscribers */}
+          {/* Section 2: Transit Tracker (Navy - alternates correctly) */}
           <LazySection className="section-navy">
+            <Suspense fallback={<SectionFallback />}>
+              <TransitTracker transits={data.transits} />
+            </Suspense>
+          </LazySection>
+
+          {/* Sections 3+: Gated / Blurred content with alternating backgrounds */}
+          <LazySection className="section-parchment">
             <Suspense fallback={<SectionFallback />}>
               <LunarBlueprint phase={data.lunarPhase} isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
-          <LazySection className="section-parchment">
+          <LazySection className="section-navy">
             <Suspense fallback={<SectionFallback />}>
               <TarotSpread cards={data.tarotCards} isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
-          <LazySection className="section-navy">
+          <LazySection className="section-parchment">
             <Suspense fallback={<SectionFallback />}>
               <ElementalBreakdown elements={data.elementalEnergy} isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
-          <LazySection className="section-parchment">
+          <LazySection className="section-navy">
             <Suspense fallback={<SectionFallback />}>
               <ShadowWork prompts={data.shadowPrompts} isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
-          <LazySection className="section-navy">
+          <LazySection className="section-parchment">
             <Suspense fallback={<SectionFallback />}>
               <CrystalBotanicalPairings items={data.crystalBotanical} isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
-          <LazySection className="section-parchment">
+          <LazySection className="section-navy">
             <Suspense fallback={<SectionFallback />}>
               <VoidMoonTimers windows={data.voidMoonWindows} isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
-          <LazySection className="section-navy">
+          <LazySection className="section-parchment">
             <Suspense fallback={<SectionFallback />}>
               <MantraCodes mantras={data.mantras} isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
-          <LazySection className="section-parchment">
+          <LazySection className="section-navy">
             <Suspense fallback={<SectionFallback />}>
               <BirthChartCalculator isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
-          <LazySection className="section-navy">
+          <LazySection className="section-parchment">
             <Suspense fallback={<SectionFallback />}>
               <CompatibilityMatrix isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
-          <LazySection className="section-parchment">
+          <LazySection className="section-navy">
             <Suspense fallback={<SectionFallback />}>
               <FixedStarLibrary isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
-          <LazySection className="section-navy">
+          <LazySection className="section-parchment">
             <Suspense fallback={<SectionFallback />}>
               <SabianSymbolsOracle isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
-          <LazySection className="section-parchment">
+          <LazySection className="section-navy">
             <Suspense fallback={<SectionFallback />}>
               <PlanetaryHourCalculator isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
-          <LazySection className="section-navy">
+          <LazySection className="section-parchment">
             <Suspense fallback={<SectionFallback />}>
               <ElementalModalityBreakdown isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
-          <LazySection className="section-parchment">
+          <LazySection className="section-navy">
             <Suspense fallback={<SectionFallback />}>
               <MythologicalArchives isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
-          <LazySection className="section-navy">
+          <LazySection className="section-parchment">
             <Suspense fallback={<SectionFallback />}>
               <CosmicEvents events={data.cosmicEvents} isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
-          <LazySection className="section-parchment">
+          <LazySection className="section-navy">
             <Suspense fallback={<SectionFallback />}>
               <ReportDownload data={data} selectedSign={selectedSign} isBlurred={!isSubscribed} />
             </Suspense>
