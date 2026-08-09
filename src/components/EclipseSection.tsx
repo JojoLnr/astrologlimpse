@@ -58,21 +58,31 @@ export default function EclipseSection({
         onParchment={isParchment}
       />
 
-      {/* Hero Section with Visual on the Right */}
+      {/* Hero Section with Redesigned Eclipse Graphic on the Right */}
       <div className="mt-12 flex flex-col items-center gap-8 lg:flex-row-reverse lg:items-center lg:gap-16">
-        {/* Visual on the Right */}
-        <div className="relative flex-shrink-0">
-          <div className="relative h-64 w-64">
-            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-gold-300 via-gold-500 to-navy-900 animate-twinkle-soft" style={{ animationDuration: '12s' }} />
-            <div className="absolute inset-4 rounded-full bg-navy-950 shadow-2xl shadow-navy-950" />
-            <div
-              className="absolute inset-0 rounded-full"
-              style={{
-                background: 'radial-gradient(circle at 50% 50%, transparent 40%, rgba(240,205,112,0.15) 50%, transparent 65%)',
-              }}
-            />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="font-ornament text-6xl text-gold-400/30">☉</span>
+        {/* Redesigned Celestial Eclipse Graphic */}
+        <div className="relative flex-shrink-0 flex items-center justify-center p-6">
+          <div className="relative h-64 w-64 flex items-center justify-center">
+            {/* Outer atmospheric glowing corona */}
+            <div className="absolute inset-2 rounded-full bg-gradient-to-tr from-amber-500/20 via-gold-400/30 to-amber-200/10 blur-2xl animate-pulse" style={{ animationDuration: '6s' }} />
+            
+            {/* Rotating subtle orbital particle ring */}
+            <div className="absolute inset-0 rounded-full border border-gold-400/20 animate-spin" style={{ animationDuration: '40s' }} />
+            <div className="absolute inset-4 rounded-full border border-dashed border-gold-500/15 animate-spin" style={{ animationDirection: 'reverse', animationDuration: '50s' }} />
+
+            {/* Glowing Golden Solar Corona Disc */}
+            <div className="absolute h-48 w-48 rounded-full bg-gradient-to-tr from-amber-600 via-gold-400 to-amber-200 shadow-[0_0_60px_rgba(240,205,112,0.35)]" />
+
+            {/* Dark Lunar Silhouette Overlapping with Rim Light (Diamond Ring Effect) */}
+            <div className="absolute h-44 w-44 rounded-full bg-navy-950 shadow-2xl translate-x-2 -translate-y-2 border border-gold-300/40 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-navy-900 via-navy-950 to-black opacity-90" />
+              {/* Diamond ring lens flare gleam at top right */}
+              <div className="absolute top-3 right-8 h-3 w-3 rounded-full bg-cream-50 shadow-[0_0_12px_#fff] blur-[0.5px] animate-pulse" style={{ animationDuration: '3s' }} />
+            </div>
+
+            {/* Center astrological sun symbol watermark */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 opacity-30">
+              <span className="font-ornament text-5xl text-gold-200">☉</span>
             </div>
           </div>
         </div>
