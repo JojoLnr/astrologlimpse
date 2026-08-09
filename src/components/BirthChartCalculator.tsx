@@ -58,6 +58,7 @@ function sunSignFromDate(dateStr: string): ZodiacSign {
       if (m === cm && day >= cd) return sign;
     }
   }
+  // Simplified: check by month/day ranges
   if ((m === 3 && day >= 21) || (m === 4 && day <= 19)) return 'Aries';
   if ((m === 4 && day >= 20) || (m === 5 && day <= 20)) return 'Taurus';
   if ((m === 5 && day >= 21) || (m === 6 && day <= 20)) return 'Gemini';
@@ -75,6 +76,7 @@ function sunSignFromDate(dateStr: string): ZodiacSign {
 function approximateRising(sunSign: ZodiacSign, hour: number): ZodiacSign {
   const signOrder = ZODIAC_SIGNS;
   const sunIdx = signOrder.indexOf(sunSign);
+  // Rising sign advances ~1 sign per 2 hours from sunrise (~6am)
   const offset = Math.round((hour - 6) / 2);
   const risingIdx = ((sunIdx + offset) % 12 + 12) % 12;
   return signOrder[risingIdx];
@@ -83,6 +85,7 @@ function approximateRising(sunSign: ZodiacSign, hour: number): ZodiacSign {
 function approximateMoon(sunSign: ZodiacSign, day: number): ZodiacSign {
   const signOrder = ZODIAC_SIGNS;
   const sunIdx = signOrder.indexOf(sunSign);
+  // Moon moves ~13°/day, roughly 1 sign every 2.3 days
   const offset = Math.round(day / 2.3);
   const moonIdx = ((sunIdx + offset) % 12 + 12) % 12;
   return signOrder[moonIdx];
