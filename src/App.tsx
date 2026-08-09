@@ -6,7 +6,7 @@ import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import ZodiacSelector, { type ZodiacSign } from '@/components/ZodiacSelector';
 import LazySection from '@/components/LazySection';
-import ContentBlurGate from '@/components/ContentBlurGate';
+import { ContentBlurGate } from '@/components/ContentBlurGate';
 
 const SignReadingSection = lazy(() => import('@/components/SignReadingSection'));
 const CelestialMap = lazy(() => import('@/components/CelestialMap'));
