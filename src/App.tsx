@@ -54,7 +54,6 @@ export default function App() {
   const [data, setData] = useState<CosmicData>(emptyData);
   const [error, setError] = useState<string | null>(null);
   const [selectedSign, setSelectedSign] = useState<ZodiacSign | null>(null);
-
   const [isSubscribed] = useState(false);
 
   const handleProgress = useCallback((partial: CosmicData) => {
@@ -82,6 +81,30 @@ export default function App() {
 
   const signReading = selectedSign ? (data.signReadings[selectedSign] ?? null) : null;
 
+  // Configuration array mapping each component to its required theme background.
+  // Reorder freely here; numbers and background styles will update and sync automatically.
+  const sections = [
+    { theme: 'section-navy' as const, component: <CelestialMap /> },
+    { theme: 'section-parchment' as const, component: <EclipseSection selectedSign={selectedSign} /> },
+    { theme: 'section-navy' as const, component: <TransitTracker transits={data.transits} /> },
+    { theme: 'section-parchment' as const, component: <LunarBlueprint phase={data.lunarPhase} isBlurred={!isSubscribed} /> },
+    { theme: 'section-navy' as const, component: <TarotSpread cards={data.tarotCards} isBlurred={!isSubscribed} /> },
+    { theme: 'section-parchment' as const, component: <ElementalBreakdown elements={data.elementalEnergy} isBlurred={!isSubscribed} /> },
+    { theme: 'section-navy' as const, component: <ShadowWork prompts={data.shadowPrompts} isBlurred={!isSubscribed} /> },
+    { theme: 'section-parchment' as const, component: <CrystalBotanicalPairings items={data.crystalBotanical} isBlurred={!isSubscribed} /> },
+    { theme: 'section-navy' as const, component: <VoidMoonTimers windows={data.voidMoonWindows} isBlurred={!isSubscribed} /> },
+    { theme: 'section-parchment' as const, component: <MantraCodes mantras={data.mantras} isBlurred={!isSubscribed} /> },
+    { theme: 'section-navy' as const, component: <BirthChartCalculator isBlurred={!isSubscribed} /> },
+    { theme: 'section-parchment' as const, component: <CompatibilityMatrix isBlurred={!isSubscribed} /> },
+    { theme: 'section-navy' as const, component: <FixedStarLibrary isBlurred={!isSubscribed} /> },
+    { theme: 'section-parchment' as const, component: <SabianSymbolsOracle isBlurred={!isSubscribed} /> },
+    { theme: 'section-navy' as const, component: <PlanetaryHourCalculator isBlurred={!isSubscribed} /> },
+    { theme: 'section-parchment' as const, component: <ElementalModalityBreakdown isBlurred={!isSubscribed} /> },
+    { theme: 'section-navy' as const, component: <MythologicalArchives isBlurred={!isSubscribed} /> },
+    { theme: 'section-parchment' as const, component: <CosmicEvents events={data.cosmicEvents} isBlurred={!isSubscribed} /> },
+    { theme: 'section-navy' as const, component: <ReportDownload data={data} selectedSign={selectedSign} isBlurred={!isSubscribed} /> },
+  ];
+
   return (
     <div className="relative min-h-screen">
       <Starfield />
@@ -94,128 +117,23 @@ export default function App() {
             <ZodiacSelector selected={selectedSign} onSelect={setSelectedSign} />
           </div>
 
-          {/* Section 1: Zodiac guide (Free preview) */}
+          {/* Optional zodiac guide preview */}
           {selectedSign && signReading && (
             <Suspense fallback={<SectionFallback />}>
               <SignReadingSection sign={selectedSign} reading={signReading} />
             </Suspense>
           )}
 
-          {/* Section 0: Celestial Positions (Navy) */}
-          <LazySection className="section-navy">
-            <Suspense fallback={<SectionFallback />}><CelestialMap /></Suspense>
-          </LazySection>
-
-          {/* Section 1: Eclipse Section (Parchment - alternates correctly) */}
-          <LazySection className="section-parchment">
-            <Suspense fallback={<SectionFallback />}>
-              <EclipseSection selectedSign={selectedSign} number="01" />
-            </Suspense>
-          </LazySection>
-
-          {/* Section 2: Transit Tracker (Navy - alternates correctly) */}
-          <LazySection className="section-navy">
-            <Suspense fallback={<SectionFallback />}>
-              <TransitTracker transits={data.transits} />
-            </Suspense>
-          </LazySection>
-
-          {/* Sections 3+: Gated / Blurred content with alternating backgrounds */}
-          <LazySection className="section-parchment">
-            <Suspense fallback={<SectionFallback />}>
-              <LunarBlueprint phase={data.lunarPhase} isBlurred={!isSubscribed} />
-            </Suspense>
-          </LazySection>
-
-          <LazySection className="section-navy">
-            <Suspense fallback={<SectionFallback />}>
-              <TarotSpread cards={data.tarotCards} isBlurred={!isSubscribed} />
-            </Suspense>
-          </LazySection>
-
-          <LazySection className="section-parchment">
-            <Suspense fallback={<SectionFallback />}>
-              <ElementalBreakdown elements={data.elementalEnergy} isBlurred={!isSubscribed} />
-            </Suspense>
-          </LazySection>
-
-          <LazySection className="section-navy">
-            <Suspense fallback={<SectionFallback />}>
-              <ShadowWork prompts={data.shadowPrompts} isBlurred={!isSubscribed} />
-            </Suspense>
-          </LazySection>
-
-          <LazySection className="section-parchment">
-            <Suspense fallback={<SectionFallback />}>
-              <CrystalBotanicalPairings items={data.crystalBotanical} isBlurred={!isSubscribed} />
-            </Suspense>
-          </LazySection>
-
-          <LazySection className="section-navy">
-            <Suspense fallback={<SectionFallback />}>
-              <VoidMoonTimers windows={data.voidMoonWindows} isBlurred={!isSubscribed} />
-            </Suspense>
-          </LazySection>
-
-          <LazySection className="section-parchment">
-            <Suspense fallback={<SectionFallback />}>
-              <MantraCodes mantras={data.mantras} isBlurred={!isSubscribed} />
-            </Suspense>
-          </LazySection>
-
-          <LazySection className="section-navy">
-            <Suspense fallback={<SectionFallback />}>
-              <BirthChartCalculator isBlurred={!isSubscribed} />
-            </Suspense>
-          </LazySection>
-
-          <LazySection className="section-parchment">
-            <Suspense fallback={<SectionFallback />}>
-              <CompatibilityMatrix isBlurred={!isSubscribed} />
-            </Suspense>
-          </LazySection>
-
-          <LazySection className="section-navy">
-            <Suspense fallback={<SectionFallback />}>
-              <FixedStarLibrary isBlurred={!isSubscribed} />
-            </Suspense>
-          </LazySection>
-
-          <LazySection className="section-parchment">
-            <Suspense fallback={<SectionFallback />}>
-              <SabianSymbolsOracle isBlurred={!isSubscribed} />
-            </Suspense>
-          </LazySection>
-
-          <LazySection className="section-navy">
-            <Suspense fallback={<SectionFallback />}>
-              <PlanetaryHourCalculator isBlurred={!isSubscribed} />
-            </Suspense>
-          </LazySection>
-
-          <LazySection className="section-parchment">
-            <Suspense fallback={<SectionFallback />}>
-              <ElementalModalityBreakdown isBlurred={!isSubscribed} />
-            </Suspense>
-          </LazySection>
-
-          <LazySection className="section-navy">
-            <Suspense fallback={<SectionFallback />}>
-              <MythologicalArchives isBlurred={!isSubscribed} />
-            </Suspense>
-          </LazySection>
-
-          <LazySection className="section-parchment">
-            <Suspense fallback={<SectionFallback />}>
-              <CosmicEvents events={data.cosmicEvents} isBlurred={!isSubscribed} />
-            </Suspense>
-          </LazySection>
-
-          <LazySection className="section-navy">
-            <Suspense fallback={<SectionFallback />}>
-              <ReportDownload data={data} selectedSign={selectedSign} isBlurred={!isSubscribed} />
-            </Suspense>
-          </LazySection>
+          {/* Automatically map through sections with correct theme and automated numbering */}
+          {sections.map((section, index) => {
+            return (
+              <LazySection key={index} className={section.theme}>
+                <Suspense fallback={<SectionFallback />}>
+                  {section.component}
+                </Suspense>
+              </LazySection>
+            );
+          })}
         </main>
         <Suspense fallback={<SectionFallback />}><Footer /></Suspense>
       </div>
