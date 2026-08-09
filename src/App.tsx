@@ -81,28 +81,27 @@ export default function App() {
 
   const signReading = selectedSign ? (data.signReadings[selectedSign] ?? null) : null;
 
-  // Configuration array mapping each component to its required theme background.
-  // Reorder freely here; numbers and background styles will update and sync automatically.
+  // Configuration array mapping each section to its correct native theme and rendering its component
   const sections = [
     { theme: 'section-navy' as const, component: <CelestialMap /> },
-    { theme: 'section-parchment' as const, component: <EclipseSection selectedSign={selectedSign} /> },
-    { theme: 'section-navy' as const, component: <TransitTracker transits={data.transits} /> },
-    { theme: 'section-parchment' as const, component: <LunarBlueprint phase={data.lunarPhase} isBlurred={!isSubscribed} /> },
-    { theme: 'section-navy' as const, component: <TarotSpread cards={data.tarotCards} isBlurred={!isSubscribed} /> },
-    { theme: 'section-parchment' as const, component: <ElementalBreakdown elements={data.elementalEnergy} isBlurred={!isSubscribed} /> },
-    { theme: 'section-navy' as const, component: <ShadowWork prompts={data.shadowPrompts} isBlurred={!isSubscribed} /> },
-    { theme: 'section-parchment' as const, component: <CrystalBotanicalPairings items={data.crystalBotanical} isBlurred={!isSubscribed} /> },
-    { theme: 'section-navy' as const, component: <VoidMoonTimers windows={data.voidMoonWindows} isBlurred={!isSubscribed} /> },
-    { theme: 'section-parchment' as const, component: <MantraCodes mantras={data.mantras} isBlurred={!isSubscribed} /> },
-    { theme: 'section-navy' as const, component: <BirthChartCalculator isBlurred={!isSubscribed} /> },
-    { theme: 'section-parchment' as const, component: <CompatibilityMatrix isBlurred={!isSubscribed} /> },
-    { theme: 'section-navy' as const, component: <FixedStarLibrary isBlurred={!isSubscribed} /> },
-    { theme: 'section-parchment' as const, component: <SabianSymbolsOracle isBlurred={!isSubscribed} /> },
-    { theme: 'section-navy' as const, component: <PlanetaryHourCalculator isBlurred={!isSubscribed} /> },
-    { theme: 'section-parchment' as const, component: <ElementalModalityBreakdown isBlurred={!isSubscribed} /> },
-    { theme: 'section-navy' as const, component: <MythologicalArchives isBlurred={!isSubscribed} /> },
-    { theme: 'section-parchment' as const, component: <CosmicEvents events={data.cosmicEvents} isBlurred={!isSubscribed} /> },
-    { theme: 'section-navy' as const, component: <ReportDownload data={data} selectedSign={selectedSign} isBlurred={!isSubscribed} /> },
+    { theme: 'section-navy' as const, component: <EclipseSection selectedSign={selectedSign} theme="section-navy" /> },
+    { theme: 'section-parchment' as const, component: <TransitTracker transits={data.transits} /> },
+    { theme: 'section-navy' as const, component: <LunarBlueprint phase={data.lunarPhase} isBlurred={!isSubscribed} /> },
+    { theme: 'section-parchment' as const, component: <TarotSpread cards={data.tarotCards} isBlurred={!isSubscribed} /> },
+    { theme: 'section-navy' as const, component: <ElementalBreakdown elements={data.elementalEnergy} isBlurred={!isSubscribed} /> },
+    { theme: 'section-parchment' as const, component: <ShadowWork prompts={data.shadowPrompts} isBlurred={!isSubscribed} /> },
+    { theme: 'section-navy' as const, component: <CrystalBotanicalPairings items={data.crystalBotanical} isBlurred={!isSubscribed} /> },
+    { theme: 'section-parchment' as const, component: <VoidMoonTimers windows={data.voidMoonWindows} isBlurred={!isSubscribed} /> },
+    { theme: 'section-navy' as const, component: <MantraCodes mantras={data.mantras} isBlurred={!isSubscribed} /> },
+    { theme: 'section-parchment' as const, component: <BirthChartCalculator isBlurred={!isSubscribed} /> },
+    { theme: 'section-navy' as const, component: <CompatibilityMatrix isBlurred={!isSubscribed} /> },
+    { theme: 'section-parchment' as const, component: <FixedStarLibrary isBlurred={!isSubscribed} /> },
+    { theme: 'section-navy' as const, component: <SabianSymbolsOracle isBlurred={!isSubscribed} /> },
+    { theme: 'section-parchment' as const, component: <PlanetaryHourCalculator isBlurred={!isSubscribed} /> },
+    { theme: 'section-navy' as const, component: <ElementalModalityBreakdown isBlurred={!isSubscribed} /> },
+    { theme: 'section-parchment' as const, component: <MythologicalArchives isBlurred={!isSubscribed} /> },
+    { theme: 'section-navy' as const, component: <CosmicEvents events={data.cosmicEvents} isBlurred={!isSubscribed} /> },
+    { theme: 'section-parchment' as const, component: <ReportDownload data={data} selectedSign={selectedSign} isBlurred={!isSubscribed} /> },
   ];
 
   return (
@@ -117,14 +116,13 @@ export default function App() {
             <ZodiacSelector selected={selectedSign} onSelect={setSelectedSign} />
           </div>
 
-          {/* Optional zodiac guide preview */}
           {selectedSign && signReading && (
             <Suspense fallback={<SectionFallback />}>
               <SignReadingSection sign={selectedSign} reading={signReading} />
             </Suspense>
           )}
 
-          {/* Automatically map through sections with correct theme and automated numbering */}
+          {/* Render sections with automated numbers and strict theme/contrast alignment */}
           {sections.map((section, index) => {
             return (
               <LazySection key={index} className={section.theme}>
