@@ -6,7 +6,6 @@ import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import ZodiacSelector, { type ZodiacSign } from '@/components/ZodiacSelector';
 import LazySection from '@/components/LazySection';
-import { ContentBlurGate } from '@/components/ContentBlurGate';
 
 const SignReadingSection = lazy(() => import('@/components/SignReadingSection'));
 const CelestialMap = lazy(() => import('@/components/CelestialMap'));
@@ -115,129 +114,97 @@ export default function App() {
           {/* Sections 4+: Gated / Blurred content for non-subscribers */}
           <LazySection className="section-navy">
             <Suspense fallback={<SectionFallback />}>
-              <ContentBlurGate isBlurred={!isSubscribed}>
-                <LunarBlueprint phase={data.lunarPhase} />
-              </ContentBlurGate>
+              <LunarBlueprint phase={data.lunarPhase} isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
           <LazySection className="section-parchment">
             <Suspense fallback={<SectionFallback />}>
-              <ContentBlurGate isBlurred={!isSubscribed}>
-                <TarotSpread cards={data.tarotCards} />
-              </ContentBlurGate>
+              <TarotSpread cards={data.tarotCards} isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
           <LazySection className="section-navy">
             <Suspense fallback={<SectionFallback />}>
-              <ContentBlurGate isBlurred={!isSubscribed}>
-                <ElementalBreakdown elements={data.elementalEnergy} />
-              </ContentBlurGate>
+              <ElementalBreakdown elements={data.elementalEnergy} isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
           <LazySection className="section-parchment">
             <Suspense fallback={<SectionFallback />}>
-              <ContentBlurGate isBlurred={!isSubscribed}>
-                <ShadowWork prompts={data.shadowPrompts} />
-              </ContentBlurGate>
+              <ShadowWork prompts={data.shadowPrompts} isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
           <LazySection className="section-navy">
             <Suspense fallback={<SectionFallback />}>
-              <ContentBlurGate isBlurred={!isSubscribed}>
-                <CrystalBotanicalPairings items={data.crystalBotanical} />
-              </ContentBlurGate>
+              <CrystalBotanicalPairings items={data.crystalBotanical} isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
           <LazySection className="section-parchment">
             <Suspense fallback={<SectionFallback />}>
-              <ContentBlurGate isBlurred={!isSubscribed}>
-                <VoidMoonTimers windows={data.voidMoonWindows} />
-              </ContentBlurGate>
+              <VoidMoonTimers windows={data.voidMoonWindows} isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
           <LazySection className="section-navy">
             <Suspense fallback={<SectionFallback />}>
-              <ContentBlurGate isBlurred={!isSubscribed}>
-                <MantraCodes mantras={data.mantras} />
-              </ContentBlurGate>
+              <MantraCodes mantras={data.mantras} isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
           <LazySection className="section-parchment">
             <Suspense fallback={<SectionFallback />}>
-              <ContentBlurGate isBlurred={!isSubscribed}>
-                <BirthChartCalculator />
-              </ContentBlurGate>
+              <BirthChartCalculator isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
           <LazySection className="section-navy">
             <Suspense fallback={<SectionFallback />}>
-              <ContentBlurGate isBlurred={!isSubscribed}>
-                <CompatibilityMatrix />
-              </ContentBlurGate>
+              <CompatibilityMatrix isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
           <LazySection className="section-parchment">
             <Suspense fallback={<SectionFallback />}>
-              <ContentBlurGate isBlurred={!isSubscribed}>
-                <FixedStarLibrary />
-              </ContentBlurGate>
+              <FixedStarLibrary isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
           <LazySection className="section-navy">
             <Suspense fallback={<SectionFallback />}>
-              <ContentBlurGate isBlurred={!isSubscribed}>
-                <SabianSymbolsOracle />
-              </ContentBlurGate>
+              <SabianSymbolsOracle isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
           <LazySection className="section-parchment">
             <Suspense fallback={<SectionFallback />}>
-              <ContentBlurGate isBlurred={!isSubscribed}>
-                <PlanetaryHourCalculator />
-              </ContentBlurGate>
+              <PlanetaryHourCalculator isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
           <LazySection className="section-navy">
             <Suspense fallback={<SectionFallback />}>
-              <ContentBlurGate isBlurred={!isSubscribed}>
-                <ElementalModalityBreakdown />
-              </ContentBlurGate>
+              <ElementalModalityBreakdown isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
           <LazySection className="section-parchment">
             <Suspense fallback={<SectionFallback />}>
-              <ContentBlurGate isBlurred={!isSubscribed}>
-                <MythologicalArchives />
-              </ContentBlurGate>
+              <MythologicalArchives isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
           <LazySection className="section-navy">
             <Suspense fallback={<SectionFallback />}>
-              <ContentBlurGate isBlurred={!isSubscribed}>
-                <CosmicEvents events={data.cosmicEvents} />
-              </ContentBlurGate>
+              <CosmicEvents events={data.cosmicEvents} isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
 
           <LazySection className="section-parchment">
             <Suspense fallback={<SectionFallback />}>
-              <ContentBlurGate isBlurred={!isSubscribed}>
-                <ReportDownload data={data} selectedSign={selectedSign} />
-              </ContentBlurGate>
+              <ReportDownload data={data} selectedSign={selectedSign} isBlurred={!isSubscribed} />
             </Suspense>
           </LazySection>
         </main>
