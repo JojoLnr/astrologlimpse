@@ -9,6 +9,7 @@ import LazySection from '@/components/LazySection';
 
 const SignReadingSection = lazy(() => import('@/components/SignReadingSection'));
 const CelestialMap = lazy(() => import('@/components/CelestialMap'));
+const EclipseSection = lazy(() => import('@/components/EclipseSection'));
 const TransitTracker = lazy(() => import('@/components/TransitTracker'));
 const LunarBlueprint = lazy(() => import('@/components/LunarBlueprint'));
 const TarotSpread = lazy(() => import('@/components/TarotSpread'));
@@ -105,6 +106,11 @@ export default function App() {
           <LazySection className="section-navy">
             <Suspense fallback={<SectionFallback />}><CelestialMap /></Suspense>
           </LazySection>
+
+          {/* Eclipse Section (Free preview, unblurred) */}
+          <Suspense fallback={<SectionFallback />}>
+            <EclipseSection selectedSign={selectedSign} />
+          </Suspense>
 
           {/* Section 3: Transit Tracker (Free preview) */}
           <LazySection className="section-parchment">
