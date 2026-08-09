@@ -6,6 +6,7 @@ import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import ZodiacSelector, { type ZodiacSign } from '@/components/ZodiacSelector';
 import LazySection from '@/components/LazySection';
+import ContentBlurGate from '@/components/ContentBlurGate';
 
 const SignReadingSection = lazy(() => import('@/components/SignReadingSection'));
 const CelestialMap = lazy(() => import('@/components/CelestialMap'));
@@ -53,6 +54,9 @@ export default function App() {
   const [data, setData] = useState<CosmicData>(emptyData);
   const [error, setError] = useState<string | null>(null);
   const [selectedSign, setSelectedSign] = useState<ZodiacSign | null>(null);
+  
+  // Subscription state (defaults to false to test blurring)
+  const [isSubscribed] = useState(false);
 
   const handleProgress = useCallback((partial: CosmicData) => {
     setData({ ...partial });
@@ -91,83 +95,150 @@ export default function App() {
             <ZodiacSelector selected={selectedSign} onSelect={setSelectedSign} />
           </div>
 
-          {/* Below the fold: lazy-loaded sections */}
+          {/* Section 1: Zodiac guide (Free) */}
           {selectedSign && signReading && (
             <Suspense fallback={<SectionFallback />}>
               <SignReadingSection sign={selectedSign} reading={signReading} />
             </Suspense>
           )}
 
+          {/* Section 2: Celestial Positions (Free) */}
           <LazySection className="section-navy">
             <Suspense fallback={<SectionFallback />}><CelestialMap /></Suspense>
           </LazySection>
 
+          {/* Section 3: Transit Tracker (Free) */}
           <LazySection className="section-parchment">
-            <Suspense fallback={<SectionFallback />}><TransitTracker transits={data.transits} /></Suspense>
+            <Suspense fallback={<SectionFallback />}><TransitTracker transits={data.transits} isBlurred={false} /></Suspense>
+          </LazySection>
+
+          {/* Sections 4+: Gated / Blurred for non-subscribers */}
+          <LazySection className="section-navy">
+            <Suspense fallback={<SectionFallback />}>
+              <ContentBlurGate isBlurred={!isSubscribed}>
+                <LunarBlueprint phase={data.lunarPhase} />
+              </ContentBlurGate>
+            </Suspense>
+          </LazySection>
+
+          <LazySection className="section-parchment">
+            <Suspense fallback={<SectionFallback />}>
+              <ContentBlurGate isBlurred={!isSubscribed}>
+                <TarotSpread cards={data.tarotCards} />
+              </ContentBlurGate>
+            </Suspense>
           </LazySection>
 
           <LazySection className="section-navy">
-            <Suspense fallback={<SectionFallback />}><LunarBlueprint phase={data.lunarPhase} /></Suspense>
+            <Suspense fallback={<SectionFallback />}>
+              <ContentBlurGate isBlurred={!isSubscribed}>
+                <ElementalBreakdown elements={data.elementalEnergy} />
+              </ContentBlurGate>
+            </Suspense>
           </LazySection>
 
           <LazySection className="section-parchment">
-            <Suspense fallback={<SectionFallback />}><TarotSpread cards={data.tarotCards} /></Suspense>
+            <Suspense fallback={<SectionFallback />}>
+              <ContentBlurGate isBlurred={!isSubscribed}>
+                <ShadowWork prompts={data.shadowPrompts} />
+              </ContentBlurGate>
+            </Suspense>
           </LazySection>
 
           <LazySection className="section-navy">
-            <Suspense fallback={<SectionFallback />}><ElementalBreakdown elements={data.elementalEnergy} /></Suspense>
+            <Suspense fallback={<SectionFallback />}>
+              <ContentBlurGate isBlurred={!isSubscribed}>
+                <CrystalBotanicalPairings items={data.crystalBotanical} />
+              </ContentBlurGate>
+            </Suspense>
           </LazySection>
 
           <LazySection className="section-parchment">
-            <Suspense fallback={<SectionFallback />}><ShadowWork prompts={data.shadowPrompts} /></Suspense>
+            <Suspense fallback={<SectionFallback />}>
+              <ContentBlurGate isBlurred={!isSubscribed}>
+                <VoidMoonTimers windows={data.voidMoonWindows} />
+              </ContentBlurGate>
+            </Suspense>
           </LazySection>
 
           <LazySection className="section-navy">
-            <Suspense fallback={<SectionFallback />}><CrystalBotanicalPairings items={data.crystalBotanical} /></Suspense>
+            <Suspense fallback={<SectionFallback />}>
+              <ContentBlurGate isBlurred={!isSubscribed}>
+                <MantraCodes mantras={data.mantras} />
+              </ContentBlurGate>
+            </Suspense>
           </LazySection>
 
           <LazySection className="section-parchment">
-            <Suspense fallback={<SectionFallback />}><VoidMoonTimers windows={data.voidMoonWindows} /></Suspense>
+            <Suspense fallback={<SectionFallback />}>
+              <ContentBlurGate isBlurred={!isSubscribed}>
+                <BirthChartCalculator />
+              </ContentBlurGate>
+            </Suspense>
           </LazySection>
 
           <LazySection className="section-navy">
-            <Suspense fallback={<SectionFallback />}><MantraCodes mantras={data.mantras} /></Suspense>
+            <Suspense fallback={<SectionFallback />}>
+              <ContentBlurGate isBlurred={!isSubscribed}>
+                <CompatibilityMatrix />
+              </ContentBlurGate>
+            </Suspense>
           </LazySection>
 
           <LazySection className="section-parchment">
-            <Suspense fallback={<SectionFallback />}><BirthChartCalculator /></Suspense>
+            <Suspense fallback={<SectionFallback />}>
+              <ContentBlurGate isBlurred={!isSubscribed}>
+                <FixedStarLibrary />
+              </ContentBlurGate>
+            </Suspense>
           </LazySection>
 
           <LazySection className="section-navy">
-            <Suspense fallback={<SectionFallback />}><CompatibilityMatrix /></Suspense>
+            <Suspense fallback={<SectionFallback />}>
+              <ContentBlurGate isBlurred={!isSubscribed}>
+                <SabianSymbolsOracle />
+              </ContentBlurGate>
+            </Suspense>
           </LazySection>
 
           <LazySection className="section-parchment">
-            <Suspense fallback={<SectionFallback />}><FixedStarLibrary /></Suspense>
+            <Suspense fallback={<SectionFallback />}>
+              <ContentBlurGate isBlurred={!isSubscribed}>
+                <PlanetaryHourCalculator />
+              </ContentBlurGate>
+            </Suspense>
           </LazySection>
 
           <LazySection className="section-navy">
-            <Suspense fallback={<SectionFallback />}><SabianSymbolsOracle /></Suspense>
+            <Suspense fallback={<SectionFallback />}>
+              <ContentBlurGate isBlurred={!isSubscribed}>
+                <ElementalModalityBreakdown />
+              </ContentBlurGate>
+            </Suspense>
           </LazySection>
 
           <LazySection className="section-parchment">
-            <Suspense fallback={<SectionFallback />}><PlanetaryHourCalculator /></Suspense>
+            <Suspense fallback={<SectionFallback />}>
+              <ContentBlurGate isBlurred={!isSubscribed}>
+                <MythologicalArchives />
+              </ContentBlurGate>
+            </Suspense>
           </LazySection>
 
           <LazySection className="section-navy">
-            <Suspense fallback={<SectionFallback />}><ElementalModalityBreakdown /></Suspense>
+            <Suspense fallback={<SectionFallback />}>
+              <ContentBlurGate isBlurred={!isSubscribed}>
+                <CosmicEvents events={data.cosmicEvents} />
+              </ContentBlurGate>
+            </Suspense>
           </LazySection>
 
           <LazySection className="section-parchment">
-            <Suspense fallback={<SectionFallback />}><MythologicalArchives /></Suspense>
-          </LazySection>
-
-          <LazySection className="section-navy">
-            <Suspense fallback={<SectionFallback />}><CosmicEvents events={data.cosmicEvents} /></Suspense>
-          </LazySection>
-
-          <LazySection className="section-parchment">
-            <Suspense fallback={<SectionFallback />}><ReportDownload data={data} selectedSign={selectedSign} /></Suspense>
+            <Suspense fallback={<SectionFallback />}>
+              <ContentBlurGate isBlurred={!isSubscribed}>
+                <ReportDownload data={data} selectedSign={selectedSign} />
+              </ContentBlurGate>
+            </Suspense>
           </LazySection>
         </main>
         <Suspense fallback={<SectionFallback />}><Footer /></Suspense>
