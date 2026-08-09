@@ -54,8 +54,8 @@ export default function App() {
   const [data, setData] = useState<CosmicData>(emptyData);
   const [error, setError] = useState<string | null>(null);
   const [selectedSign, setSelectedSign] = useState<ZodiacSign | null>(null);
-  
-  // Subscription state (defaults to false to test blurring)
+
+  // Toggle this or hook it up to your subscription state logic later
   const [isSubscribed] = useState(false);
 
   const handleProgress = useCallback((partial: CosmicData) => {
@@ -95,24 +95,24 @@ export default function App() {
             <ZodiacSelector selected={selectedSign} onSelect={setSelectedSign} />
           </div>
 
-          {/* Section 1: Zodiac guide (Free) */}
+          {/* Section 1: Zodiac guide (Free preview) */}
           {selectedSign && signReading && (
             <Suspense fallback={<SectionFallback />}>
               <SignReadingSection sign={selectedSign} reading={signReading} />
             </Suspense>
           )}
 
-          {/* Section 2: Celestial Positions (Free) */}
+          {/* Section 2: Celestial Positions (Free preview) */}
           <LazySection className="section-navy">
             <Suspense fallback={<SectionFallback />}><CelestialMap /></Suspense>
           </LazySection>
 
-          {/* Section 3: Transit Tracker (Free) */}
+          {/* Section 3: Transit Tracker (Free preview) */}
           <LazySection className="section-parchment">
-            <Suspense fallback={<SectionFallback />}><TransitTracker transits={data.transits} isBlurred={false} /></Suspense>
+            <Suspense fallback={<SectionFallback />}><TransitTracker transits={data.transits} /></Suspense>
           </LazySection>
 
-          {/* Sections 4+: Gated / Blurred for non-subscribers */}
+          {/* Sections 4+: Gated / Blurred content for non-subscribers */}
           <LazySection className="section-navy">
             <Suspense fallback={<SectionFallback />}>
               <ContentBlurGate isBlurred={!isSubscribed}>
