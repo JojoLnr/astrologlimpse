@@ -1,0 +1,19 @@
+{
+  "heading": {
+    "number": "13",
+    "eyebrow": "Planetary Hour Calculator",
+    "title": "The sacred clock of the day",
+    "subtitle": "Each hour of the day is ruled by a planet, following the ancient Chaldean order. Time your actions to align with the ruling planet's energy."
+  },
+  "planetOrder": [
+    { "name": "Sun", "color": "text-gold-300", "glyph": "☉\uFE0E", "domain": "Vitality, leadership, visibility" },
+    { "name": "Venus", "color": "text-moon-300", "glyph": "♀\uFE0E", "domain": "Love, beauty, harmony, art" },
+    { "name": "Mercury", "color": "text-gold-200", "glyph": "☿\uFE0E", "domain": "Communication, trade, learning" },
+    { "name": "Moon", "color": "text-cream-100", "glyph": "☽\uFE0E", "domain": "Intuition, emotion, home, family" },
+    { "name": "Saturn", "color": "text-gold-500", "glyph": "♄\uFE0E", "domain": "Discipline, structure, boundaries" },
+    { "name": "Jupiter", "color": "text-gold-400", "glyph": "♃\uFE0E", "domain": "Expansion, luck, wisdom, growth" },
+    { "name": "Mars", "color": "text-red-400", "glyph": "♂\uFE0E", "domain": "Action, courage, energy, drive" }
+  ],
+  "chaldeanOrder": ["Sun", "Venus", "Mercury", "Moon", "Saturn", "Jupiter", "Mars"],
+  "dayRulers": ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn"]
+}

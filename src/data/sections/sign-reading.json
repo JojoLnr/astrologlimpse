@@ -1,0 +1,21 @@
+{
+  "signGlyphs": {
+    "Aries": "♈\uFE0E", "Taurus": "♉\uFE0E", "Gemini": "♊\uFE0E", "Cancer": "♋\uFE0E",
+    "Leo": "♌\uFE0E", "Virgo": "♍\uFE0E", "Libra": "♎\uFE0E", "Scorpio": "♏\uFE0E",
+    "Sagittarius": "♐\uFE0E", "Capricorn": "♑\uFE0E", "Aquarius": "♒\uFE0E", "Pisces": "♓\uFE0E"
+  },
+  "eyebrow": "Your Personal Reading",
+  "titleTemplate": "The {sign} Guide",
+  "blocks": [
+    { "label": "Mental Sparks", "field": "mental_sparks" },
+    { "label": "Social Balance", "field": "social_balance" },
+    { "label": "Career Focus", "field": "career_focus" },
+    { "label": "Love Focus", "field": "love_focus" },
+    { "label": "Wellness Focus", "field": "wellness_focus" }
+  ],
+  "sidebar": {
+    "mantra": "Your Mantra",
+    "crystal": "Your Crystal",
+    "keyDates": "Key Dates"
+  }
+}

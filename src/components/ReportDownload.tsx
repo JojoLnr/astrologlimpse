@@ -4,6 +4,7 @@ import type { CosmicData } from '@/lib/types';
 import type { ZodiacSign } from './ZodiacSelector';
 import { SectionHeading, OrnamentDivider } from './SectionHeading';
 import { ContentBlurGate } from './ContentBlurGate';
+import headingData from '@/data/sections/report-download.json';
 
 function formatDate(dateStr: string) {
   return new Date(dateStr + 'T12:00:00').toLocaleDateString('en-US', {
@@ -268,10 +269,10 @@ ${printContents}
   return (
     <section id="report-download" className="mx-auto max-w-7xl px-6 py-16">
       <SectionHeading
-        number="17"
-        eyebrow="Download Your Cosmic Report"
-        title="Take the stars with you"
-        subtitle="Download a beautifully formatted recap of your personalized reading and the current cosmic forecast. Keep it, print it, or share it."
+        number={headingData.heading.number}
+        eyebrow={headingData.heading.eyebrow}
+        title={headingData.heading.title}
+        subtitle={headingData.heading.subtitle}
         onParchment
       />
 

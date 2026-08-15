@@ -3,6 +3,7 @@ import type { CosmicEvent } from '@/lib/types';
 import { SectionHeading, OrnamentDivider } from './SectionHeading';
 import Reveal from './Reveal';
 import { ContentBlurGate } from './ContentBlurGate';
+import headingData from '@/data/sections/cosmic-events.json';
 
 const typeIcons: Record<string, typeof Sparkles> = {
   Eclipse: Sparkles,
@@ -46,10 +47,10 @@ export default function CosmicEvents({
   return (
     <section id="cosmic-events" className="mx-auto max-w-7xl px-6 py-16">
       <SectionHeading
-        number="16"
-        eyebrow="Upcoming Cosmic Events"
-        title="What the sky has in store"
-        subtitle="Major celestial events on the horizon: eclipses, retrogrades, equinoxes, and rare planetary meetings. Mark your calendar."
+        number={headingData.heading.number}
+        eyebrow={headingData.heading.eyebrow}
+        title={headingData.heading.title}
+        subtitle={headingData.heading.subtitle}
       />
       <ContentBlurGate isBlurred={isBlurred}>
         <div className="mt-10 space-y-4">

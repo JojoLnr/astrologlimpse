@@ -76,6 +76,7 @@ export interface SignReading {
   mantra: string;
   crystal: string;
   key_dates: string;
+  daily_horoscope: string | null;
 }
 
 export interface CosmicEvent {

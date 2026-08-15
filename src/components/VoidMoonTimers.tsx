@@ -2,6 +2,7 @@ import { AlertTriangle } from 'lucide-react';
 import type { VoidMoonWindow } from '@/lib/types';
 import { SectionHeading, OrnamentDivider } from './SectionHeading';
 import { ContentBlurGate } from './ContentBlurGate';
+import headingData from '@/data/sections/void-moon.json';
 
 function formatWindow(startIso: string, endIso: string) {
   const start = new Date(startIso);
@@ -22,11 +23,11 @@ export default function VoidMoonTimers({
   return (
     <section id="void-moon" className="mx-auto max-w-7xl px-6 py-16">
       <SectionHeading
-        number="07"
+        number={headingData.heading.number}
         onParchment
-        eyebrow="Void-of-Course Moon Timers"
-        title="When to pause, not push"
-        subtitle="Precise windows when the Moon makes no major aspects. Avoid launching, signing, or initiating · rest and reflect instead."
+        eyebrow={headingData.heading.eyebrow}
+        title={headingData.heading.title}
+        subtitle={headingData.heading.subtitle}
       />
       <ContentBlurGate isBlurred={isBlurred}>
         <div className="mt-10">

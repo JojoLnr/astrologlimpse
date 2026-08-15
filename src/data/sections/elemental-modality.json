@@ -1,0 +1,63 @@
+{
+  "heading": {
+    "number": "14",
+    "eyebrow": "Elemental & Modality Breakdown",
+    "title": "The architecture of your psyche",
+    "subtitle": "Every sign carries an element (Fire, Earth, Air, Water) and a modality (Cardinal, Fixed, Mutable). Together they form the psychological skeleton of your chart."
+  },
+  "signGlyphs": {
+    "Aries": "♈\uFE0E", "Taurus": "♉\uFE0E", "Gemini": "♊\uFE0E", "Cancer": "♋\uFE0E",
+    "Leo": "♌\uFE0E", "Virgo": "♍\uFE0E", "Libra": "♎\uFE0E", "Scorpio": "♏\uFE0E",
+    "Sagittarius": "♐\uFE0E", "Capricorn": "♑\uFE0E", "Aquarius": "♒\uFE0E", "Pisces": "♓\uFE0E"
+  },
+  "signElements": {
+    "Aries": "Fire", "Leo": "Fire", "Sagittarius": "Fire",
+    "Taurus": "Earth", "Virgo": "Earth", "Capricorn": "Earth",
+    "Gemini": "Air", "Libra": "Air", "Aquarius": "Air",
+    "Cancer": "Water", "Scorpio": "Water", "Pisces": "Water"
+  },
+  "signModalities": {
+    "Aries": "Cardinal", "Cancer": "Cardinal", "Libra": "Cardinal", "Capricorn": "Cardinal",
+    "Taurus": "Fixed", "Leo": "Fixed", "Scorpio": "Fixed", "Aquarius": "Fixed",
+    "Gemini": "Mutable", "Virgo": "Mutable", "Sagittarius": "Mutable", "Pisces": "Mutable"
+  },
+  "elementConfig": {
+    "Fire": {
+      "color": "text-gold-400",
+      "traits": "Passionate, spontaneous, courageous, inspirational",
+      "shadow": "Can burn out, become aggressive, or act before thinking"
+    },
+    "Earth": {
+      "color": "text-moon-300",
+      "traits": "Practical, patient, reliable, sensual",
+      "shadow": "Can become rigid, materialistic, or stuck in routine"
+    },
+    "Air": {
+      "color": "text-cream-200",
+      "traits": "Intellectual, communicative, social, objective",
+      "shadow": "Can be detached, over-analytical, or scattered"
+    },
+    "Water": {
+      "color": "text-gold-300",
+      "traits": "Emotional, intuitive, empathetic, nurturing",
+      "shadow": "Can be moody, overwhelmed, or boundary-less"
+    }
+  },
+  "modalityConfig": {
+    "Cardinal": {
+      "description": "The initiators — they begin seasons and start things.",
+      "strength": "Natural leaders who catalyze action and get things moving.",
+      "challenge": "Can start more than they finish; may struggle with follow-through."
+    },
+    "Fixed": {
+      "description": "The stabilizers — they sustain what was started and hold the center.",
+      "strength": "Deeply persistent, loyal, and capable of sustained focus.",
+      "challenge": "Can resist change, become stubborn, or hold on too long."
+    },
+    "Mutable": {
+      "description": "The adapters — they transition and translate between seasons.",
+      "strength": "Flexible, versatile, and able to see multiple perspectives.",
+      "challenge": "Can be scattered, indecisive, or lose themselves in others' agendas."
+    }
+  }
+}

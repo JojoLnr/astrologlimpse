@@ -2,6 +2,7 @@ import { Moon } from 'lucide-react';
 import type { LunarPhase } from '@/lib/types';
 import { SectionHeading, OrnamentDivider } from './SectionHeading';
 import { ContentBlurGate } from './ContentBlurGate';
+import headingData from '@/data/sections/lunar.json';
 
 function formatPeak(iso: string) {
   return new Date(iso).toLocaleString('en-US', {
@@ -23,10 +24,10 @@ export default function LunarBlueprint({
   return (
     <section id="lunar" className="mx-auto max-w-7xl px-6 py-16">
       <SectionHeading
-        number="02"
-        eyebrow="Lunar Phase & Ritual Blueprint"
-        title="The current moon, decoded"
-        subtitle="Exact peak times, the collective sign it activates, and a step-by-step ritual to work with its energy."
+        number={headingData.heading.number}
+        eyebrow={headingData.heading.eyebrow}
+        title={headingData.heading.title}
+        subtitle={headingData.heading.subtitle}
       />
       <ContentBlurGate isBlurred={isBlurred}>
         <div className="mt-10 grid gap-10 lg:grid-cols-[1.2fr_1fr]">

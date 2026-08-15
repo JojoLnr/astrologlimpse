@@ -2,19 +2,29 @@ import { useState, useEffect } from 'react';
 import { Clock, Sun, Moon, Mars, MessageSquare, Sparkles, Heart, Mountain } from 'lucide-react';
 import { SectionHeading, OrnamentDivider } from './SectionHeading';
 import { ContentBlurGate } from './ContentBlurGate';
+import headingData from '@/data/sections/planetary-hours.json';
 
-const planetOrder = [
-  { name: 'Sun', icon: Sun, color: 'text-gold-300', glyph: '☉\uFE0E', domain: 'Vitality, leadership, visibility' },
-  { name: 'Venus', icon: Heart, color: 'text-moon-300', glyph: '♀\uFE0E', domain: 'Love, beauty, harmony, art' },
-  { name: 'Mercury', icon: MessageSquare, color: 'text-gold-200', glyph: '☿\uFE0E', domain: 'Communication, trade, learning' },
-  { name: 'Moon', icon: Moon, color: 'text-cream-100', glyph: '☽\uFE0E', domain: 'Intuition, emotion, home, family' },
-  { name: 'Saturn', icon: Mountain, color: 'text-gold-500', glyph: '♄\uFE0E', domain: 'Discipline, structure, boundaries' },
-  { name: 'Jupiter', icon: Sparkles, color: 'text-gold-400', glyph: '♃\uFE0E', domain: 'Expansion, luck, wisdom, growth' },
-  { name: 'Mars', icon: Mars, color: 'text-red-400', glyph: '♂\uFE0E', domain: 'Action, courage, energy, drive' },
-];
+const iconMap: Record<string, typeof Sun> = {
+  Sun, Venus: Heart, Mercury: MessageSquare, Moon, Saturn: Mountain, Jupiter: Sparkles, Mars,
+};
+const colorMap: Record<string, string> = {
+  Sun: 'text-gold-300',
+  Venus: 'text-moon-300',
+  Mercury: 'text-gold-200',
+  Moon: 'text-cream-100',
+  Saturn: 'text-gold-500',
+  Jupiter: 'text-gold-400',
+  Mars: 'text-red-400',
+};
 
-const chaldeanOrder = ['Sun', 'Venus', 'Mercury', 'Moon', 'Saturn', 'Jupiter', 'Mars'];
-const dayRulers = ['Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn'];
+const planetOrder = headingData.planetOrder.map((p) => ({
+  ...p,
+  icon: iconMap[p.name] ?? Sun,
+  color: colorMap[p.name] ?? 'text-gold-300',
+}));
+
+const chaldeanOrder = headingData.chaldeanOrder;
+const dayRulers = headingData.dayRulers;
 
 function getCurrentPlanetaryHour(date: Date) {
   const hour = date.getHours();
@@ -80,11 +90,11 @@ export default function PlanetaryHourCalculator({ isBlurred = false }: { isBlurr
   return (
     <section id="planetary-hours" className="mx-auto max-w-7xl px-6 py-16">
       <SectionHeading
-        number="13"
+        number={headingData.heading.number}
         onParchment
-        eyebrow="Planetary Hour Calculator"
-        title="The sacred clock of the day"
-        subtitle="Each hour of the day is ruled by a planet, following the ancient Chaldean order. Time your actions to align with the ruling planet's energy."
+        eyebrow={headingData.heading.eyebrow}
+        title={headingData.heading.title}
+        subtitle={headingData.heading.subtitle}
       />
 
       <ContentBlurGate isBlurred={isBlurred}>

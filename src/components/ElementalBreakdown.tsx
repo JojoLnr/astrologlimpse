@@ -2,13 +2,12 @@ import { Flame, Mountain, Wind, Droplets } from 'lucide-react';
 import type { ElementalEnergy } from '@/lib/types';
 import { SectionHeading, OrnamentDivider } from './SectionHeading';
 import { ContentBlurGate } from './ContentBlurGate';
+import headingData from '@/data/sections/elements.json';
 
-const elementConfig: Record<string, { icon: typeof Flame; text: string }> = {
-  Fire:  { icon: Flame,    text: 'text-gold-400' },
-  Earth: { icon: Mountain,  text: 'text-moon-300' },
-  Air:   { icon: Wind,      text: 'text-cream-200' },
-  Water: { icon: Droplets,   text: 'text-gold-300' },
-};
+const iconMap: Record<string, typeof Flame> = { Fire: Flame, Earth: Mountain, Air: Wind, Water: Droplets };
+const elementConfig: Record<string, { icon: typeof Flame; text: string }> = Object.fromEntries(
+  Object.entries(headingData.elementConfig).map(([k, v]) => [k, { icon: iconMap[k], text: (v as { color: string }).color }])
+);
 
 export default function ElementalBreakdown({
   elements,
@@ -20,10 +19,10 @@ export default function ElementalBreakdown({
   return (
     <section id="elements" className="mx-auto max-w-7xl px-6 py-16">
       <SectionHeading
-        number="04"
-        eyebrow="Elemental Energy Breakdown"
-        title="Balancing Fire, Earth, Air & Water"
-        subtitle="Weekly guidance for each element based on the current distribution of planets in signs."
+        number={headingData.heading.number}
+        eyebrow={headingData.heading.eyebrow}
+        title={headingData.heading.title}
+        subtitle={headingData.heading.subtitle}
       />
       <ContentBlurGate isBlurred={isBlurred}>
         <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">

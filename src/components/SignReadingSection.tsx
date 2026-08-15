@@ -2,11 +2,16 @@ import { Sparkles, Heart, Briefcase, Brain, Dumbbell, Gem, Calendar } from 'luci
 import type { SignReading } from '@/lib/types';
 import type { ZodiacSign } from './ZodiacSelector';
 import { ContentBlurGate } from './ContentBlurGate';
+import content from '@/data/sections/sign-reading.json';
 
-const signGlyphs: Record<string, string> = {
-  Aries: '♈\uFE0E', Taurus: '♉\uFE0E', Gemini: '♊\uFE0E', Cancer: '♋\uFE0E',
-  Leo: '♌\uFE0E', Virgo: '♍\uFE0E', Libra: '♎\uFE0E', Scorpio: '♏\uFE0E',
-  Sagittarius: '♐\uFE0E', Capricorn: '♑\uFE0E', Aquarius: '♒\uFE0E', Pisces: '♓\uFE0E',
+const signGlyphs = content.signGlyphs;
+
+const blockIcons: Record<string, typeof Brain> = {
+  mental_sparks: Brain,
+  social_balance: Sparkles,
+  career_focus: Briefcase,
+  love_focus: Heart,
+  wellness_focus: Dumbbell,
 };
 
 export default function SignReadingSection({
@@ -20,13 +25,11 @@ export default function SignReadingSection({
 }) {
   if (!reading) return null;
 
-  const blocks = [
-    { icon: Brain, label: 'Mental Sparks', text: reading.mental_sparks },
-    { icon: Sparkles, label: 'Social Balance', text: reading.social_balance },
-    { icon: Briefcase, label: 'Career Focus', text: reading.career_focus },
-    { icon: Heart, label: 'Love Focus', text: reading.love_focus },
-    { icon: Dumbbell, label: 'Wellness Focus', text: reading.wellness_focus },
-  ];
+  const blocks = content.blocks.map((b) => ({
+    icon: blockIcons[b.field] ?? Sparkles,
+    label: b.label,
+    text: (reading as unknown as Record<string, string>)[b.field],
+  }));
 
   return (
     <section className="section-parchment relative overflow-hidden">
@@ -45,10 +48,10 @@ export default function SignReadingSection({
         <div className="text-center">
           <span className="font-ornament text-3xl text-gold-500">{signGlyphs[sign]}</span>
           <p className="mt-2 font-display text-[11px] font-medium uppercase tracking-[0.3em] text-gold-600">
-            Your Personal Reading
+            {content.eyebrow}
           </p>
           <h2 className="mt-1 font-display text-4xl font-semibold uppercase tracking-wide text-navy-900 md:text-5xl">
-            The {sign} Guide
+            {content.titleTemplate.replace('{sign}', sign)}
           </h2>
           <hr className="gold-rule mx-auto mt-6 max-w-md" />
         </div>
@@ -84,7 +87,7 @@ export default function SignReadingSection({
                 <div className="flex items-center gap-2.5">
                   <Sparkles className="h-4 w-4 text-gold-500" strokeWidth={1.5} />
                   <h3 className="font-display text-sm font-semibold uppercase tracking-[0.15em] text-navy-800">
-                    Your Mantra
+                    {content.sidebar.mantra}
                   </h3>
                 </div>
                 <p className="mt-3 font-serif text-xl italic leading-snug text-navy-900">
@@ -98,7 +101,7 @@ export default function SignReadingSection({
                 <div className="flex items-center gap-2.5">
                   <Gem className="h-4 w-4 text-gold-500" strokeWidth={1.5} />
                   <h3 className="font-display text-sm font-semibold uppercase tracking-[0.15em] text-navy-800">
-                    Your Crystal
+                    {content.sidebar.crystal}
                   </h3>
                 </div>
                 <p className="mt-3 font-serif text-lg text-navy-800/85">{reading.crystal}</p>
@@ -110,7 +113,7 @@ export default function SignReadingSection({
                 <div className="flex items-center gap-2.5">
                   <Calendar className="h-4 w-4 text-gold-500" strokeWidth={1.5} />
                   <h3 className="font-display text-sm font-semibold uppercase tracking-[0.15em] text-navy-800">
-                    Key Dates
+                    {content.sidebar.keyDates}
                   </h3>
                 </div>
                 <p className="mt-3 font-serif text-base leading-relaxed text-navy-800/80">

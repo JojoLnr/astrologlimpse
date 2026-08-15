@@ -1,0 +1,15 @@
+{
+  "heading": {
+    "number": "01",
+    "eyebrow": "Planetary Transit & Aspect Tracker",
+    "title": "What the planets are doing right now",
+    "subtitle": "Upcoming movements and major aspects, with practical guidance for navigating each one."
+  },
+  "intensityLabels": {
+    "1": { "label": "Gentle", "color": "text-moon-300" },
+    "2": { "label": "Flowing", "color": "text-moon-300" },
+    "3": { "label": "Moderate", "color": "text-gold-300" },
+    "4": { "label": "Intense", "color": "text-gold-400" },
+    "5": { "label": "Peak Friction", "color": "text-gold-500" }
+  }
+}

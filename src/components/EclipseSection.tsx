@@ -1,31 +1,10 @@
 import { Sun, Sparkles, ShieldAlert, Calendar } from 'lucide-react';
 import { SectionHeading, OrnamentDivider } from './SectionHeading';
 import type { ZodiacSign } from './ZodiacSelector';
+import eclipseData from '@/data/sections/eclipse.json';
 
-const eclipseInfo = {
-  type: 'Total Solar Eclipse',
-  sign: 'Leo',
-  visibility: 'Partial across Europe, total in Arctic & parts of Russia',
-  magnitude: '1.039',
-  duration: '2 min 18 sec (totality)',
-  peakUTC: '19:44 UTC',
-  saros: 'Saros 129',
-};
-
-const signEffects: Record<string, string> = {
-  Aries: 'A creative project or romantic situation reaches a turning point. Your courage is being tested — not to fight, but to create.',
-  Taurus: 'A home, family, or financial matter shifts. What you have been building slowly is ready for its next phase. Trust the foundation.',
-  Gemini: 'A conversation, idea, or sibling connection sparks a new direction. Your words carry more weight than usual — use them carefully.',
-  Cancer: 'Your relationship with money and self-worth is being recalibrated. Release a scarcity story that no longer belongs to you.',
-  Leo: 'This is YOUR eclipse. A reinvention of identity, appearance, or life direction is underway. Step into the version of yourself you have been becoming.',
-  Virgo: 'A private chapter closes so a public one can begin. Rest, retreat, and listen to your dreams — they are especially clear now.',
-  Libra: 'A friendship, community, or long-held dream is restructured. The people around you are mirrors; notice what they reflect.',
-  Scorpio: 'Your career or public role is eclipsed and reborn. A responsibility you have outgrown is being cleared from your path.',
-  Sagittarius: 'A belief, worldview, or travel plan expands or shifts. What you thought was true is being updated — let it.',
-  Capricorn: 'A financial partnership, investment, or deep attachment transforms. Shared resources are being rebalanced.',
-  Aquarius: 'A significant relationship reaches its threshold. The question is not whether to commit, but to what and to whom.',
-  Pisces: 'A daily routine, health practice, or work project resets. Small habits seeded now compound for the next six months.',
-};
+const eclipseInfo = eclipseData.eclipseInfo;
+const signEffects: Record<string, string> = eclipseData.signEffects;
 
 export default function EclipseSection({
   selectedSign,
@@ -52,9 +31,9 @@ export default function EclipseSection({
 
       <SectionHeading
         number={number}
-        eyebrow="August 12, 2026"
-        title="The Great Solar Eclipse"
-        subtitle="A total solar eclipse in Leo — a portal of creative reinvention. Navigating astronomy, astrology, and personal alignment."
+        eyebrow={eclipseData.heading.eyebrow}
+        title={eclipseData.heading.title}
+        subtitle={eclipseData.heading.subtitle}
         onParchment={isParchment}
       />
 
@@ -184,7 +163,7 @@ export default function EclipseSection({
           </div>
           <div className={`mt-8 pt-4 border-t flex items-center gap-2 text-xs font-display uppercase tracking-wider ${isParchment ? 'border-gold-500/20 text-gold-700' : 'border-gold-500/40 text-gold-300'}`}>
             <Calendar className="h-4 w-4" />
-            <span>Peak Window · August 12, 2026</span>
+            <span>Peak Window · August 26, 2026</span>
           </div>
         </div>
       </div>

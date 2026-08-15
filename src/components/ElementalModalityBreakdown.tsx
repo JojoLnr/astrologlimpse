@@ -3,73 +3,32 @@ import { Flame, Mountain, Wind, Droplets, RotateCcw, Sparkles } from 'lucide-rea
 import { SectionHeading, OrnamentDivider } from './SectionHeading';
 import { ZODIAC_SIGNS, type ZodiacSign } from './ZodiacSelector';
 import { ContentBlurGate } from './ContentBlurGate';
+import headingData from '@/data/sections/elemental-modality.json';
 
-const signGlyphs: Record<string, string> = {
-  Aries: '♈\uFE0E', Taurus: '♉\uFE0E', Gemini: '♊\uFE0E', Cancer: '♋\uFE0E',
-  Leo: '♌\uFE0E', Virgo: '♍\uFE0E', Libra: '♎\uFE0E', Scorpio: '♏\uFE0E',
-  Sagittarius: '♐\uFE0E', Capricorn: '♑\uFE0E', Aquarius: 'Aquarius\uFE0E' in {} ? '' : '♒\uFE0E', Pisces: '♓\uFE0E',
+const signGlyphs = headingData.signGlyphs;
+const fixedSignGlyphs = headingData.signGlyphs;
+const signElements = headingData.signElements as Record<string, 'Fire' | 'Earth' | 'Air' | 'Water'>;
+const signModalities = headingData.signModalities as Record<string, 'Cardinal' | 'Fixed' | 'Mutable'>;
+
+const elementIconMap: Record<string, { icon: typeof Flame; color: string }> = {
+  Fire: { icon: Flame, color: 'text-gold-400' },
+  Earth: { icon: Mountain, color: 'text-moon-300' },
+  Air: { icon: Wind, color: 'text-cream-200' },
+  Water: { icon: Droplets, color: 'text-gold-300' },
 };
 
-// Simplified map for glyph lookups
-const fixedSignGlyphs: Record<string, string> = {
-  Aries: '♈\uFE0E', Taurus: '♉\uFE0E', Gemini: '♊\uFE0E', Cancer: '♋\uFE0E',
-  Leo: '♌\uFE0E', Virgo: '♍\uFE0E', Libra: '♎\uFE0E', Scorpio: '♏\uFE0E',
-  Sagittarius: '♐\uFE0E', Capricorn: '♑\uFE0E', Aquarius: '♒\uFE0E', Pisces: '♓\uFE0E',
-};
+const elementConfig: Record<string, { icon: typeof Flame; color: string; traits: string; shadow: string }> = Object.fromEntries(
+  Object.entries(headingData.elementConfig).map(([key, val]) => [
+    key,
+    {
+      ...val,
+      icon: elementIconMap[key].icon,
+      color: elementIconMap[key].color,
+    },
+  ]) as [string, { icon: typeof Flame; color: string; traits: string; shadow: string }][]
+);
 
-const signElements: Record<string, 'Fire' | 'Earth' | 'Air' | 'Water'> = {
-  Aries: 'Fire', Leo: 'Fire', Sagittarius: 'Fire',
-  Taurus: 'Earth', Virgo: 'Earth', Capricorn: 'Earth',
-  Gemini: 'Air', Libra: 'Air', Aquarius: 'Air',
-  Cancer: 'Water', Scorpio: 'Water', Pisces: 'Water',
-};
-
-const signModalities: Record<string, 'Cardinal' | 'Fixed' | 'Mutable'> = {
-  Aries: 'Cardinal', Cancer: 'Cardinal', Libra: 'Cardinal', Capricorn: 'Cardinal',
-  Taurus: 'Fixed', Leo: 'Fixed', Scorpio: 'Fixed', Aquarius: 'Fixed',
-  Gemini: 'Mutable', Virgo: 'Mutable', Sagittarius: 'Mutable', Pisces: 'Mutable',
-};
-
-const elementConfig: Record<string, { icon: typeof Flame; color: string; traits: string; shadow: string }> = {
-  Fire: {
-    icon: Flame, color: 'text-gold-400',
-    traits: 'Passionate, spontaneous, courageous, inspirational',
-    shadow: 'Can burn out, become aggressive, or act before thinking',
-  },
-  Earth: {
-    icon: Mountain, color: 'text-moon-300',
-    traits: 'Practical, patient, reliable, sensual',
-    shadow: 'Can become rigid, materialistic, or stuck in routine',
-  },
-  Air: {
-    icon: Wind, color: 'text-cream-200',
-    traits: 'Intellectual, communicative, social, objective',
-    shadow: 'Can be detached, over-analytical, or scattered',
-  },
-  Water: {
-    icon: Droplets, color: 'text-gold-300',
-    traits: 'Emotional, intuitive, empathetic, nurturing',
-    shadow: 'Can be moody, overwhelmed, or boundary-less',
-  },
-};
-
-const modalityConfig: Record<string, { description: string; strength: string; challenge: string }> = {
-  Cardinal: {
-    description: 'The initiators — they begin seasons and start things.',
-    strength: 'Natural leaders who catalyze action and get things moving.',
-    challenge: 'Can start more than they finish; may struggle with follow-through.',
-  },
-  Fixed: {
-    description: 'The stabilizers — they sustain what was started and hold the center.',
-    strength: 'Deeply persistent, loyal, and capable of sustained focus.',
-    challenge: 'Can resist change, become stubborn, or hold on too long.',
-  },
-  Mutable: {
-    description: 'The adapters — they transition and translate between seasons.',
-    strength: 'Flexible, versatile, and able to see multiple perspectives.',
-    challenge: "Can be scattered, indecisive, or lose themselves in others' agendas.",
-  },
-};
+const modalityConfig = headingData.modalityConfig;
 
 export default function ElementalModalityBreakdown({ isBlurred = false }: { isBlurred?: boolean }) {
   const [selected, setSelected] = useState<ZodiacSign | null>(null);
@@ -91,10 +50,10 @@ export default function ElementalModalityBreakdown({ isBlurred = false }: { isBl
   return (
     <section id="elemental-modality" className="mx-auto max-w-7xl px-6 py-16">
       <SectionHeading
-        number="14"
-        eyebrow="Elemental & Modality Breakdown"
-        title="The architecture of your psyche"
-        subtitle="Every sign carries an element (Fire, Earth, Air, Water) and a modality (Cardinal, Fixed, Mutable). Together they form the psychological skeleton of your chart."
+        number={headingData.heading.number}
+        eyebrow={headingData.heading.eyebrow}
+        title={headingData.heading.title}
+        subtitle={headingData.heading.subtitle}
       />
 
       <ContentBlurGate isBlurred={isBlurred}>

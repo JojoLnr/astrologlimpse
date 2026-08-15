@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ContentBlurGate } from './ContentBlurGate';
+import content from '@/data/sections/zodiac-selector.json';
 
 export const ZODIAC_SIGNS = [
   'Aries', 'Taurus', 'Gemini', 'Cancer',
@@ -9,11 +10,7 @@ export const ZODIAC_SIGNS = [
 
 export type ZodiacSign = (typeof ZODIAC_SIGNS)[number];
 
-const signGlyphs: Record<string, string> = {
-  Aries: '♈\uFE0E', Taurus: '♉\uFE0E', Gemini: '♊\uFE0E', Cancer: '♋\uFE0E',
-  Leo: '♌\uFE0E', Virgo: '♍\uFE0E', Libra: '♎\uFE0E', Scorpio: '♏\uFE0E',
-  Sagittarius: '♐\uFE0E', Capricorn: '♑\uFE0E', Aquarius: '♒\uFE0E', Pisces: '♓\uFE0E',
-};
+const signGlyphs = content.signGlyphs;
 
 export default function ZodiacSelector({
   selected,
@@ -29,13 +26,13 @@ export default function ZodiacSelector({
   return (
     <section id="zodiac" className="mx-auto max-w-4xl px-6 py-12 text-center">
       <p className="mb-2 font-display text-[11px] font-medium uppercase tracking-[0.3em] text-gold-400">
-        Personalize Your Reading
+        {content.eyebrow}
       </p>
       <h2 className="font-display text-2xl font-medium prose-title md:text-3xl">
-        Select Your Star Sign
+        {content.title}
       </h2>
       <p className="mx-auto mt-3 max-w-md font-serif text-base italic prose-sub">
-        The layout below adapts to your sign · revealing a tailored reading alongside the collective forecast.
+        {content.subtitle}
       </p>
 
       <ContentBlurGate isBlurred={isBlurred}>

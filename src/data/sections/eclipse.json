@@ -1,0 +1,42 @@
+{
+  "heading": {
+    "number": "01",
+    "eyebrow": "August 26 – 28, 2026",
+    "title": "The Pisces Lunar Eclipse",
+    "subtitle": "A profound lunar eclipse in Pisces opposing the Virgo Sun, bridging practical organization with boundless spiritual surrender."
+  },
+  "eclipseInfo": {
+    "type": "Partial Lunar Eclipse",
+    "sign": "Pisces",
+    "visibility": "Visible across parts of Europe, Africa, Asia, and Australia",
+    "magnitude": "0.930",
+    "duration": "3 hours 24 mins (Partial phase duration)",
+    "peakUTC": "04:13 UTC",
+    "saros": "Saros 138"
+  },
+  "specs": [
+    { "label": "Type", "value": "Partial Lunar Eclipse" },
+    { "label": "Zodiac Sign", "value": "Pisces" },
+    { "label": "Peak Time", "value": "04:13 UTC" },
+    { "label": "Totality", "value": "3h 24m partial duration" },
+    { "label": "Magnitude", "value": "0.930" },
+    { "label": "Saros Cycle", "value": "Saros 138" }
+  ],
+  "signEffects": {
+    "Aries": "Internal healing and subconscious release take precedence. Rest more and clear out behind-the-scenes emotional clutter.",
+    "Taurus": "Community networks and long-term collaborative hopes shift. A friendship dynamic reaches an illuminating conclusion.",
+    "Gemini": "Career and public reputation undergo a turning point. Balance professional ambition with inner spiritual needs.",
+    "Cancer": "Belief systems, higher education, or long-distance travel plans expand or pivot in a meaningful direction.",
+    "Leo": "Shared resources, financial partnerships, or deep psychological attachments are brought to light for resolution.",
+    "Virgo": "This eclipse activates your relationship sector. One-on-one partnerships (romantic or business) reach a vital emotional zenith.",
+    "Libra": "Daily routines, health regimens, and workspace habits require a mindful reset to prevent burnout.",
+    "Scorpio": "Romance, creative self-expression, and passion projects experience a wave of deep emotional clarity and inspiration.",
+    "Sagittarius": "Home, family foundations, and domestic life take center stage. Address long-standing housing or ancestral patterns.",
+    "Capricorn": "Communications, local community connections, and mindset shifts open up new pathways of understanding.",
+    "Aquarius": "Financial security, personal values, and material assets are recalibrated. Streamline what truly matters to you.",
+    "Pisces": "This is YOUR eclipse. A massive personal reset of identity, emotional boundaries, and life trajectory unfolds."
+  },
+  "coreMeaning": "Occurring along the Virgo-Pisces axis, this lunar eclipse illuminates the tension between analytical order and spiritual surrender. As the Earth moves between the Sun in Virgo and the Moon in Pisces, hidden emotional truths surface, offering a powerful opportunity to release old illusions and embrace soulful clarity.",
+  "guidance": "Allow emotions to flow without trying to micromanage every outcome. Use this lunar portal for journaling, creative catharsis, and releasing habits or relationships that drain your energetic reserves.",
+  "peakWindow": "August 26 – 28, 2026"
+}

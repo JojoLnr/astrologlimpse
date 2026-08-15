@@ -3,58 +3,14 @@ import { Heart, Users, MessageCircle, Zap, RotateCcw } from 'lucide-react';
 import { SectionHeading, OrnamentDivider } from './SectionHeading';
 import { ContentBlurGate } from './ContentBlurGate';
 import { ZODIAC_SIGNS, type ZodiacSign } from './ZodiacSelector';
+import headingData from '@/data/sections/compatibility.json';
 
-const signGlyphs: Record<string, string> = {
-  Aries: '♈\uFE0E', Taurus: '♉\uFE0E', Gemini: '♊\uFE0E', Cancer: '♋\uFE0E',
-  Leo: '♌\uFE0E', Virgo: '♍\uFE0E', Libra: '♎\uFE0E', Scorpio: '♏\uFE0E',
-  Sagittarius: '♐\uFE0E', Capricorn: '♑\uFE0E', Aquarius: '♒\uFE0E', Pisces: '♓\uFE0E',
-};
-
-const signElements: Record<string, string> = {
-  Aries: 'Fire', Leo: 'Fire', Sagittarius: 'Fire',
-  Taurus: 'Earth', Virgo: 'Earth', Capricorn: 'Earth',
-  Gemini: 'Air', Libra: 'Air', Aquarius: 'Air',
-  Cancer: 'Water', Scorpio: 'Water', Pisces: 'Water',
-};
-
-const signModalities: Record<string, string> = {
-  Aries: 'Cardinal', Cancer: 'Cardinal', Libra: 'Cardinal', Capricorn: 'Cardinal',
-  Taurus: 'Fixed', Leo: 'Fixed', Scorpio: 'Fixed', Aquarius: 'Fixed',
-  Gemini: 'Mutable', Virgo: 'Mutable', Sagittarius: 'Mutable', Pisces: 'Mutable',
-};
-
-const elementCompat: Record<string, Record<string, number>> = {
-  Fire:  { Fire: 82, Earth: 38, Air: 78, Water: 45 },
-  Earth: { Fire: 38, Earth: 80, Air: 42, Water: 76 },
-  Air:   { Fire: 78, Earth: 42, Air: 80, Water: 48 },
-  Water: { Fire: 45, Earth: 76, Air: 48, Water: 82 },
-};
-
-const frictionTraits: Record<string, string> = {
-  'Fire-Fire': 'Passion ignites fast — but watch for burnout and ego clashes. Channel the blaze into shared adventure.',
-  'Fire-Earth': 'Different rhythms — Fire wants speed, Earth wants stability. Patience is the bridge.',
-  'Fire-Air': 'Effortless mental spark — ideas fly, enthusiasm is contagious. Just ground the vision sometimes.',
-  'Fire-Water': "Steam and depth — emotional intensity can overwhelm or transform. Honor each other's nature.",
-  'Earth-Earth': 'Deeply rooted — shared values of stability and loyalty. Risk: stagnation. Add spontaneity.',
-  'Earth-Air': 'Practical versus conceptual — Earth builds, Air dreams. Both are needed for a complete life.',
-  'Earth-Water': 'Nurturing and fertile — Earth holds, Water feeds. A deeply supportive bond.',
-  'Air-Air': 'Mental harmony — endless conversation and ideas. Risk: avoiding emotional depth.',
-  'Air-Water': 'Thought meets feeling — Air clarifies, Water deepens. Bridge logic and intuition.',
-  'Water-Water': 'Emotional ocean — deep empathy and psychic attunement. Risk: emotional flooding.',
-};
-
-const commStyles: Record<string, { style: string; tip: string }> = {
-  'Fire-Fire': { style: 'Direct, passionate, fast-paced', tip: 'Pause before reacting — let the other finish speaking.' },
-  'Fire-Earth': { style: 'Blunt vs. measured — pace mismatch', tip: 'Fire: slow down. Earth: speak up sooner.' },
-  'Fire-Air': { style: 'Energetic, idea-driven, enthusiastic', tip: 'Make sure feelings get airtime, not just ideas.' },
-  'Fire-Water': { style: 'Heart-first vs. feeling-first — intensity differs', tip: 'Fire: soften your volume. Water: share your inner world.' },
-  'Earth-Earth': { style: 'Practical, steady, few words needed', tip: 'Make space for emotional check-ins.' },
-  'Earth-Air': { style: 'Concrete vs. abstract — different wavelengths', tip: 'Earth: entertain the idea. Air: land the plan.' },
-  'Earth-Water': { style: 'Quiet, nurturing, body-language rich', tip: 'Use words to confirm what you sense.' },
-  'Air-Air': { style: 'Verbal, witty, concept-sharing', tip: 'Drop below the intellect into feeling.' },
-  'Air-Water': { style: 'Logical vs. intuitive — translation needed', tip: 'Air: validate feelings first. Water: name what you sense.' },
-  'Water-Water': { style: 'Emotional, non-verbal, deeply attuned', tip: 'Use words to create boundaries, not just merge.' },
-};
+const signGlyphs = headingData.signGlyphs as Record<string, string>;
+const signElements = headingData.signElements as Record<string, string>;
+const signModalities = headingData.signModalities as Record<string, string>;
+const elementCompat = headingData.elementCompat as Record<string, Record<string, number>>;
+const frictionTraits = headingData.frictionTraits as Record<string, string>;
+const commStyles = headingData.commStyles as Record<string, { style: string; tip: string }>;
 
 function getPairKey(a: string, b: string): string {
   const ea = signElements[a];
@@ -114,10 +70,10 @@ export default function CompatibilityMatrix({ isBlurred = false }: { isBlurred?:
   return (
     <section id="compatibility" className="mx-auto max-w-7xl px-6 py-16">
       <SectionHeading
-        number="10"
-        eyebrow="Compatibility Matrix · Synastry"
-        title="How two charts dance together"
-        subtitle="Select two zodiac signs to evaluate relationship dynamics, communication styles, and friction points across a percentage scale."
+        number={headingData.heading.number}
+        eyebrow={headingData.heading.eyebrow}
+        title={headingData.heading.title}
+        subtitle={headingData.heading.subtitle}
       />
 
       <ContentBlurGate isBlurred={isBlurred}>

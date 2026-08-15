@@ -1,11 +1,15 @@
 import { lazy, Suspense, useEffect, useState, useCallback } from 'react';
 import type { CosmicData } from '@/lib/types';
 import { fetchCosmicData } from '@/lib/data';
+import { useAuth } from '@/lib/auth';
 import Starfield from '@/components/Starfield';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import ZodiacSelector, { type ZodiacSign } from '@/components/ZodiacSelector';
 import LazySection from '@/components/LazySection';
+import AuthModal from '@/components/AuthModal';
+import MembershipModal from '@/components/MembershipModal';
+import AccountModal from '@/components/AccountModal';
 
 const SignReadingSection = lazy(() => import('@/components/SignReadingSection'));
 const CelestialMap = lazy(() => import('@/components/CelestialMap'));
@@ -51,10 +55,15 @@ function SectionFallback() {
 }
 
 export default function App() {
+  const { isPaidMember } = useAuth();
   const [data, setData] = useState<CosmicData>(emptyData);
   const [error, setError] = useState<string | null>(null);
   const [selectedSign, setSelectedSign] = useState<ZodiacSign | null>(null);
-  const [isSubscribed] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [membershipOpen, setMembershipOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
+
+  const isSubscribed = isPaidMember;
 
   const handleProgress = useCallback((partial: CosmicData) => {
     setData({ ...partial });
@@ -64,6 +73,20 @@ export default function App() {
     fetchCosmicData(handleProgress)
       .catch(() => setError('Unable to load the cosmic forecast right now.'));
   }, [handleProgress]);
+
+  useEffect(() => {
+    const openAuth = () => setAuthOpen(true);
+    const openMembership = () => setMembershipOpen(true);
+    const openAccount = () => setAccountOpen(true);
+    window.addEventListener('open-auth', openAuth);
+    window.addEventListener('open-membership', openMembership);
+    window.addEventListener('open-account', openAccount);
+    return () => {
+      window.removeEventListener('open-auth', openAuth);
+      window.removeEventListener('open-membership', openMembership);
+      window.removeEventListener('open-account', openAccount);
+    };
+  }, []);
 
   if (error) {
     return (
@@ -81,27 +104,26 @@ export default function App() {
 
   const signReading = selectedSign ? (data.signReadings[selectedSign] ?? null) : null;
 
-  // Configuration array mapping each section to its correct native theme and rendering its component
-  const sections = [
-    { theme: 'section-navy' as const, component: <CelestialMap /> },
-    { theme: 'section-navy' as const, component: <EclipseSection selectedSign={selectedSign} theme="section-navy" /> },
-    { theme: 'section-parchment' as const, component: <TransitTracker transits={data.transits} /> },
-    { theme: 'section-navy' as const, component: <LunarBlueprint phase={data.lunarPhase} isBlurred={!isSubscribed} /> },
-    { theme: 'section-parchment' as const, component: <TarotSpread cards={data.tarotCards} isBlurred={!isSubscribed} /> },
-    { theme: 'section-navy' as const, component: <ElementalBreakdown elements={data.elementalEnergy} isBlurred={!isSubscribed} /> },
-    { theme: 'section-parchment' as const, component: <ShadowWork prompts={data.shadowPrompts} isBlurred={!isSubscribed} /> },
-    { theme: 'section-navy' as const, component: <CrystalBotanicalPairings items={data.crystalBotanical} isBlurred={!isSubscribed} /> },
-    { theme: 'section-parchment' as const, component: <VoidMoonTimers windows={data.voidMoonWindows} isBlurred={!isSubscribed} /> },
-    { theme: 'section-navy' as const, component: <MantraCodes mantras={data.mantras} isBlurred={!isSubscribed} /> },
-    { theme: 'section-parchment' as const, component: <BirthChartCalculator isBlurred={!isSubscribed} /> },
-    { theme: 'section-navy' as const, component: <CompatibilityMatrix isBlurred={!isSubscribed} /> },
-    { theme: 'section-parchment' as const, component: <FixedStarLibrary isBlurred={!isSubscribed} /> },
-    { theme: 'section-navy' as const, component: <SabianSymbolsOracle isBlurred={!isSubscribed} /> },
-    { theme: 'section-parchment' as const, component: <PlanetaryHourCalculator isBlurred={!isSubscribed} /> },
-    { theme: 'section-navy' as const, component: <ElementalModalityBreakdown isBlurred={!isSubscribed} /> },
-    { theme: 'section-parchment' as const, component: <MythologicalArchives isBlurred={!isSubscribed} /> },
-    { theme: 'section-navy' as const, component: <CosmicEvents events={data.cosmicEvents} isBlurred={!isSubscribed} /> },
-    { theme: 'section-parchment' as const, component: <ReportDownload data={data} selectedSign={selectedSign} isBlurred={!isSubscribed} /> },
+  const sections: { theme: string; Component: React.ComponentType<any>; props: Record<string, any> }[] = [
+    { theme: 'section-navy', Component: CelestialMap, props: {} },
+    { theme: 'section-navy' as const, Component: EclipseSection, props: { selectedSign, theme: 'section-navy' } },
+    { theme: 'section-parchment' as const, Component: TransitTracker, props: { transits: data.transits } },
+    { theme: 'section-navy' as const, Component: LunarBlueprint, props: { phase: data.lunarPhase, isBlurred: !isSubscribed } },
+    { theme: 'section-parchment' as const, Component: TarotSpread, props: { cards: data.tarotCards, isBlurred: !isSubscribed } },
+    { theme: 'section-navy' as const, Component: ElementalBreakdown, props: { elements: data.elementalEnergy, isBlurred: !isSubscribed } },
+    { theme: 'section-parchment' as const, Component: ShadowWork, props: { prompts: data.shadowPrompts, isBlurred: !isSubscribed } },
+    { theme: 'section-navy' as const, Component: CrystalBotanicalPairings, props: { items: data.crystalBotanical, isBlurred: !isSubscribed } },
+    { theme: 'section-parchment' as const, Component: VoidMoonTimers, props: { windows: data.voidMoonWindows, isBlurred: !isSubscribed } },
+    { theme: 'section-navy' as const, Component: MantraCodes, props: { mantras: data.mantras, isBlurred: !isSubscribed } },
+    { theme: 'section-parchment' as const, Component: BirthChartCalculator, props: { isBlurred: !isSubscribed } },
+    { theme: 'section-navy' as const, Component: CompatibilityMatrix, props: { isBlurred: !isSubscribed } },
+    { theme: 'section-parchment' as const, Component: FixedStarLibrary, props: { isBlurred: !isSubscribed } },
+    { theme: 'section-navy' as const, Component: SabianSymbolsOracle, props: { isBlurred: !isSubscribed } },
+    { theme: 'section-parchment' as const, Component: PlanetaryHourCalculator, props: { isBlurred: !isSubscribed } },
+    { theme: 'section-navy' as const, Component: ElementalModalityBreakdown, props: { isBlurred: !isSubscribed } },
+    { theme: 'section-parchment' as const, Component: MythologicalArchives, props: { isBlurred: !isSubscribed } },
+    { theme: 'section-navy' as const, Component: CosmicEvents, props: { events: data.cosmicEvents, isBlurred: !isSubscribed } },
+    { theme: 'section-parchment' as const, Component: ReportDownload, props: { data, selectedSign, isBlurred: !isSubscribed } },
   ];
 
   return (
@@ -110,7 +132,6 @@ export default function App() {
       <div className="relative">
         <Header />
         <main>
-          {/* Above the fold: hero + zodiac selector */}
           <div className="section-navy">
             <Hero />
             <ZodiacSelector selected={selectedSign} onSelect={setSelectedSign} />
@@ -122,12 +143,11 @@ export default function App() {
             </Suspense>
           )}
 
-          {/* Render sections with automated numbers and strict theme/contrast alignment */}
-          {sections.map((section, index) => {
+          {sections.map(({ theme, Component, props }, index) => {
             return (
-              <LazySection key={index} className={section.theme}>
+              <LazySection key={index} className={theme}>
                 <Suspense fallback={<SectionFallback />}>
-                  {section.component}
+                  <Component {...props} />
                 </Suspense>
               </LazySection>
             );
@@ -135,6 +155,16 @@ export default function App() {
         </main>
         <Suspense fallback={<SectionFallback />}><Footer /></Suspense>
       </div>
+
+      {authOpen && (
+        <AuthModal onClose={() => setAuthOpen(false)} />
+      )}
+      {membershipOpen && (
+        <MembershipModal onClose={() => setMembershipOpen(false)} />
+      )}
+      {accountOpen && (
+        <AccountModal onClose={() => setAccountOpen(false)} />
+      )}
     </div>
   );
 }

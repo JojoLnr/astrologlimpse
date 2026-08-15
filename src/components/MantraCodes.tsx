@@ -1,6 +1,7 @@
 import type { MantraAffirmation } from '@/lib/types';
 import { SectionHeading, OrnamentDivider } from './SectionHeading';
 import { ContentBlurGate } from './ContentBlurGate';
+import headingData from '@/data/sections/mantras.json';
 
 export default function MantraCodes({
   mantras,
@@ -12,10 +13,10 @@ export default function MantraCodes({
   return (
     <section id="mantras" className="mx-auto max-w-7xl px-6 py-16">
       <SectionHeading
-        number="08"
-        eyebrow="Mantra & Affirmation Codes"
-        title="Words to counter the friction"
-        subtitle="Tailored affirmations designed to soften challenging transits · Saturn pressure, Mars intensity, Mercury loops."
+        number={headingData.heading.number}
+        eyebrow={headingData.heading.eyebrow}
+        title={headingData.heading.title}
+        subtitle={headingData.heading.subtitle}
       />
       <ContentBlurGate isBlurred={isBlurred}>
         <div className="mt-10 grid gap-6 md:grid-cols-2">

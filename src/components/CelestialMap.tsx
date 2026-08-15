@@ -2,6 +2,7 @@ import { useMemo, useState, useRef, useEffect, useCallback } from 'react';
 import { Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 import { SectionHeading, OrnamentDivider } from './SectionHeading';
 import { ContentBlurGate } from './ContentBlurGate';
+import headingData from '@/data/sections/celestial-map.json';
 
 // Base positions (ecliptic degrees) for Aug 8 2026
 const PLANETS_BASE = [
@@ -163,10 +164,10 @@ export default function CelestialMap({ isBlurred = false }: { isBlurred?: boolea
   return (
     <section id="celestial-map" className="section-navy mx-auto max-w-7xl px-6 py-16">
       <SectionHeading
-        number="00"
-        eyebrow="Celestial Positions"
-        title="The solar system, day by day"
-        subtitle="An orrery showing where each planet sits in the zodiac wheel. The planets rotate in real time — select a date from today through the next month to pause and explore."
+        number={headingData.heading.number}
+        eyebrow={headingData.heading.eyebrow}
+        title={headingData.heading.title}
+        subtitle={headingData.heading.subtitle}
       />
 
       <ContentBlurGate isBlurred={isBlurred}>

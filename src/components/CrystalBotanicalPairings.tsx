@@ -2,12 +2,12 @@ import { Gem, Leaf, Palette } from 'lucide-react';
 import type { CrystalBotanical } from '@/lib/types';
 import { SectionHeading, OrnamentDivider } from './SectionHeading';
 import { ContentBlurGate } from './ContentBlurGate';
+import headingData from '@/data/sections/crystals.json';
 
-const categoryConfig: Record<string, { icon: typeof Gem; text: string }> = {
-  Crystal: { icon: Gem,     text: 'text-gold-300' },
-  Herb:    { icon: Leaf,    text: 'text-moon-300' },
-  Color:   { icon: Palette, text: 'text-cream-200' },
-};
+const iconMap: Record<string, typeof Gem> = { Crystal: Gem, Herb: Leaf, Color: Palette };
+const categoryConfig: Record<string, { icon: typeof Gem; text: string }> = Object.fromEntries(
+  Object.entries(headingData.categoryConfig).map(([k, v]) => [k, { icon: iconMap[k], text: (v as { color: string }).color }])
+);
 
 export default function CrystalBotanicalPairings({
   items,
@@ -19,10 +19,10 @@ export default function CrystalBotanicalPairings({
   return (
     <section id="crystals" className="mx-auto max-w-7xl px-6 py-16">
       <SectionHeading
-        number="06"
-        eyebrow="Crystal & Botanical Pairings"
-        title="Tangible magic for the current transit"
-        subtitle="Crystals, herbs, and color magic aligned with the active zodiac energy — a tactile layer for daily life."
+        number={headingData.heading.number}
+        eyebrow={headingData.heading.eyebrow}
+        title={headingData.heading.title}
+        subtitle={headingData.heading.subtitle}
       />
       <ContentBlurGate isBlurred={isBlurred}>
         <div className="mt-10 divide-y divide-gold-400/10">

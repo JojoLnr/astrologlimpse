@@ -2,14 +2,11 @@ import { ArrowRightLeft, Orbit, Square, Triangle, Circle } from 'lucide-react';
 import type { PlanetaryTransit } from '@/lib/types';
 import { SectionHeading, OrnamentDivider } from './SectionHeading';
 import { ContentBlurGate } from './ContentBlurGate';
+import headingData from '@/data/sections/transits.json';
 
-const intensityLabels: Record<number, { label: string; color: string }> = {
-  1: { label: 'Gentle', color: 'text-moon-300' },
-  2: { label: 'Flowing', color: 'text-moon-300' },
-  3: { label: 'Moderate', color: 'text-gold-300' },
-  4: { label: 'Intense', color: 'text-gold-400' },
-  5: { label: 'Peak Friction', color: 'text-gold-500' },
-};
+const intensityLabels: Record<string, { label: string; color: string }> = Object.fromEntries(
+  Object.entries(headingData.intensityLabels).map(([k, v]) => [Number(k), v as { label: string; color: string }])
+);
 
 function eventIcon(eventType: string, aspectType: string | null) {
   if (eventType === 'Retrograde') return <ArrowRightLeft className="h-4 w-4" />;
@@ -36,11 +33,11 @@ export default function TransitTracker({
   return (
     <section id="transits" className="mx-auto max-w-7xl px-6 py-16">
       <SectionHeading
-        number="01"
+        number={headingData.heading.number}
         onParchment
-        eyebrow="Planetary Transit & Aspect Tracker"
-        title="What the planets are doing right now"
-        subtitle="Upcoming movements and major aspects, with practical guidance for navigating each one."
+        eyebrow={headingData.heading.eyebrow}
+        title={headingData.heading.title}
+        subtitle={headingData.heading.subtitle}
       />
       <ContentBlurGate isBlurred={isBlurred}>
         <div className="mt-10 divide-y divide-gold-400/10">

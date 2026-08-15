@@ -3,6 +3,7 @@ import { RotateCw } from 'lucide-react';
 import type { TarotCard } from '@/lib/types';
 import { SectionHeading, OrnamentDivider } from './SectionHeading';
 import { ContentBlurGate } from './ContentBlurGate';
+import headingData from '@/data/sections/tarot.json';
 
 export default function TarotSpread({
   cards,
@@ -21,11 +22,11 @@ export default function TarotSpread({
   return (
     <section id="tarot" className="mx-auto max-w-7xl px-6 py-16">
       <SectionHeading
-        number="03"
+        number={headingData.heading.number}
         onParchment
-        eyebrow="Collective Tarot & Oracle Spread"
-        title="A five-card reading for the collective"
-        subtitle="Each card maps to a dimension of the current cosmic energy. Tap a card to reveal its message."
+        eyebrow={headingData.heading.eyebrow}
+        title={headingData.heading.title}
+        subtitle={headingData.heading.subtitle}
       />
 
       <ContentBlurGate isBlurred={isBlurred}>

@@ -1,6 +1,7 @@
 import type { ShadowPrompt } from '@/lib/types';
 import { SectionHeading, OrnamentDivider } from './SectionHeading';
 import { ContentBlurGate } from './ContentBlurGate';
+import headingData from '@/data/sections/shadow.json';
 
 export default function ShadowWork({
   prompts,
@@ -12,11 +13,11 @@ export default function ShadowWork({
   return (
     <section id="shadow" className="mx-auto max-w-7xl px-6 py-16">
       <SectionHeading
-        number="05"
+        number={headingData.heading.number}
         onParchment
-        eyebrow="Shadow Work & Journaling"
-        title="Questions the cosmos is asking you"
-        subtitle="Reflection prompts drawn from the current astrological weather. Sit with one · or all five."
+        eyebrow={headingData.heading.eyebrow}
+        title={headingData.heading.title}
+        subtitle={headingData.heading.subtitle}
       />
       <ContentBlurGate isBlurred={isBlurred}>
         <div className="mt-10 divide-y divide-gold-400/10">
