@@ -106,7 +106,7 @@ export default function App() {
 
   const sections: { theme: string; Component: React.ComponentType<any>; props: Record<string, any> }[] = [
     { theme: 'section-navy', Component: CelestialMap, props: {} },
-    { theme: 'section-navy' as const, Component: EclipseSection, props: { selectedSign, theme: 'section-navy' } },
+    // { theme: 'section-navy' as const, Component: EclipseSection, props: { selectedSign, theme: 'section-navy' } },
     { theme: 'section-parchment' as const, Component: TransitTracker, props: { transits: data.transits } },
     { theme: 'section-navy' as const, Component: LunarBlueprint, props: { phase: data.lunarPhase, isBlurred: !isSubscribed } },
     { theme: 'section-parchment' as const, Component: TarotSpread, props: { cards: data.tarotCards, isBlurred: !isSubscribed } },
