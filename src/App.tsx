@@ -13,7 +13,7 @@ import AccountModal from '@/components/AccountModal';
 
 const SignReadingSection = lazy(() => import('@/components/SignReadingSection'));
 const CelestialMap = lazy(() => import('@/components/CelestialMap'));
-const EclipseSection = lazy(() => import('@/components/EclipseSection'));
+// const EclipseSection = lazy(() => import('@/components/EclipseSection'));
 const TransitTracker = lazy(() => import('@/components/TransitTracker'));
 const LunarBlueprint = lazy(() => import('@/components/LunarBlueprint'));
 const TarotSpread = lazy(() => import('@/components/TarotSpread'));
