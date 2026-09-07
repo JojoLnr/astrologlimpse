@@ -6,7 +6,8 @@ import { ReadingDisplay } from '@/components/ReadingDisplay';
 import { AccountSettings } from '@/components/AccountSettings';
 import { PaywallModal } from '@/components/PaywallModal';
 import { StarryBackground } from '@/components/StarryBackground';
-import { Sparkles, Loader2, ChevronDown, Telescope, Mail, Check } from 'lucide-react';
+import { ZodiacExplorer } from '@/components/ZodiacExplorer';
+import { Sparkles, Loader2, ChevronDown, Telescope, Mail, Check, Compass, HeartHandshake } from 'lucide-react';
 
 interface DashboardProps {
   onNavigateHome: () => void;
@@ -56,7 +57,6 @@ function SignUpPrompt({ onBack }: { onBack: () => void }) {
     <div className="relative min-h-screen">
       <StarryBackground />
 
-      {/* Header */}
       <header className="relative z-10 pt-8 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <button onClick={onBack} className="flex items-center gap-2">
@@ -76,7 +76,7 @@ function SignUpPrompt({ onBack }: { onBack: () => void }) {
             Sign up to unlock your reading
           </h1>
           <p className="text-slate-400 text-sm sm:text-base">
-            Your free complete 10-point cosmic package will be available right after you sign up or log in.
+            Your free 10-point cosmic reading is ready. Sign up or log in to claim your reading.
           </p>
         </div>
 
@@ -157,6 +157,7 @@ function SignUpPrompt({ onBack }: { onBack: () => void }) {
 export function Dashboard({ onNavigateHome }: DashboardProps) {
   const { user, profile, loading, refreshProfile } = useAuth();
   const [selectedSign, setSelectedSign] = useState<string>('');
+  const [personalFocus, setPersonalFocus] = useState<string>('');
   const [generating, setGenerating] = useState(false);
   const [showReading, setShowReading] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
@@ -187,7 +188,17 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
   const isMonthly = profile.subscription_status === 'monthly';
   const hasWeeklyUnlock =
     profile.weekly_unlocked_until && new Date(profile.weekly_unlocked_until) > new Date();
-  const canGenerate = !profile.has_used_free_reading || isMonthly || hasWeeklyUnlock;
+  
+  // Reading allowance calculation
+  const hasFreeReadingLeft = !profile.has_used_free_reading;
+  const canGenerate = hasFreeReadingLeft || isMonthly || hasWeeklyUnlock;
+
+  const getAllowanceText = () => {
+    if (hasFreeReadingLeft) return '1 Free Initial Reading Available';
+    if (isMonthly) return 'Unlimited Weekly Readings Active';
+    if (hasWeeklyUnlock) return '1 Reading Available This Week';
+    return '0 Readings Left This Week';
+  };
 
   const handleGenerate = async () => {
     if (!selectedSign) {
@@ -203,7 +214,7 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
 
     setGenerating(true);
 
-    if (!profile.has_used_free_reading) {
+    if (hasFreeReadingLeft) {
       const { error } = await supabase
         .from('profiles')
         .update({ has_used_free_reading: true })
@@ -234,7 +245,7 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
             <Telescope className="w-5 h-5 text-amber-300" />
             <span className="text-lg font-serif text-white">Astrologlimpse</span>
           </button>
-          <span className="text-sm text-slate-400">{profile.email}</span>
+          <span className="text-sm text-slate-400">{profile.email || user.email}</span>
         </div>
       </header>
 
@@ -243,21 +254,30 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-4">
             <Sparkles className="w-4 h-4 text-amber-300" />
-            <span className="text-sm text-slate-300 tracking-wide">Your Cosmic Dashboard</span>
+            <span className="text-sm text-slate-300 tracking-wide">Your Reading Hub</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-serif font-light text-white mb-3">
             Welcome to your reading hub
           </h1>
+          
+          {/* Weekly Allowance Status Badge */}
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-amber-300/10 border border-amber-300/20 text-amber-200 mt-1 mb-2">
+            <Compass className="w-3.5 h-3.5" />
+            <span>{getAllowanceText()}</span>
+          </div>
+
           <p className="text-slate-400 max-w-lg mx-auto text-sm sm:text-base">
-            {profile.has_used_free_reading
-              ? 'Continue your cosmic journey. Select your sign and generate a new reading.'
-              : 'Your free complete 10-point cosmic reading is ready. Select your sign below to begin.'}
+            {hasFreeReadingLeft
+              ? 'Your free 10-point cosmic reading is ready. Select your sign and optionally add what is on your mind.'
+              : canGenerate
+                ? 'Select your sign and set your intentions for this week’s reading.'
+                : 'You have used your available readings for this week. Subscribe to unlock weekly readings.'}
           </p>
         </div>
 
         {/* Generate card */}
         {!showReading && (
-          <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.06] to-white/[0.02] backdrop-blur-xl p-6 sm:p-8 mb-8">
+          <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.06] to-white/[0.02] backdrop-blur-xl p-6 sm:p-8 mb-12">
             {/* Sign selector */}
             <div className="mb-6">
               <label className="block text-sm text-slate-400 mb-2">Select your zodiac sign</label>
@@ -302,6 +322,24 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
               </div>
             </div>
 
+            {/* Personal Focus / Intention message box */}
+            <div className="mb-6">
+              <label className="flex items-center gap-2 text-sm text-slate-300 mb-1.5">
+                <HeartHandshake className="w-4 h-4 text-amber-300" />
+                <span>Personal Focus & Preoccupations <span className="text-slate-500 text-xs">(Optional)</span></span>
+              </label>
+              <textarea
+                value={personalFocus}
+                onChange={(e) => setPersonalFocus(e.target.value)}
+                rows={3}
+                placeholder="Share what is currently on your mind — career choices, relationship questions, fears, or hopes for this period..."
+                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-amber-300/40 focus:bg-white/10 transition-all resize-none"
+              />
+              <p className="mt-1.5 text-xs text-slate-500">
+                Sharing your thoughts helps attune the energy of your reading to your personal path.
+              </p>
+            </div>
+
             {/* Generate button */}
             <button
               onClick={handleGenerate}
@@ -311,16 +349,14 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
               {generating ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Channeling your reading...
+                  Attuning to your cosmic energy...
                 </>
               ) : (
                 <>
                   <Sparkles className="w-5 h-5" />
-                  {profile.has_used_free_reading
-                    ? canGenerate
-                      ? 'Generate My Reading'
-                      : 'Generate & Send My Free Complete Package'
-                    : 'Generate & Send My Free Complete Package'}
+                  {hasFreeReadingLeft
+                    ? 'Generate My Free Cosmic Reading'
+                    : 'Generate My Cosmic Reading'}
                 </>
               )}
             </button>
@@ -331,7 +367,7 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
 
             {!canGenerate && (
               <p className="mt-3 text-center text-xs text-slate-500">
-                Your free reading has been used. A subscription or weekly unlock is required to generate more readings.
+                You have used your free reading. A subscription or weekly unlock is required for additional readings this week.
               </p>
             )}
           </div>
@@ -339,7 +375,7 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
 
         {/* Reading display */}
         {showReading && selectedSign && (
-          <div className="mb-8">
+          <div className="mb-12">
             <ReadingDisplay signName={selectedSign} />
             <button
               onClick={() => setShowReading(false)}
@@ -349,6 +385,11 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
             </button>
           </div>
         )}
+
+        {/* Zodiac Explorer (traits & elements reference) */}
+        <div className="mb-12 border-t border-white/10 pt-10">
+          <ZodiacExplorer />
+        </div>
 
         {/* Account settings */}
         <AccountSettings />

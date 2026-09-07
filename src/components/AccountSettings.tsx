@@ -4,15 +4,16 @@ import { useAuth } from '@/context/AuthContext';
 import { createPortalSession } from '@/lib/stripe';
 
 export function AccountSettings() {
-  const { profile, signOut } = useAuth();
+  const { user, profile, signOut } = useAuth();
   const [portalLoading, setPortalLoading] = useState(false);
   const [portalError, setPortalError] = useState('');
 
-  if (!profile) return null;
+  if (!profile && !user) return null;
 
-  const isMonthly = profile.subscription_status === 'monthly';
+  const userEmail = profile?.email || user?.email;
+  const isMonthly = profile?.subscription_status === 'monthly';
   const hasWeeklyUnlock =
-    profile.weekly_unlocked_until && new Date(profile.weekly_unlocked_until) > new Date();
+    profile?.weekly_unlocked_until && new Date(profile.weekly_unlocked_until) > new Date();
 
   const handlePortal = async () => {
     setPortalLoading(true);
@@ -56,14 +57,14 @@ export function AccountSettings() {
                   ? 'Premium Subscription'
                   : hasWeeklyUnlock
                     ? 'Weekly Unlock Active'
-                    : 'No Active Subscription'}
+                    : 'Free Plan'}
               </p>
               <p className="text-xs text-slate-500">
                 {isMonthly
                   ? 'Unlimited weekly readings'
                   : hasWeeklyUnlock
-                    ? `Expires ${new Date(profile.weekly_unlocked_until!).toLocaleDateString()}`
-                    : 'Subscribe to unlock all readings'}
+                    ? `Active until ${new Date(profile.weekly_unlocked_until!).toLocaleDateString()}`
+                    : 'Subscribe to unlock weekly readings'}
               </p>
             </div>
           </div>
@@ -104,9 +105,11 @@ export function AccountSettings() {
         <p className="mt-3 text-red-400 text-xs text-center">{portalError}</p>
       )}
 
-      <p className="mt-4 text-center text-xs text-slate-500">
-        Signed in as {profile.email}
-      </p>
+      {userEmail && (
+        <p className="mt-4 text-center text-xs text-slate-500">
+          Signed in as <span className="text-slate-400 font-medium">{userEmail}</span>
+        </p>
+      )}
     </div>
   );
 }
