@@ -189,7 +189,6 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
   const hasWeeklyUnlock =
     profile.weekly_unlocked_until && new Date(profile.weekly_unlocked_until) > new Date();
   
-  // Reading allowance calculation
   const hasFreeReadingLeft = !profile.has_used_free_reading;
   const canGenerate = hasFreeReadingLeft || isMonthly || hasWeeklyUnlock;
 
@@ -260,7 +259,6 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
             Welcome to your reading hub
           </h1>
           
-          {/* Weekly Allowance Status Badge */}
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-amber-300/10 border border-amber-300/20 text-amber-200 mt-1 mb-2">
             <Compass className="w-3.5 h-3.5" />
             <span>{getAllowanceText()}</span>
@@ -332,7 +330,7 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
                 value={personalFocus}
                 onChange={(e) => setPersonalFocus(e.target.value)}
                 rows={3}
-                placeholder="Share what is currently on your mind — career choices, relationship questions, fears, or hopes for this period..."
+                placeholder="Share what is currently on your mind: career choices, relationship questions, fears, or hopes for this period..."
                 className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-amber-300/40 focus:bg-white/10 transition-all resize-none"
               />
               <p className="mt-1.5 text-xs text-slate-500">
@@ -386,13 +384,13 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
           </div>
         )}
 
-        {/* Zodiac Explorer (traits & elements reference) */}
+        {/* Zodiac Explorer */}
         <div className="mb-12 border-t border-white/10 pt-10">
           <ZodiacExplorer />
         </div>
 
-        {/* Account settings */}
-        <AccountSettings />
+        {/* Account settings with paywall modal trigger */}
+        <AccountSettings onOpenPaywall={() => setShowPaywall(true)} />
       </main>
 
       {/* Paywall */}
