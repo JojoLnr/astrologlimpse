@@ -2,12 +2,21 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { zodiacSigns } from '@/lib/zodiac';
-import { ReadingDisplay } from '@/components/ReadingDisplay';
 import { AccountSettings } from '@/components/AccountSettings';
 import { PaywallModal } from '@/components/PaywallModal';
 import { StarryBackground } from '@/components/StarryBackground';
 import { ZodiacExplorer } from '@/components/ZodiacExplorer';
-import { Sparkles, Loader2, ChevronDown, Telescope, Mail, Check, Compass, HeartHandshake } from 'lucide-react';
+import {
+  Sparkles,
+  Loader2,
+  ChevronDown,
+  Telescope,
+  Mail,
+  Check,
+  Compass,
+  HeartHandshake,
+  CheckCircle2,
+} from 'lucide-react';
 
 interface DashboardProps {
   onNavigateHome: () => void;
@@ -16,10 +25,22 @@ interface DashboardProps {
 function GoogleIcon() {
   return (
     <svg className="w-5 h-5" viewBox="0 0 24 24">
-      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+      <path
+        fill="#4285F4"
+        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+      />
+      <path
+        fill="#EA4335"
+        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+      />
     </svg>
   );
 }
@@ -86,7 +107,9 @@ function SignUpPrompt({ onBack }: { onBack: () => void }) {
               <Check className="w-5 h-5 text-green-400 flex-shrink-0" />
               <div>
                 <p className="text-green-300 text-sm font-medium">Check your inbox</p>
-                <p className="text-slate-400 text-xs">We sent a magic link to {email}. Click it to enter your dashboard.</p>
+                <p className="text-slate-400 text-xs">
+                  We sent a magic link to {email}. Click it to enter your dashboard.
+                </p>
               </div>
             </div>
           ) : (
@@ -158,8 +181,8 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
   const { user, profile, loading, refreshProfile } = useAuth();
   const [selectedSign, setSelectedSign] = useState<string>('');
   const [personalFocus, setPersonalFocus] = useState<string>('');
-  const [generating, setGenerating] = useState(false);
-  const [showReading, setShowReading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [requestSubmitted, setRequestSubmitted] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
   const [signDropdownOpen, setSignDropdownOpen] = useState(false);
   const [genError, setGenError] = useState('');
@@ -188,7 +211,7 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
   const isMonthly = profile.subscription_status === 'monthly';
   const hasWeeklyUnlock =
     profile.weekly_unlocked_until && new Date(profile.weekly_unlocked_until) > new Date();
-  
+
   const hasFreeReadingLeft = !profile.has_used_free_reading;
   const canGenerate = hasFreeReadingLeft || isMonthly || hasWeeklyUnlock;
 
@@ -199,7 +222,7 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
     return '0 Readings Left This Week';
   };
 
-  const handleGenerate = async () => {
+  const handleRequestReading = async () => {
     if (!selectedSign) {
       setGenError('Please select your zodiac sign first.');
       return;
@@ -211,26 +234,41 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
       return;
     }
 
-    setGenerating(true);
+    setSubmitting(true);
 
-    if (hasFreeReadingLeft) {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ has_used_free_reading: true })
-        .eq('id', user.id);
+    try {
+      const userEmail = profile.email || user.email || '';
 
-      if (error) {
-        setGenError('Something went wrong. Please try again.');
-        setGenerating(false);
-        return;
+      // 1. Store request in Supabase
+      const { error: requestError } = await supabase
+        .from('reading_requests')
+        .insert({
+          user_id: user.id,
+          email: userEmail,
+          zodiac_sign: selectedSign,
+          personal_focus: personalFocus || null,
+          status: 'pending',
+        });
+
+      if (requestError) throw requestError;
+
+      // 2. Consume free reading entitlement if applicable
+      if (hasFreeReadingLeft) {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({ has_used_free_reading: true })
+          .eq('id', user.id);
+
+        if (profileError) throw profileError;
+        await refreshProfile();
       }
-      await refreshProfile();
-    }
 
-    setTimeout(() => {
-      setGenerating(false);
-      setShowReading(true);
-    }, 1500);
+      setRequestSubmitted(true);
+    } catch (err) {
+      setGenError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -258,7 +296,7 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
           <h1 className="text-3xl sm:text-4xl font-serif font-light text-white mb-3">
             Welcome to your reading hub
           </h1>
-          
+
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-amber-300/10 border border-amber-300/20 text-amber-200 mt-1 mb-2">
             <Compass className="w-3.5 h-3.5" />
             <span>{getAllowanceText()}</span>
@@ -266,15 +304,34 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
 
           <p className="text-slate-400 max-w-lg mx-auto text-sm sm:text-base">
             {hasFreeReadingLeft
-              ? 'Your free 10-point cosmic reading is ready. Select your sign and optionally add what is on your mind.'
+              ? 'Your free 10-point cosmic reading is ready. Select your sign and request your reading.'
               : canGenerate
-                ? 'Select your sign and set your intentions for this week’s reading.'
-                : 'You have used your available readings for this week. Subscribe to unlock weekly readings.'}
+                ? 'Select your sign and set your intentions for this week’s reading request.'
+                : 'You have used your available readings for this week. Subscribe to request more readings.'}
           </p>
         </div>
 
-        {/* Generate card */}
-        {!showReading && (
+        {/* Confirmation State or Form Card */}
+        {requestSubmitted ? (
+          <div className="rounded-3xl border border-amber-300/30 bg-gradient-to-br from-amber-300/10 to-white/[0.02] backdrop-blur-xl p-8 mb-12 text-center animate-[fadeInUp_0.4s_ease-out]">
+            <div className="w-16 h-16 rounded-2xl bg-amber-300/20 border border-amber-300/40 flex items-center justify-center mx-auto mb-4">
+              <CheckCircle2 className="w-8 h-8 text-amber-300" />
+            </div>
+            <h3 className="text-2xl font-serif text-white mb-2">Reading Request Received!</h3>
+            <p className="text-slate-300 text-sm max-w-md mx-auto mb-6">
+              Your request for <strong className="text-amber-200">{selectedSign}</strong> has been logged. We are preparing your reading and will deliver it directly to <strong className="text-white">{profile.email || user.email}</strong>.
+            </p>
+            <button
+              onClick={() => {
+                setRequestSubmitted(false);
+                setPersonalFocus('');
+              }}
+              className="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 text-sm hover:bg-white/10 transition-all"
+            >
+              Request Another Reading
+            </button>
+          </div>
+        ) : (
           <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.06] to-white/[0.02] backdrop-blur-xl p-6 sm:p-8 mb-12">
             {/* Sign selector */}
             <div className="mb-6">
@@ -334,27 +391,27 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
                 className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-amber-300/40 focus:bg-white/10 transition-all resize-none"
               />
               <p className="mt-1.5 text-xs text-slate-500">
-                Sharing your thoughts helps attune the energy of your reading to your personal path.
+                Sharing your thoughts helps attune the reading to your personal path.
               </p>
             </div>
 
-            {/* Generate button */}
+            {/* Submit request button */}
             <button
-              onClick={handleGenerate}
-              disabled={generating || !selectedSign}
+              onClick={handleRequestReading}
+              disabled={submitting || !selectedSign}
               className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-[#0a0e27] font-semibold hover:from-amber-300 hover:to-amber-400 transition-all disabled:opacity-50"
             >
-              {generating ? (
+              {submitting ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Attuning to your cosmic energy...
+                  Submitting Request...
                 </>
               ) : (
                 <>
                   <Sparkles className="w-5 h-5" />
                   {hasFreeReadingLeft
-                    ? 'Generate My Free Cosmic Reading'
-                    : 'Generate My Cosmic Reading'}
+                    ? 'Request My Free Cosmic Reading'
+                    : 'Request My Cosmic Reading'}
                 </>
               )}
             </button>
@@ -365,22 +422,9 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
 
             {!canGenerate && (
               <p className="mt-3 text-center text-xs text-slate-500">
-                You have used your free reading. A subscription or weekly unlock is required for additional readings this week.
+                You have used your free reading. A subscription or weekly unlock is required for additional reading requests.
               </p>
             )}
-          </div>
-        )}
-
-        {/* Reading display */}
-        {showReading && selectedSign && (
-          <div className="mb-12">
-            <ReadingDisplay signName={selectedSign} />
-            <button
-              onClick={() => setShowReading(false)}
-              className="mt-6 mx-auto block px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-slate-300 text-sm hover:bg-white/10 transition-all"
-            >
-              Generate Another Reading
-            </button>
           </div>
         )}
 
