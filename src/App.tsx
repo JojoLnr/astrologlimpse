@@ -7,22 +7,24 @@ import { StarryBackground } from '@/components/StarryBackground';
 
 type View = 'home' | 'dashboard';
 
-function getRouteFromHash(): View {
-  return window.location.hash === '#/dashboard' ? 'dashboard' : 'home';
+function getRouteFromPath(): View {
+  const path = window.location.pathname.replace(/\/$/, '');
+  return path === '/dashboard' ? 'dashboard' : 'home';
 }
 
 function App() {
   const { user, loading } = useAuth();
-  const [view, setView] = useState<View>(getRouteFromHash);
+  const [view, setView] = useState<View>(getRouteFromPath);
 
   useEffect(() => {
-    const onHashChange = () => setView(getRouteFromHash());
-    window.addEventListener('hashchange', onHashChange);
-    return () => window.removeEventListener('hashchange', onHashChange);
+    const onPopState = () => setView(getRouteFromPath());
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
   const navigate = (v: View) => {
-    window.location.hash = v === 'home' ? '' : `#/${v}`;
+    const newPath = v === 'home' ? '/' : `/${v}`;
+    window.history.pushState({}, '', newPath);
     setView(v);
   };
 
