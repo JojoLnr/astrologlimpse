@@ -21,19 +21,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchProfile = async (userId: string) => {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .maybeSingle();
 
-    if (error) {
-      console.error('Error fetching profile:', error);
-      return;
-    }
-    setProfile(data as Profile | null);
-  };
+
+  const fetchProfile = async (userId: string, email?: string) => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .maybeSingle();
+
+      if (error) {
+        console.error('Error fetching profile:', error);
+        return;
+      }
+
+      if (!data) {
+        // Auto-create profile if missing (bypasses missing database triggers)
+        const { data: newProfile, error: insertError } = await supabase
+          .from('profiles')
+          .insert([{ id: userId, email: email, has_used_free_reading: false, subscription_status: 'free' }])
+          .select()
+          .single();
+
+        if (insertError) {
+          console.error('Error creating profile:', insertError);
+          return;
+        }
+        setProfile(newProfile as Profile);
+      } else {
+        setProfile(data as Profile | null);
+      }
+    };
+
+
 
   useEffect(() => {
     const handleOAuthRedirect = async () => {
