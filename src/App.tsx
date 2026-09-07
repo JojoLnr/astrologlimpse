@@ -17,6 +17,12 @@ function App() {
   const [view, setView] = useState<View>(getRouteFromPath);
 
   useEffect(() => {
+    // Clean up the OAuth code query parameter from the URL once Supabase processes it
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('code')) {
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+
     const onPopState = () => setView(getRouteFromPath());
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
