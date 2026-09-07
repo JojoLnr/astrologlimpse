@@ -89,7 +89,7 @@ export function PaywallModal({ open, onClose }: PaywallModalProps) {
                     BEST VALUE
                   </span>
                 </div>
-                <p className="text-xs text-slate-400">Unlocks all weekly readings</p>
+                <p className="text-xs text-slate-400">Unlocks readings twice a week every month</p>
               </div>
             </div>
             <div className="text-right">
