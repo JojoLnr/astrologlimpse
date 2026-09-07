@@ -44,16 +44,9 @@ export function AccountSettings({ onOpenPaywall }: AccountSettingsProps) {
         <h3 className="text-lg font-serif text-white">Account & Settings</h3>
       </div>
 
-      {/* Subscription status card (Clickable when free) */}
+      {/* Subscription Status Display Card */}
       <div className="mb-6">
-        <div
-          onClick={!isSubscribed ? onOpenPaywall : undefined}
-          className={`flex items-center justify-between rounded-xl bg-white/[0.04] border p-4 transition-all ${
-            !isSubscribed
-              ? 'border-amber-300/30 hover:border-amber-300/60 hover:bg-white/[0.07] cursor-pointer group'
-              : 'border-white/10'
-          }`}
-        >
+        <div className="flex items-center justify-between rounded-xl bg-white/[0.04] border border-white/10 p-4">
           <div className="flex items-center gap-3">
             {isMonthly ? (
               <div className="w-10 h-10 rounded-xl bg-amber-300/10 border border-amber-300/20 flex items-center justify-center">
@@ -64,22 +57,17 @@ export function AccountSettings({ onOpenPaywall }: AccountSettingsProps) {
                 <Zap className="w-5 h-5 text-blue-300" />
               </div>
             ) : (
-              <div className="w-10 h-10 rounded-xl bg-amber-300/10 border border-amber-300/20 flex items-center justify-center group-hover:bg-amber-300/20 transition-colors">
-                <Calendar className="w-5 h-5 text-amber-300" />
+              <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
+                <Calendar className="w-5 h-5 text-slate-400" />
               </div>
             )}
             <div>
-              <p className="text-sm text-white font-medium flex items-center gap-2">
+              <p className="text-sm text-white font-medium">
                 {isMonthly
                   ? 'Premium Subscription'
                   : hasWeeklyUnlock
                     ? 'Weekly Unlock Active'
                     : 'Free Plan'}
-                {!isSubscribed && (
-                  <span className="text-[10px] text-amber-300 bg-amber-300/10 border border-amber-300/20 px-2 py-0.5 rounded-full font-normal">
-                    Click to upgrade
-                  </span>
-                )}
               </p>
               <p className="text-xs text-slate-400">
                 {isMonthly
@@ -96,15 +84,15 @@ export function AccountSettings({ onOpenPaywall }: AccountSettingsProps) {
                 ? 'bg-amber-300/10 border-amber-300/20 text-amber-200'
                 : hasWeeklyUnlock
                   ? 'bg-blue-400/10 border-blue-400/20 text-blue-200'
-                  : 'bg-amber-300/10 border-amber-300/30 text-amber-300 group-hover:bg-amber-300 group-hover:text-[#0a0e27] transition-colors'
+                  : 'bg-white/5 border-white/10 text-slate-400'
             }`}
           >
-            {isMonthly ? 'Monthly' : hasWeeklyUnlock ? 'Weekly' : 'Subscribe'}
+            {isMonthly ? 'Monthly' : hasWeeklyUnlock ? 'Weekly' : 'Free'}
           </span>
         </div>
       </div>
 
-      {/* Actions */}
+      {/* Primary Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-3">
         <button
           onClick={handleBillingClick}
