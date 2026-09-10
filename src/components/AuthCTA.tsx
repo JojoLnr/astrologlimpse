@@ -57,10 +57,10 @@ export function AuthCTA() {
               </div>
               <div>
                 <h3 className="text-white font-serif text-lg leading-snug">
-                  Get your free biweekly horoscope
+                  Get your free reading package!
                 </h3>
                 <p className="text-amber-200/70 text-sm">
-                  & unlock your complete 10-point cosmic reading
+                  Sent directly to your email address within 5 days
                 </p>
               </div>
             </div>
