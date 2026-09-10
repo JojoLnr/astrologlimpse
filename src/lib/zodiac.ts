@@ -19,7 +19,7 @@ export const zodiacSigns: ZodiacSign[] = [
     planet: 'Mars',
     strengths: ['Courageous', 'Determined', 'Confident', 'Enthusiastic', 'Bold'],
     significance:
-      'Aries is the spark of the zodiac — the first sign, the initiator, the warrior who charges forward without hesitation. Ruled by Mars, Aries embodies raw life force, the primal urge to exist and to act. It teaches us that beginnings matter, that the first step is sacred, and that courage is not the absence of fear but the decision to move forward in spite of it.',
+      'Aries is the spark of the zodiac, the first sign, the initiator, the warrior who charges forward without hesitation. Ruled by Mars, Aries embodies raw life force, the primal urge to exist and to act. It teaches us that beginnings matter, that the first step is sacred, and that courage is moving forward in spite of fear. Sign up today to request your free professional insight delivered within 5 days, complete with your weekly horoscope and tarot reading.',
     color: '#e94560',
     glyph: '♈',
   },
@@ -31,7 +31,7 @@ export const zodiacSigns: ZodiacSign[] = [
     planet: 'Venus',
     strengths: ['Reliable', 'Patient', 'Devoted', 'Responsible', 'Steadfast'],
     significance:
-      'Taurus is the anchor — rooted, sensual, and unshakable. Ruled by Venus, Taurus finds the divine in the tangible: the warmth of sun on skin, the taste of ripe fruit, the weight of gold. It teaches us that beauty is not fleeting but cultivated, that patience is a form of love, and that true security comes from knowing your own worth.',
+      'Taurus is the anchor, rooted, sensual, and unshakable. Ruled by Venus, Taurus finds the divine in the tangible: the warmth of sun on skin, the taste of ripe fruit, the weight of gold. It teaches us that beauty is cultivated, that patience is a form of love, and that true security comes from knowing your own worth. Sign up today to request your free professional insight delivered within 5 days, complete with your weekly horoscope and tarot reading.',
     color: '#43aa8b',
     glyph: '♉',
   },
@@ -43,7 +43,7 @@ export const zodiacSigns: ZodiacSign[] = [
     planet: 'Mercury',
     strengths: ['Curious', 'Adaptable', 'Witty', 'Communicative', 'Versatile'],
     significance:
-      'Gemini is the messenger — the bridge between worlds, the mind that holds contradictions without breaking. Ruled by Mercury, Gemini dances between ideas, collecting perspectives like a magpie collects shine. It teaches us that curiosity is a spiritual practice, that words shape reality, and that the self is not singular but a constellation of many voices.',
+      'Gemini is the messenger, the bridge between worlds, the mind that holds contradictions without breaking. Ruled by Mercury, Gemini dances between ideas, collecting perspectives like a magpie collects shine. It teaches us that curiosity is a spiritual practice, that words shape reality, and that the self is a constellation of many voices. Sign up today to request your free professional insight delivered within 5 days, complete with your weekly horoscope and tarot reading.',
     color: '#f4a261',
     glyph: '♊',
   },
@@ -55,7 +55,7 @@ export const zodiacSigns: ZodiacSign[] = [
     planet: 'Moon',
     strengths: ['Loyal', 'Intuitive', 'Nurturing', 'Protective', 'Empathic'],
     significance:
-      'Cancer is the womb of the zodiac — the keeper of memory, the guardian of the hearth. Ruled by the Moon, Cancer moves in tides of emotion, carrying the weight of lineage and belonging. It teaches us that vulnerability is strength, that home is not a place but a feeling, and that the deepest courage is found in caring for others.',
+      'Cancer is the womb of the zodiac, the keeper of memory, the guardian of the hearth. Ruled by the Moon, Cancer moves in tides of emotion, carrying the weight of lineage and belonging. It teaches us that vulnerability is strength, that home is a feeling, and that the deepest courage is found in caring for others. Sign up today to request your free professional insight delivered within 5 days, complete with your weekly horoscope and tarot reading.',
     color: '#778da9',
     glyph: '♋',
   },
@@ -67,7 +67,7 @@ export const zodiacSigns: ZodiacSign[] = [
     planet: 'Sun',
     strengths: ['Charismatic', 'Generous', 'Creative', 'Passionate', 'Magnetic'],
     significance:
-      'Leo is the sovereign — the radiant heart that gives warmth without condition. Ruled by the Sun, Leo does not seek the spotlight; Leo IS the spotlight. It teaches us that true leadership is an act of love, that creativity is our birthright, and that shining brightly is not arrogance but an offering to the world.',
+      'Leo is the sovereign, the radiant heart that gives warmth without condition. Ruled by the Sun, Leo does not seek the spotlight; Leo IS the spotlight. It teaches us that true leadership is an act of love, that creativity is our birthright, and that shining brightly is an offering to the world. Sign up today to request your free professional insight delivered within 5 days, complete with your weekly horoscope and tarot reading.',
     color: '#e9c46a',
     glyph: '♌',
   },
@@ -79,7 +79,7 @@ export const zodiacSigns: ZodiacSign[] = [
     planet: 'Mercury',
     strengths: ['Analytical', 'Diligent', 'Practical', 'Healing', 'Precise'],
     significance:
-      'Virgo is the healer-priest — the one who brings order to chaos, who tends the garden of the soul. Ruled by Mercury, Virgo discerns what serves and what must be pruned. It teaches us that devotion lives in the details, that service is sacred, and that wholeness is found not in perfection but in the humble act of making things better, one small gesture at a time.',
+      'Virgo is the healer-priest, the one who brings order to chaos, who tends the garden of the soul. Ruled by Mercury, Virgo discerns what serves and what must be pruned. It teaches us that devotion lives in the details, that service is sacred, and that wholeness is found in the humble act of making things better. Sign up today to request your free professional insight delivered within 5 days, complete with your weekly horoscope and tarot reading.',
     color: '#8ab17d',
     glyph: '♍',
   },
@@ -91,7 +91,7 @@ export const zodiacSigns: ZodiacSign[] = [
     planet: 'Venus',
     strengths: ['Diplomatic', 'Fair-minded', 'Charming', 'Harmonious', 'Aesthetic'],
     significance:
-      'Libra is the scales — the eternal seeker of balance, the weaver of harmony. Ruled by Venus, Libra finds beauty in symmetry and justice in relationship. It teaches us that true fairness requires seeing all sides, that partnership is an art, and that peace is not the absence of conflict but the graceful resolution of it.',
+      'Libra is the scales, the eternal seeker of balance, the weaver of harmony. Ruled by Venus, Libra finds beauty in symmetry and justice in relationship. It teaches us that true fairness requires seeing all sides, that partnership is an art, and that peace is the graceful resolution of conflict. Sign up today to request your free professional insight delivered within 5 days, complete with your weekly horoscope and tarot reading.',
     color: '#bc6c8b',
     glyph: '♎',
   },
@@ -103,7 +103,7 @@ export const zodiacSigns: ZodiacSign[] = [
     planet: 'Pluto',
     strengths: ['Transformative', 'Intense', 'Loyal', 'Perceptive', 'Resilient'],
     significance:
-      'Scorpio is the alchemist — the one who descends into darkness and returns with gold. Ruled by Pluto, Scorpio does not fear the depths; it knows that transformation requires death and rebirth. It teaches us that our shadows are not enemies but teachers, that intimacy demands surrender, and that true power is the willingness to be reborn.',
+      'Scorpio is the alchemist, the one who descends into darkness and returns with gold. Ruled by Pluto, Scorpio does not fear the depths; it knows that transformation requires death and rebirth. It teaches us that our shadows are teachers, that intimacy demands surrender, and that true power is the willingness to be reborn. Sign up today to request your free professional insight delivered within 5 days, complete with your weekly horoscope and tarot reading.',
     color: '#9d4edd',
     glyph: '♏',
   },
@@ -115,7 +115,7 @@ export const zodiacSigns: ZodiacSign[] = [
     planet: 'Jupiter',
     strengths: ['Adventurous', 'Philosophical', 'Optimistic', 'Free-spirited', 'Visionary'],
     significance:
-      'Sagittarius is the explorer — the archer whose arrow flies toward the horizon, toward meaning itself. Ruled by Jupiter, Sagittarius expands everything it touches, seeking truth across continents and philosophies. It teaches us that freedom is a state of mind, that wisdom comes from experience, and that the journey is the destination.',
+      'Sagittarius is the explorer, the archer whose arrow flies toward the horizon, toward meaning itself. Ruled by Jupiter, Sagittarius expands everything it touches, seeking truth across continents and philosophies. It teaches us that freedom is a state of mind, that wisdom comes from experience, and that the journey is the destination. Sign up today to request your free professional insight delivered within 5 days, complete with your weekly horoscope and tarot reading.',
     color: '#e76f51',
     glyph: '♐',
   },
@@ -127,7 +127,7 @@ export const zodiacSigns: ZodiacSign[] = [
     planet: 'Saturn',
     strengths: ['Disciplined', 'Ambitious', 'Responsible', 'Patient', 'Strategic'],
     significance:
-      'Capricorn is the mountain goat — the one who climbs steadily, patiently, toward the summit. Ruled by Saturn, Capricorn understands that mastery takes time and that structure is the skeleton of dreams. It teaches us that integrity is built one choice at a time, that authority is earned, and that the highest peaks are reached through persistence, not shortcuts.',
+      'Capricorn is the mountain goat, the one who climbs steadily, patiently, toward the summit. Ruled by Saturn, Capricorn understands that mastery takes time and that structure is the skeleton of dreams. It teaches us that integrity is built one choice at a time, that authority is earned, and that the highest peaks are reached through persistence. Sign up today to request your free professional insight delivered within 5 days, complete with your weekly horoscope and tarot reading.',
     color: '#6c757d',
     glyph: '♑',
   },
@@ -139,7 +139,7 @@ export const zodiacSigns: ZodiacSign[] = [
     planet: 'Uranus',
     strengths: ['Innovative', 'Humanitarian', 'Independent', 'Visionary', 'Eccentric'],
     significance:
-      'Aquarius is the visionary — the water-bearer who pours new consciousness onto a thirsty world. Ruled by Uranus, Aquarius sees the future before others know the present has ended. It teaches us that progress requires rebellion, that community is built on individuality, and that the most radical act is to imagine a world that has never existed.',
+      'Aquarius is the visionary, the water-bearer who pours new consciousness onto a thirsty world. Ruled by Uranus, Aquarius sees the future before others know the present has ended. It teaches us that progress requires rebellion, that community is built on individuality, and that the most radical act is to imagine a new world. Sign up today to request your free professional insight delivered within 5 days, complete with your weekly horoscope and tarot reading.',
     color: '#48cae4',
     glyph: '♒',
   },
@@ -151,7 +151,7 @@ export const zodiacSigns: ZodiacSign[] = [
     planet: 'Neptune',
     strengths: ['Compassionate', 'Intuitive', 'Artistic', 'Mystical', 'Gentle'],
     significance:
-      'Pisces is the ocean of the zodiac — boundless, permeable, and infinitely deep. Ruled by Neptune, Pisces dissolves the boundaries between self and other, between dream and reality. It teaches us that imagination is a gateway to the divine, that empathy is a superpower, and that surrender is not defeat but the highest form of trust.',
+      'Pisces is the ocean of the zodiac, boundless, permeable, and infinitely deep. Ruled by Neptune, Pisces dissolves the boundaries between self and other, between dream and reality. It teaches us that imagination is a gateway to the divine, that empathy is a superpower, and that surrender is the highest form of trust. Sign up today to request your free professional insight delivered within 5 days, complete with your weekly horoscope and tarot reading.',
     color: '#90b4ce',
     glyph: '♓',
   },
