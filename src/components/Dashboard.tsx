@@ -16,11 +16,14 @@ import {
   Compass,
   HeartHandshake,
   CheckCircle2,
+  LogIn,
 } from 'lucide-react';
 
 interface DashboardProps {
   onNavigateHome: () => void;
 }
+
+const PENDING_REQUEST_KEY = 'astrologlimpse_pending_request';
 
 function GoogleIcon() {
   return (
@@ -45,140 +48,9 @@ function GoogleIcon() {
   );
 }
 
-function SignUpPrompt({ onBack }: { onBack: () => void }) {
-  const { signInWithMagicLink, signInWithGoogle } = useAuth();
-  const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
-  const [errorMsg, setErrorMsg] = useState('');
-
-  const handleMagicLink = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    setStatus('sending');
-    setErrorMsg('');
-    const { error } = await signInWithMagicLink(email);
-    if (error) {
-      setStatus('error');
-      setErrorMsg(error);
-    } else {
-      setStatus('sent');
-    }
-  };
-
-  const handleGoogle = async () => {
-    setStatus('sending');
-    const { error } = await signInWithGoogle();
-    if (error) {
-      setStatus('error');
-      setErrorMsg(error);
-    }
-  };
-
-  return (
-    <div className="relative min-h-screen">
-      <StarryBackground />
-
-      <header className="relative z-10 pt-8 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <button onClick={onBack} className="flex items-center gap-2">
-            <Telescope className="w-5 h-5 text-amber-300" />
-            <span className="text-lg font-serif text-white">Astrologlimpse</span>
-          </button>
-        </div>
-      </header>
-
-      <main className="relative z-10 max-w-md mx-auto px-4 sm:px-6 py-12">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-6">
-            <Sparkles className="w-4 h-4 text-amber-300" />
-            <span className="text-sm text-slate-300 tracking-wide">Your Cosmic Dashboard</span>
-          </div>
-          <h1 className="text-3xl font-serif font-light text-white mb-4">
-            Sign up to unlock your reading
-          </h1>
-          <p className="text-slate-400 text-sm sm:text-base">
-            Your free 10-point cosmic reading is ready. Sign up or log in to claim your reading.
-          </p>
-        </div>
-
-        <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.06] to-white/[0.02] backdrop-blur-xl p-6 sm:p-8">
-          {status === 'sent' ? (
-            <div className="flex items-center gap-3 py-4 px-4 rounded-xl bg-green-500/10 border border-green-400/20">
-              <Check className="w-5 h-5 text-green-400 flex-shrink-0" />
-              <div>
-                <p className="text-green-300 text-sm font-medium">Check your inbox</p>
-                <p className="text-slate-400 text-xs">
-                  We sent a magic link to {email}. Click it to enter your dashboard.
-                </p>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              <form onSubmit={handleMagicLink} className="flex gap-2">
-                <div className="relative flex-1">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="your@email.com"
-                    required
-                    disabled={status === 'sending'}
-                    className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-amber-300/40 focus:bg-white/10 transition-all"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  disabled={status === 'sending'}
-                  className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-[#0a0e27] text-sm font-semibold hover:from-amber-300 hover:to-amber-400 transition-all disabled:opacity-50 flex items-center gap-2 whitespace-nowrap"
-                >
-                  {status === 'sending' ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    'Continue'
-                  )}
-                </button>
-              </form>
-
-              <div className="flex items-center gap-3">
-                <div className="flex-1 h-px bg-white/10" />
-                <span className="text-xs text-slate-500">or</span>
-                <div className="flex-1 h-px bg-white/10" />
-              </div>
-
-              <button
-                onClick={handleGoogle}
-                disabled={status === 'sending'}
-                className="w-full flex items-center justify-center gap-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-medium hover:bg-white/10 transition-all disabled:opacity-50"
-              >
-                <GoogleIcon />
-                Continue with Google
-              </button>
-
-              {status === 'error' && (
-                <p className="text-red-400 text-xs text-center">{errorMsg}</p>
-              )}
-
-              <p className="text-center text-xs text-slate-500">
-                No password needed. We'll send a secure link to your email.
-              </p>
-            </div>
-          )}
-        </div>
-
-        <button
-          onClick={onBack}
-          className="mt-6 mx-auto block text-sm text-slate-500 hover:text-slate-300 transition-colors"
-        >
-          Back to home
-        </button>
-      </main>
-    </div>
-  );
-}
-
 export function Dashboard({ onNavigateHome }: DashboardProps) {
-  const { user, profile, loading, refreshProfile } = useAuth();
+  const { user, profile, loading, refreshProfile, signInWithGoogle, signInWithMagicLink } = useAuth();
+  
   const [selectedSign, setSelectedSign] = useState<string>('');
   const [personalFocus, setPersonalFocus] = useState<string>('');
   const [submitting, setSubmitting] = useState(false);
@@ -186,78 +58,33 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
   const [showPaywall, setShowPaywall] = useState(false);
   const [signDropdownOpen, setSignDropdownOpen] = useState(false);
   const [genError, setGenError] = useState('');
+  
+  // Auth state when user clicks request without being logged in
+  const [showAuthGate, setShowAuthGate] = useState(false);
+  const [email, setEmail] = useState('');
+  const [authStatus, setAuthStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('checkout') === 'success') {
-      refreshProfile();
-      window.history.replaceState({}, '', '/dashboard');
-    }
-  }, [refreshProfile]);
-
-  if (loading) {
-    return (
-      <div className="relative min-h-screen flex items-center justify-center">
-        <StarryBackground />
-        <Loader2 className="w-8 h-8 animate-spin text-amber-300" />
-      </div>
-    );
-  }
-
-  if (!user || !profile) {
-    return <SignUpPrompt onBack={onNavigateHome} />;
-  }
-
-  const isMonthly = profile.subscription_status === 'monthly';
-  const hasWeeklyUnlock =
-    profile.weekly_unlocked_until && new Date(profile.weekly_unlocked_until) > new Date();
-
-  const hasFreeReadingLeft = !profile.has_used_free_reading;
-  const canGenerate = hasFreeReadingLeft || isMonthly || hasWeeklyUnlock;
-
-  const getAllowanceText = () => {
-    if (hasFreeReadingLeft) return '1 Free Initial Reading Available';
-    if (isMonthly) return 'Unlimited Weekly Readings Active';
-    if (hasWeeklyUnlock) return '1 Reading Available This Week';
-    return '0 Readings Left This Week';
-  };
-
-  const handleRequestReading = async () => {
-    if (!selectedSign) {
-      setGenError('Please select your zodiac sign first.');
-      return;
-    }
-    setGenError('');
-
-    if (!canGenerate) {
-      setShowPaywall(true);
-      return;
-    }
-
+  // Helper function to commit the request to Supabase
+  const submitReadingToSupabase = async (sign: string, focus: string, currentUserId: string, currentUserEmail: string) => {
     setSubmitting(true);
-
     try {
-      const userEmail = profile.email || user.email || '';
-
-      // 1. Store request in Supabase
       const { error: requestError } = await supabase
         .from('reading_requests')
         .insert({
-          user_id: user.id,
-          email: userEmail,
-          zodiac_sign: selectedSign,
-          personal_focus: personalFocus || null,
+          user_id: currentUserId,
+          email: currentUserEmail,
+          zodiac_sign: sign,
+          personal_focus: focus || null,
           status: 'pending',
         });
 
       if (requestError) throw requestError;
 
-      // 2. Consume free reading entitlement if applicable
-      if (hasFreeReadingLeft) {
+      if (!profile?.has_used_free_reading) {
         const { error: profileError } = await supabase
           .from('profiles')
           .update({ has_used_free_reading: true })
-          .eq('id', user.id);
+          .eq('id', currentUserId);
 
         if (profileError) throw profileError;
         await refreshProfile();
@@ -268,6 +95,112 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
       setGenError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  // Check for checkout success state AND auto-process pending reading request after login
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('checkout') === 'success') {
+      refreshProfile();
+      window.history.replaceState({}, '', '/dashboard');
+    }
+
+    // Auto-fulfill saved request if coming back from OAuth redirect
+    if (user && profile) {
+      const pendingRaw = localStorage.getItem(PENDING_REQUEST_KEY);
+      if (pendingRaw) {
+        try {
+          const pending = JSON.parse(pendingRaw);
+          localStorage.removeItem(PENDING_REQUEST_KEY);
+          setSelectedSign(pending.sign);
+          setPersonalFocus(pending.focus || '');
+          submitReadingToSupabase(pending.sign, pending.focus, user.id, profile.email || user.email || '');
+        } catch (e) {
+          console.error('Failed to parse pending reading request', e);
+        }
+      }
+    }
+  }, [user, profile, refreshProfile]);
+
+  if (loading) {
+    return (
+      <div className="relative min-h-screen flex items-center justify-center">
+        <StarryBackground />
+        <Loader2 className="w-8 h-8 animate-spin text-amber-300" />
+      </div>
+    );
+  }
+
+  // Permissions & Entitlements
+  const isMonthly = profile?.subscription_status === 'monthly';
+  const hasWeeklyUnlock =
+    profile?.weekly_unlocked_until && new Date(profile.weekly_unlocked_until) > new Date();
+  const hasFreeReadingLeft = !profile || !profile.has_used_free_reading;
+  const canGenerate = !user || hasFreeReadingLeft || isMonthly || hasWeeklyUnlock;
+
+  const getAllowanceText = () => {
+    if (!user) return '1 Free Initial Reading Available';
+    if (hasFreeReadingLeft) return '1 Free Initial Reading Available';
+    if (isMonthly) return 'Unlimited Weekly Readings Active';
+    if (hasWeeklyUnlock) return '1 Reading Available This Week';
+    return '0 Readings Left This Week';
+  };
+
+  const handleRequestClick = async () => {
+    if (!selectedSign) {
+      setGenError('Please select your zodiac sign first.');
+      return;
+    }
+    setGenError('');
+
+    // If user is not logged in, prompt Auth options
+    if (!user) {
+      // Save choices to localStorage in case they use Google OAuth redirect
+      localStorage.setItem(PENDING_REQUEST_KEY, JSON.stringify({
+        sign: selectedSign,
+        focus: personalFocus,
+      }));
+      setShowAuthGate(true);
+      return;
+    }
+
+    if (!canGenerate) {
+      setShowPaywall(true);
+      return;
+    }
+
+    await submitReadingToSupabase(selectedSign, personalFocus, user.id, profile?.email || user.email || '');
+  };
+
+  const handleGoogleSignIn = async () => {
+    setAuthStatus('sending');
+    // Save state before redirecting
+    localStorage.setItem(PENDING_REQUEST_KEY, JSON.stringify({
+      sign: selectedSign,
+      focus: personalFocus,
+    }));
+    const { error } = await signInWithGoogle();
+    if (error) {
+      setAuthStatus('error');
+      setGenError(error);
+    }
+  };
+
+  const handleMagicLinkSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    setAuthStatus('sending');
+    localStorage.setItem(PENDING_REQUEST_KEY, JSON.stringify({
+      sign: selectedSign,
+      focus: personalFocus,
+    }));
+    const { error } = await signInWithMagicLink(email);
+    if (error) {
+      setAuthStatus('error');
+      setGenError(error);
+    } else {
+      setAuthStatus('sent');
     }
   };
 
@@ -282,7 +215,17 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
             <Telescope className="w-5 h-5 text-amber-300" />
             <span className="text-lg font-serif text-white">Astrologlimpse</span>
           </button>
-          <span className="text-sm text-slate-400">{profile.email || user.email}</span>
+          {user ? (
+            <span className="text-sm text-slate-400">{profile?.email || user.email}</span>
+          ) : (
+            <button
+              onClick={() => setShowAuthGate(true)}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs text-slate-300 hover:bg-white/10 transition-all"
+            >
+              <LogIn className="w-3.5 h-3.5 text-amber-300" />
+              Sign In
+            </button>
+          )}
         </div>
       </header>
 
@@ -319,7 +262,7 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
             </div>
             <h3 className="text-2xl font-serif text-white mb-2">Reading Request Received!</h3>
             <p className="text-slate-300 text-sm max-w-md mx-auto mb-6">
-              Your request for <strong className="text-amber-200">{selectedSign}</strong> has been logged. We are preparing your reading and will deliver it directly to <strong className="text-white">{profile.email || user.email}</strong>.
+              Your request for <strong className="text-amber-200">{selectedSign}</strong> has been logged. We are preparing your reading and will deliver it directly to <strong className="text-white">{profile?.email || user?.email}</strong>.
             </p>
             <button
               onClick={() => {
@@ -395,32 +338,90 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
               </p>
             </div>
 
-            {/* Submit request button */}
-            <button
-              onClick={handleRequestReading}
-              disabled={submitting || !selectedSign}
-              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-[#0a0e27] font-semibold hover:from-amber-300 hover:to-amber-400 transition-all disabled:opacity-50"
-            >
-              {submitting ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  Submitting Request...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-5 h-5" />
-                  {hasFreeReadingLeft
-                    ? 'Request My Free Cosmic Reading'
-                    : 'Request My Cosmic Reading'}
-                </>
-              )}
-            </button>
+            {/* If Auth Gate triggered for unauthenticated user */}
+            {showAuthGate && !user ? (
+              <div className="mt-6 pt-6 border-t border-white/10 space-y-4 animate-[fadeIn_0.3s_ease-out]">
+                <p className="text-center text-sm text-amber-200 font-medium">
+                  Sign in to deliver your {selectedSign || ''} reading:
+                </p>
+
+                {authStatus === 'sent' ? (
+                  <div className="flex items-center gap-3 py-3 px-4 rounded-xl bg-green-500/10 border border-green-400/20">
+                    <Check className="w-5 h-5 text-green-400 flex-shrink-0" />
+                    <div>
+                      <p className="text-green-300 text-sm font-medium">Magic link sent!</p>
+                      <p className="text-slate-400 text-xs">Check your inbox to finalize your request.</p>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <button
+                      onClick={handleGoogleSignIn}
+                      disabled={authStatus === 'sending'}
+                      className="w-full flex items-center justify-center gap-3 py-3 rounded-xl bg-white/10 border border-white/20 text-white text-sm font-medium hover:bg-white/20 transition-all disabled:opacity-50"
+                    >
+                      <GoogleIcon />
+                      Continue with Google
+                    </button>
+
+                    <div className="flex items-center gap-3">
+                      <div className="flex-1 h-px bg-white/10" />
+                      <span className="text-xs text-slate-500">or use email</span>
+                      <div className="flex-1 h-px bg-white/10" />
+                    </div>
+
+                    <form onSubmit={handleMagicLinkSignIn} className="flex gap-2">
+                      <div className="relative flex-1">
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                        <input
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="your@email.com"
+                          required
+                          disabled={authStatus === 'sending'}
+                          className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-amber-300/40 focus:bg-white/10 transition-all"
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={authStatus === 'sending'}
+                        className="px-4 py-2.5 rounded-xl bg-amber-400 text-[#0a0e27] text-sm font-semibold hover:bg-amber-300 transition-all disabled:opacity-50 whitespace-nowrap"
+                      >
+                        {authStatus === 'sending' ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Continue'}
+                      </button>
+                    </form>
+                  </>
+                )}
+              </div>
+            ) : (
+              /* Standard Submit Button */
+              <button
+                onClick={handleRequestClick}
+                disabled={submitting || !selectedSign}
+                className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-[#0a0e27] font-semibold hover:from-amber-300 hover:to-amber-400 transition-all disabled:opacity-50"
+              >
+                {submitting ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Submitting Request...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-5 h-5" />
+                    {hasFreeReadingLeft
+                      ? 'Request My Free Cosmic Reading'
+                      : 'Request My Cosmic Reading'}
+                  </>
+                )}
+              </button>
+            )}
 
             {genError && (
               <p className="mt-3 text-red-400 text-xs text-center">{genError}</p>
             )}
 
-            {!canGenerate && (
+            {user && !canGenerate && (
               <p className="mt-3 text-center text-xs text-slate-500">
                 You have used your free reading. A subscription or weekly unlock is required for additional reading requests.
               </p>
@@ -433,8 +434,8 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
           <ZodiacExplorer />
         </div>
 
-        {/* Account settings with paywall modal trigger */}
-        <AccountSettings onOpenPaywall={() => setShowPaywall(true)} />
+        {/* Account settings with paywall modal trigger (Only when logged in) */}
+        {user && <AccountSettings onOpenPaywall={() => setShowPaywall(true)} />}
       </main>
 
       {/* Paywall */}
