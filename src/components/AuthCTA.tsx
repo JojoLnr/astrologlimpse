@@ -2,6 +2,13 @@ import { useState } from 'react';
 import { Mail, Sparkles, Loader2, Check } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
+// Add TypeScript definition for gtag to avoid linting errors
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+  }
+}
+
 function GoogleIcon() {
   return (
     <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -12,6 +19,21 @@ function GoogleIcon() {
     </svg>
   );
 }
+
+// Helper function to trigger Google Ads conversion
+const trackSignUpConversion = () => {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', 'conversion', {
+      'send_to': 'AW-718364257/RdNnCNzboPscEOG8xdYC',
+      // Optional: pass value if you track lead value
+      // 'value': 1.0,
+      // 'currency': 'USD'
+    });
+    console.log('Google Ads Sign-up conversion tracked.');
+  } else {
+    console.warn('Google tag (gtag) not found. Ensure the global snippet is installed in index.html.');
+  }
+};
 
 export function AuthCTA() {
   const { signInWithMagicLink, signInWithGoogle } = useAuth();
@@ -24,11 +46,15 @@ export function AuthCTA() {
     if (!email) return;
     setStatus('sending');
     setErrorMsg('');
+    
     const { error } = await signInWithMagicLink(email);
+    
     if (error) {
       setStatus('error');
       setErrorMsg(error);
     } else {
+      // --- SUCCESS HANDLER FOR MAGIC LINK ---
+      trackSignUpConversion(); 
       setStatus('sent');
     }
   };
@@ -36,9 +62,15 @@ export function AuthCTA() {
   const handleGoogle = async () => {
     setStatus('sending');
     const { error } = await signInWithGoogle();
+    
     if (error) {
       setStatus('error');
       setErrorMsg(error);
+    } else {
+      // --- SUCCESS HANDLER FOR GOOGLE OAUTH ---
+      // Note: Depending on how your AuthContext handles redirect flow,
+      // this might fire immediately or after returning from Google.
+      trackSignUpConversion();
     }
   };
 
