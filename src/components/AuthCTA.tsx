@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, Sparkles, Loader2, Check } from 'lucide-react';
+import { Sparkles, Loader2 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
 // Add TypeScript definition for gtag to avoid linting errors
@@ -25,9 +25,6 @@ const trackSignUpConversion = () => {
   if (typeof window !== 'undefined' && window.gtag) {
     window.gtag('event', 'conversion', {
       'send_to': 'AW-718364257/RdNnCNzboPscEOG8xdYC',
-      // Optional: pass value if you track lead value
-      // 'value': 1.0,
-      // 'currency': 'USD'
     });
     console.log('Google Ads Sign-up conversion tracked.');
   } else {
@@ -36,40 +33,20 @@ const trackSignUpConversion = () => {
 };
 
 export function AuthCTA() {
-  const { signInWithMagicLink, signInWithGoogle } = useAuth();
-  const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const { signInWithGoogle } = useAuth();
+  const [status, setStatus] = useState<'idle' | 'sending' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
-
-  const handleMagicLink = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    setStatus('sending');
-    setErrorMsg('');
-    
-    const { error } = await signInWithMagicLink(email);
-    
-    if (error) {
-      setStatus('error');
-      setErrorMsg(error);
-    } else {
-      // --- SUCCESS HANDLER FOR MAGIC LINK ---
-      trackSignUpConversion(); 
-      setStatus('sent');
-    }
-  };
 
   const handleGoogle = async () => {
     setStatus('sending');
+    setErrorMsg('');
+    
     const { error } = await signInWithGoogle();
     
     if (error) {
       setStatus('error');
       setErrorMsg(error);
     } else {
-      // --- SUCCESS HANDLER FOR GOOGLE OAUTH ---
-      // Note: Depending on how your AuthContext handles redirect flow,
-      // this might fire immediately or after returning from Google.
       trackSignUpConversion();
     }
   };
@@ -92,71 +69,35 @@ export function AuthCTA() {
                   Get your free reading package!
                 </h3>
                 <p className="text-amber-200/70 text-sm">
-                  Sent directly to your email address within 5 days
+                  Sign in to instantly claim your reading
                 </p>
               </div>
             </div>
 
-            {status === 'sent' ? (
-              <div className="flex items-center gap-3 py-4 px-4 rounded-xl bg-green-500/10 border border-green-400/20">
-                <Check className="w-5 h-5 text-green-400 flex-shrink-0" />
-                <div>
-                  <p className="text-green-300 text-sm font-medium">Check your inbox</p>
-                  <p className="text-slate-400 text-xs">We sent a magic link to {email}. Click it to enter your dashboard.</p>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                <form onSubmit={handleMagicLink} className="flex gap-2">
-                  <div className="relative flex-1">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="your@email.com"
-                      required
-                      disabled={status === 'sending'}
-                      className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-amber-300/40 focus:bg-white/10 transition-all"
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    disabled={status === 'sending'}
-                    className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-[#0a0e27] text-sm font-semibold hover:from-amber-300 hover:to-amber-400 transition-all disabled:opacity-50 flex items-center gap-2 whitespace-nowrap"
-                  >
-                    {status === 'sending' ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      'Continue'
-                    )}
-                  </button>
-                </form>
-
-                <div className="flex items-center gap-3">
-                  <div className="flex-1 h-px bg-white/10" />
-                  <span className="text-xs text-slate-500">or</span>
-                  <div className="flex-1 h-px bg-white/10" />
-                </div>
-
-                <button
-                  onClick={handleGoogle}
-                  disabled={status === 'sending'}
-                  className="w-full flex items-center justify-center gap-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-medium hover:bg-white/10 transition-all disabled:opacity-50"
-                >
-                  <GoogleIcon />
-                  Continue with Google
-                </button>
-
-                {status === 'error' && (
-                  <p className="text-red-400 text-xs text-center">{errorMsg}</p>
+            <div className="space-y-3">
+              <button
+                onClick={handleGoogle}
+                disabled={status === 'sending'}
+                className="w-full flex items-center justify-center gap-3 py-3 rounded-xl bg-white/10 border border-white/20 text-white text-sm font-semibold hover:bg-white/20 transition-all disabled:opacity-50"
+              >
+                {status === 'sending' ? (
+                  <Loader2 className="w-5 h-5 animate-spin text-amber-300" />
+                ) : (
+                  <>
+                    <GoogleIcon />
+                    <span>Continue with Google</span>
+                  </>
                 )}
+              </button>
 
-                <p className="text-center text-xs text-slate-500">
-                  No password needed. We'll send a secure link to your email.
-                </p>
-              </div>
-            )}
+              {status === 'error' && (
+                <p className="text-red-400 text-xs text-center">{errorMsg}</p>
+              )}
+
+              <p className="text-center text-xs text-slate-500">
+                Fast and secure sign-in with your Google account.
+              </p>
+            </div>
           </div>
         </div>
       </div>
