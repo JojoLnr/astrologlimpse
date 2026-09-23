@@ -11,7 +11,6 @@ import {
   Loader2,
   ChevronDown,
   Telescope,
-  Mail,
   Check,
   Compass,
   HeartHandshake,
@@ -44,7 +43,7 @@ function GoogleIcon() {
 }
 
 export function Dashboard({ onNavigateHome }: DashboardProps) {
-  const { user, profile, loading, refreshProfile, signInWithGoogle, signInWithMagicLink } = useAuth();
+  const { user, profile, loading, refreshProfile, signInWithGoogle } = useAuth();
   
   const [selectedSign, setSelectedSign] = useState<string>('');
   const [personalFocus, setPersonalFocus] = useState<string>('');
@@ -55,8 +54,7 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
   const [genError, setGenError] = useState('');
   
   const [showAuthGate, setShowAuthGate] = useState(false);
-  const [email, setEmail] = useState('');
-  const [authStatus, setAuthStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [authStatus, setAuthStatus] = useState<'idle' | 'sending' | 'error'>('idle');
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const submitReadingToSupabase = async (sign: string, focus: string, currentUserId: string, currentUserEmail: string) => {
@@ -163,21 +161,10 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
     setAuthStatus('sending');
     localStorage.setItem(PENDING_REQUEST_KEY, JSON.stringify({ sign: selectedSign, focus: personalFocus }));
     const { error } = await signInWithGoogle();
-    if (error) { setAuthStatus('error'); setGenError(error); }
-  };
-
-  const handleMagicLinkSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    if (!personalFocus.trim()) {
-      setGenError('Please enter your personal focus or question.');
-      return;
+    if (error) { 
+      setAuthStatus('error'); 
+      setGenError(error); 
     }
-    setGenError('');
-    setAuthStatus('sending');
-    localStorage.setItem(PENDING_REQUEST_KEY, JSON.stringify({ sign: selectedSign, focus: personalFocus }));
-    const { error } = await signInWithMagicLink(email);
-    if (error) { setAuthStatus('error'); setGenError(error); } else { setAuthStatus('sent'); }
   };
 
   const faqs = [
@@ -339,58 +326,22 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
             {/* Auth Gate or Main CTA */}
             {showAuthGate && !user ? (
               <div className="mt-6 pt-6 border-t border-white/10 space-y-4 animate-[fadeIn_0.3s_ease-out]">
-                <p className="text-center text-sm text-amber-200 font-medium">
+                <p className="text-center text-sm text-amber-200 font-medium mb-4">
                   Where should we send your free {selectedSign || ''} reading?
                 </p>
 
-                {authStatus === 'sent' ? (
-                  <div className="flex items-center gap-3 py-3 px-4 rounded-xl bg-green-500/10 border border-green-400/20">
-                    <Check className="w-5 h-5 text-green-400 flex-shrink-0" />
-                    <div>
-                      <p className="text-green-300 text-sm font-medium">Magic link sent!</p>
-                      <p className="text-slate-400 text-xs">Check your email to view your reading instantly.</p>
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    <button
-                      onClick={handleGoogleSignIn}
-                      disabled={authStatus === 'sending' || !personalFocus.trim()}
-                      className="w-full flex items-center justify-center gap-3 py-3.5 rounded-xl bg-white/10 border border-white/20 text-white text-sm font-medium hover:bg-white/20 transition-all disabled:opacity-50"
-                    >
-                      <GoogleIcon />
-                      Continue with Google (Instant)
-                    </button>
-
-                    <div className="flex items-center gap-3">
-                      <div className="flex-1 h-px bg-white/10" />
-                      <span className="text-xs text-slate-500">or use email</span>
-                      <div className="flex-1 h-px bg-white/10" />
-                    </div>
-
-                    <form onSubmit={handleMagicLinkSignIn} className="flex gap-2">
-                      <div className="relative flex-1">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                        <input
-                          type="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          placeholder="your@email.com"
-                          required
-                          disabled={authStatus === 'sending'}
-                          className="w-full pl-10 pr-3 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-amber-300/40 focus:bg-white/10 transition-all"
-                        />
-                      </div>
-                      <button
-                        type="submit"
-                        disabled={authStatus === 'sending' || !personalFocus.trim()}
-                        className="px-5 py-3 rounded-xl bg-amber-400 text-[#0a0e27] text-sm font-semibold hover:bg-amber-300 transition-all disabled:opacity-50 whitespace-nowrap"
-                      >
-                        {authStatus === 'sending' ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Deliver Reading'}
-                      </button>
-                    </form>
-                  </>
-                )}
+                <button
+                  onClick={handleGoogleSignIn}
+                  disabled={authStatus === 'sending' || !personalFocus.trim()}
+                  className="w-full flex items-center justify-center gap-3 py-3.5 rounded-xl bg-white/10 border border-white/20 text-white text-sm font-medium hover:bg-white/20 transition-all disabled:opacity-50"
+                >
+                  {authStatus === 'sending' ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <GoogleIcon />
+                  )}
+                  Continue with Google (Instant)
+                </button>
               </div>
             ) : (
               <button
