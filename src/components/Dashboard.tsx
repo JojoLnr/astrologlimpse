@@ -48,7 +48,6 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
   
   const [selectedSign, setSelectedSign] = useState<string>('');
   const [personalFocus, setPersonalFocus] = useState<string>('');
-  const [showOptionalFocus, setShowOptionalFocus] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [requestSubmitted, setRequestSubmitted] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
@@ -135,6 +134,10 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
       setGenError('Please select your zodiac sign first.');
       return;
     }
+    if (!personalFocus.trim()) {
+      setGenError('Please enter your personal focus or question.');
+      return;
+    }
     setGenError('');
 
     if (!user) {
@@ -152,6 +155,11 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
   };
 
   const handleGoogleSignIn = async () => {
+    if (!personalFocus.trim()) {
+      setGenError('Please enter your personal focus or question.');
+      return;
+    }
+    setGenError('');
     setAuthStatus('sending');
     localStorage.setItem(PENDING_REQUEST_KEY, JSON.stringify({ sign: selectedSign, focus: personalFocus }));
     const { error } = await signInWithGoogle();
@@ -161,6 +169,11 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
   const handleMagicLinkSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
+    if (!personalFocus.trim()) {
+      setGenError('Please enter your personal focus or question.');
+      return;
+    }
+    setGenError('');
     setAuthStatus('sending');
     localStorage.setItem(PENDING_REQUEST_KEY, JSON.stringify({ sign: selectedSign, focus: personalFocus }));
     const { error } = await signInWithMagicLink(email);
@@ -303,34 +316,24 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
               </div>
             </div>
 
-            {/* Step 2: Collapsible Focus Box */}
+            {/* Step 2: Mandatory Focus Box */}
             <div className="mb-8">
-              {!showOptionalFocus ? (
-                <button
-                  type="button"
-                  onClick={() => setShowOptionalFocus(true)}
-                  className="text-xs text-amber-300 hover:text-amber-200 flex items-center gap-1.5 transition-colors"
-                >
-                  <HeartHandshake className="w-3.5 h-3.5" />
-                  <span>+ Add a personal focus or question (Optional)</span>
-                </button>
-              ) : (
-                <div className="animate-[fadeIn_0.3s_ease-out]">
-                  <label className="flex items-center justify-between text-sm text-slate-300 mb-1.5">
-                    <span>2. Personal Focus or Preoccupations</span>
-                    <button type="button" onClick={() => { setShowOptionalFocus(false); setPersonalFocus(''); }} className="text-xs text-slate-500 hover:text-slate-300">
-                      Remove
-                    </button>
-                  </label>
-                  <textarea
-                    value={personalFocus}
-                    onChange={(e) => setPersonalFocus(e.target.value)}
-                    rows={2}
-                    placeholder="e.g., Career decisions, relationship choices, or upcoming life changes..."
-                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-amber-300/40 focus:bg-white/10 transition-all resize-none"
-                  />
-                </div>
-              )}
+              <div className="animate-[fadeIn_0.3s_ease-out]">
+                <label className="flex items-center justify-between text-sm text-slate-300 mb-1.5">
+                  <span>2. Personal Focus or Preoccupations (Required)</span>
+                </label>
+                <textarea
+                  value={personalFocus}
+                  onChange={(e) => {
+                    setPersonalFocus(e.target.value);
+                    if (e.target.value.trim()) setGenError('');
+                  }}
+                  rows={2}
+                  required
+                  placeholder="e.g., Career decisions, relationship choices, or upcoming life changes..."
+                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-amber-300/40 focus:bg-white/10 transition-all resize-none"
+                />
+              </div>
             </div>
 
             {/* Auth Gate or Main CTA */}
@@ -352,7 +355,7 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
                   <>
                     <button
                       onClick={handleGoogleSignIn}
-                      disabled={authStatus === 'sending'}
+                      disabled={authStatus === 'sending' || !personalFocus.trim()}
                       className="w-full flex items-center justify-center gap-3 py-3.5 rounded-xl bg-white/10 border border-white/20 text-white text-sm font-medium hover:bg-white/20 transition-all disabled:opacity-50"
                     >
                       <GoogleIcon />
@@ -380,7 +383,7 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
                       </div>
                       <button
                         type="submit"
-                        disabled={authStatus === 'sending'}
+                        disabled={authStatus === 'sending' || !personalFocus.trim()}
                         className="px-5 py-3 rounded-xl bg-amber-400 text-[#0a0e27] text-sm font-semibold hover:bg-amber-300 transition-all disabled:opacity-50 whitespace-nowrap"
                       >
                         {authStatus === 'sending' ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Deliver Reading'}
@@ -392,7 +395,7 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
             ) : (
               <button
                 onClick={handleRequestClick}
-                disabled={submitting || !selectedSign}
+                disabled={submitting || !selectedSign || !personalFocus.trim()}
                 className="w-full flex items-center justify-center gap-2 py-4 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-[#0a0e27] font-bold text-base hover:from-amber-300 hover:to-amber-400 transition-all shadow-lg shadow-amber-500/20 disabled:opacity-50"
               >
                 {submitting ? (
@@ -469,7 +472,7 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
             <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/10 text-center">
               <div className="w-10 h-10 rounded-full bg-amber-300/10 text-amber-300 font-serif font-bold text-lg flex items-center justify-center mx-auto mb-4">1</div>
               <h3 className="text-white font-medium mb-2">Select Your Sign</h3>
-              <p className="text-slate-400 text-xs leading-relaxed">Pick your zodiac sign and optionally enter any career or relationship questions on your mind.</p>
+              <p className="text-slate-400 text-xs leading-relaxed">Pick your zodiac sign and enter any career or relationship questions on your mind.</p>
             </div>
 
             <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/10 text-center">
