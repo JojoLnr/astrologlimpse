@@ -1,0 +1,44 @@
+[33mfcb1cf3[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Update dashboard components, styling, and Google auth
+[33m82e8074[m Remove email state and magic link sign-in logic
+[33mb2e37c5[m Make personal focus input mandatory
+[33md67fe78[m Remove magic link sign-in and update Google sign-in
+[33m69d900f[m Add gtag TypeScript definition and conversion tracking
+[33m71d82d1[m Update Dashboard.tsx
+[33m7912ee5[m Update Dashboard.tsx
+[33m9045f5b[m Integrate Google Analytics tracking code
+[33mf6a0b3f[m Implement user authentication and request handling
+[33m60813ad[m Revise zodiac significance descriptions
+[33m6ac9790[m Changed a single sentence
+[33m41bab4d[m Update router to use HTML5 history API for clean dashboard URLs
+[33m508f85e[m Update router to use HTML5 history API for clean dashboard URLs
+[33mc5e1d17[m Update router to use HTML5 history API for clean dashboard URLs
+[33m7294b46[m Update router to use HTML5 history API for clean dashboard URLs
+[33mdfec1ee[m Update router to use HTML5 history API for clean dashboard URLs
+[33m3de0660[m Update router to use HTML5 history API for clean dashboard URLs
+[33m528bba6[m Update router to use HTML5 history API for clean dashboard URLs
+[33m97e2f4e[m Update router to use HTML5 history API for clean dashboard URLs
+[33m9f03691[m Update router to use HTML5 history API for clean dashboard URLs
+[33m58c54c3[m Fix vercel.json root location
+[33mb5d92e5[m Add vercel.json routing rewrite
+[33m6cf49b6[m Ensure dynamic OAuth redirect
+[33mb27a810[m Fix Tailwind v4 import in index.css
+[33m2f65f13[m Update source and supabase components with minimalist mystic UI
+[33m8699ac1[m[33m ([m[1;32mupdate-ui-v2[m[33m, [m[1;32mfeature/minimalist-mystic-revamp[m[33m)[m Update website code
+[33mcb780a3[m Update website code
+[33m526d7fc[m Add @vercel/analytics dependency
+[33maf9014e[m Update website code
+[33m6785fa3[m Describe your update here
+[33ma75719a[m Describe your update here
+[33ma72be0e[m Describe your update here
+[33m3f2444f[m Describe your update here
+[33m79c9191[m Describe your update here
+[33m10a9346[m Describe your update here
+[33mbea8882[m Describe your update here
+[33m2ebfcee[m Describe your update here
+[33m959e5a7[m Describe your update here
+[33m236cfbf[m Describe your update here
+[33me97b1ad[m Describe your update here
+[33m2f98fea[m Describe your update here
+[33m2b54e17[m Update website code
+[33m5f5f927[m Recreate CNAME file
+[33m02308f7[m Fresh deployment update
