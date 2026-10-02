@@ -1,18 +1,22 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-midnight-950: #0a0d1a;
+  --font-serif: 'Fraunces', 'Georgia', serif;
+}
 
 @layer base {
   html {
     scroll-behavior: smooth;
   }
   body {
-    @apply bg-midnight-950 text-slate-300 antialiased;
+    background-color: var(--color-midnight-950);
+    color: #cbd5e1; /* slate-300 fallback */
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   }
   .font-serif {
-    font-family: 'Fraunces', 'Georgia', serif;
+    font-family: var(--font-serif);
     font-feature-settings: 'ss01';
   }
 }
