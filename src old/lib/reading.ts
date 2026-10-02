@@ -52,7 +52,7 @@ export function generateReading(sign: ZodiacSign): ReadingPoint[] {
     },
     {
       title: 'Emotional Landscape',
-      description: `The waters within you run deep. ${elementTheme[2]}. Honor your feelings as messengers, for they carry wisdom that logic alone cannot reach.`,
+      description: `The waters within you run deep. ${elementTheme[2]}. Honor your feelings as messengers — they carry wisdom that logic alone cannot reach.`,
     },
     {
       title: 'Spiritual Growth',
@@ -64,11 +64,11 @@ export function generateReading(sign: ZodiacSign): ReadingPoint[] {
     },
     {
       title: 'Manifestation Power',
-      description: `Your ${sign.strengths[3].toLowerCase()} energy is a magnet for abundance. Focus your intention like a laser: what you envision with clarity and conviction, the universe conspires to deliver.`,
+      description: `Your ${sign.strengths[3].toLowerCase()} energy is a magnet for abundance. Focus your intention like a laser — what you envision with clarity and conviction, the universe conspires to deliver.`,
     },
     {
       title: 'Cosmic Blessing',
-      description: `The stars bestow upon you the gift of ${sign.strengths[4].toLowerCase()}. Carry it as your torch through the coming cycle. You are a child of the cosmos, ${sign.name}: never forget that the universe dreamed you into being on purpose.`,
+      description: `The stars bestow upon you the gift of ${sign.strengths[4].toLowerCase()}. Carry it as your torch through the coming cycle. You are a child of the cosmos, ${sign.name} — never forget that the universe dreamed you into being on purpose.`,
     },
   ];
 }

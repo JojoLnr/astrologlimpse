@@ -11,28 +11,28 @@ interface Star {
 
 export function StarryBackground() {
   const stars = useMemo<Star[]>(() => {
-    return Array.from({ length: 60 }, () => ({
+    return Array.from({ length: 80 }, () => ({
       top: `${Math.random() * 100}%`,
       left: `${Math.random() * 100}%`,
-      size: Math.random() * 1.5 + 0.5,
-      delay: `${Math.random() * 6}s`,
-      duration: `${Math.random() * 4 + 3}s`,
-      opacity: Math.random() * 0.5 + 0.2,
+      size: Math.random() * 2 + 1,
+      delay: `${Math.random() * 5}s`,
+      duration: `${Math.random() * 3 + 2}s`,
+      opacity: Math.random() * 0.7 + 0.3,
     }));
   }, []);
 
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#060814] via-[#0a0d1a] to-[#060814]" />
-      {/* Subtle nebula glows */}
-      <div className="absolute top-[-5%] left-[15%] w-[600px] h-[600px] rounded-full bg-champagne-500/[0.03] blur-[140px]" />
-      <div className="absolute bottom-[-5%] right-[5%] w-[500px] h-[500px] rounded-full bg-champagne-400/[0.02] blur-[120px]" />
-      <div className="absolute top-[35%] right-[25%] w-[350px] h-[350px] rounded-full bg-blue-950/20 blur-[100px]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0e27] via-[#0d1b3e] to-[#050816]" />
+      {/* Nebula glow */}
+      <div className="absolute top-[-10%] left-[20%] w-[500px] h-[500px] rounded-full bg-blue-900/20 blur-[120px]" />
+      <div className="absolute bottom-[-10%] right-[10%] w-[400px] h-[400px] rounded-full bg-indigo-900/15 blur-[100px]" />
+      <div className="absolute top-[40%] right-[30%] w-[300px] h-[300px] rounded-full bg-cyan-900/10 blur-[80px]" />
       {/* Stars */}
       {stars.map((star, i) => (
         <div
           key={i}
-          className="absolute rounded-full bg-champagne-100"
+          className="absolute rounded-full bg-white"
           style={{
             top: star.top,
             left: star.left,

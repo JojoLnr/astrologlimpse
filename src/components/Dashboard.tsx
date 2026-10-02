@@ -1,265 +1,96 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { zodiacSigns } from '@/lib/zodiac';
+import { ZodiacSymbol } from '@/components/ZodiacArt';
+import { ReadingDisplay } from '@/components/ReadingDisplay';
 import { AccountSettings } from '@/components/AccountSettings';
 import { PaywallModal } from '@/components/PaywallModal';
 import { StarryBackground } from '@/components/StarryBackground';
+import { BlurredDashboard } from '@/components/BlurredDashboard';
+import { NatalWheel } from '@/components/NatalWheel';
 import { ZodiacExplorer } from '@/components/ZodiacExplorer';
 import {
-  Sparkles,
-  Loader2,
-  ChevronDown,
-  Telescope,
-  Mail,
-  Check,
-  Compass,
-  HeartHandshake,
-  CheckCircle2,
-  Star,
-  Quote
+  Sparkles, Loader2, ChevronDown, Check, Compass, HeartHandshake,
+  CheckCircle2, Sun, Moon, ArrowUpRight, Zap, TrendingUp, Heart,
+  Lock, Calendar, Globe, ArrowUp,
 } from 'lucide-react';
 
 interface DashboardProps {
   onNavigateHome: () => void;
 }
 
-function GoogleIcon() {
-  return (
-    <svg className="w-5 h-5" viewBox="0 0 24 24">
-      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-    </svg>
-  );
-}
-
-function SignUpPrompt({ onBack }: { onBack: () => void }) {
-  const { signInWithMagicLink, signInWithGoogle } = useAuth();
-  const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
-  const [errorMsg, setErrorMsg] = useState('');
-
-  const handleMagicLink = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    setStatus('sending');
-    setErrorMsg('');
-    const { error } = await signInWithMagicLink(email);
-    if (error) {
-      setStatus('error');
-      setErrorMsg(error);
-    } else {
-      setStatus('sent');
-    }
-  };
-
-  const handleGoogle = async () => {
-    setStatus('sending');
-    const { error } = await signInWithGoogle();
-    if (error) {
-      setStatus('error');
-      setErrorMsg(error);
-    }
-  };
-
-  return (
-    <div className="relative min-h-screen">
-      <StarryBackground />
-
-      <header className="relative z-10 pt-8 px-4 sm:px-6">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <button onClick={onBack} className="flex items-center gap-2">
-            <Telescope className="w-5 h-5 text-amber-300" />
-            <span className="text-lg font-serif text-white">Astrologlimpse</span>
-          </button>
-        </div>
-      </header>
-
-      {/* Expanded max width to accommodate the testimonial grid, wrapped the auth box in max-w-md to keep it centered */}
-      <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-12">
-        <div className="max-w-md mx-auto">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-6">
-              <Sparkles className="w-4 h-4 text-amber-300" />
-              <span className="text-sm text-slate-300 tracking-wide">Your Cosmic Dashboard</span>
-            </div>
-            <h1 className="text-3xl font-serif font-light text-white mb-4">
-              Sign up to unlock your reading
-            </h1>
-            <p className="text-slate-400 text-sm sm:text-base">
-              Your free 10-point cosmic reading is ready. Sign up or log in to claim your reading.
-            </p>
-          </div>
-
-          <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.06] to-white/[0.02] backdrop-blur-xl p-6 sm:p-8">
-            {status === 'sent' ? (
-              <div className="flex items-center gap-3 py-4 px-4 rounded-xl bg-green-500/10 border border-green-400/20">
-                <Check className="w-5 h-5 text-green-400 flex-shrink-0" />
-                <div>
-                  <p className="text-green-300 text-sm font-medium">Check your inbox</p>
-                  <p className="text-slate-400 text-xs">
-                    We sent a magic link to {email}. Click it to enter your dashboard.
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                <form onSubmit={handleMagicLink} className="flex gap-2">
-                  <div className="relative flex-1">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="your@email.com"
-                      required
-                      disabled={status === 'sending'}
-                      className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-amber-300/40 focus:bg-white/10 transition-all"
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    disabled={status === 'sending'}
-                    className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-[#0a0e27] text-sm font-semibold hover:from-amber-300 hover:to-amber-400 transition-all disabled:opacity-50 flex items-center gap-2 whitespace-nowrap"
-                  >
-                    {status === 'sending' ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      'Continue'
-                    )}
-                  </button>
-                </form>
-
-                <div className="flex items-center gap-3">
-                  <div className="flex-1 h-px bg-white/10" />
-                  <span className="text-xs text-slate-500">or</span>
-                  <div className="flex-1 h-px bg-white/10" />
-                </div>
-
-                <button
-                  onClick={handleGoogle}
-                  disabled={status === 'sending'}
-                  className="w-full flex items-center justify-center gap-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-medium hover:bg-white/10 transition-all disabled:opacity-50"
-                >
-                  <GoogleIcon />
-                  Continue with Google
-                </button>
-
-                {status === 'error' && (
-                  <p className="text-red-400 text-xs text-center">{errorMsg}</p>
-                )}
-
-                <p className="text-center text-xs text-slate-500">
-                  No password needed. We'll send a secure link to your email.
-                </p>
-              </div>
-            )}
-          </div>
-
-          <button
-            onClick={onBack}
-            className="mt-6 mx-auto block text-sm text-slate-500 hover:text-slate-300 transition-colors"
-          >
-            Back to home
-          </button>
-        </div>
-
-        {/* New Social Proof & Testimonials Section */}
-        <div className="mt-24 pt-16 border-t border-white/10">
-          <div className="text-center mb-10">
-            <div className="flex items-center justify-center gap-1 mb-4">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />
-              ))}
-            </div>
-            <h2 className="text-2xl font-serif text-white mb-2">Trusted by cosmic seekers</h2>
-            <p className="text-slate-400 text-sm">Join thousands discovering their true path</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              {
-                quote: "The 10-point cosmic blueprint was startlingly accurate. It gave me the exact clarity I needed for my recent career transition.",
-                author: "Sarah M.",
-                sign: "Scorpio"
-              },
-              {
-                quote: "I've tried many astrology platforms, but the depth of Astrologlimpse's insights is unmatched. Truly transformative readings.",
-                author: "David L.",
-                sign: "Taurus"
-              },
-              {
-                quote: "Beautiful, intuitive, and remarkably precise. The weekly focus feature helps me navigate my life with renewed confidence.",
-                author: "Elena R.",
-                sign: "Aquarius"
-              }
-            ].map((testimonial, i) => (
-              <div key={i} className="rounded-2xl border border-white/10 bg-white/[0.02] p-6 relative hover:bg-white/[0.04] transition-colors">
-                <Quote className="absolute top-6 right-6 w-8 h-8 text-white/5" />
-                <div className="flex items-center gap-1 mb-4">
-                  {[...Array(5)].map((_, j) => (
-                    <Star key={j} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                  ))}
-                </div>
-                <p className="text-slate-300 text-sm leading-relaxed mb-6">"{testimonial.quote}"</p>
-                <div className="flex items-center justify-between mt-auto">
-                  <span className="text-white font-medium text-sm">{testimonial.author}</span>
-                  <span className="text-xs px-3 py-1 rounded-full bg-white/5 text-slate-300 border border-white/10">{testimonial.sign}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </main>
-    </div>
-  );
-}
+const readingPoints = [
+  { icon: Sun, title: 'Natal Sun Sign Analysis', subtitle: 'Core Identity', color: '#e9c46a' },
+  { icon: Moon, title: 'Natal Moon Sign', subtitle: 'Emotional Architecture', color: '#778da9' },
+  { icon: ArrowUpRight, title: 'Rising Sign (Ascendant)', subtitle: 'How You Present', color: '#8ab17d' },
+  { icon: Zap, title: 'Primary Active Transit', subtitle: 'Major Live Influence', color: '#e94560' },
+  { icon: TrendingUp, title: 'House 10: Career Check', subtitle: 'Career & Public Self', color: '#43aa8b' },
+  { icon: Heart, title: 'House 7: Relationships', subtitle: 'Partnership Check', color: '#bc6c8b' },
+  { icon: Moon, title: 'Current Lunar Phase Impact', subtitle: 'Emotional Timing', color: '#48cae4' },
+  { icon: Heart, title: 'Chiron Placement', subtitle: 'Core Wound & Healing', color: '#f4a261' },
+  { icon: Lock, title: 'Black Moon Lilith', subtitle: 'Hidden Desires', color: '#9d4edd' },
+  { icon: Calendar, title: 'Weekly Forecast Snapshot', subtitle: '7-Day Action Window', color: '#c4a374' },
+];
 
 export function Dashboard({ onNavigateHome }: DashboardProps) {
-  const { user, profile, loading, refreshProfile } = useAuth();
+  const { user, profile, loading, refreshProfile, signInWithGoogle } = useAuth();
   const [selectedSign, setSelectedSign] = useState<string>('');
   const [personalFocus, setPersonalFocus] = useState<string>('');
   const [submitting, setSubmitting] = useState(false);
   const [requestSubmitted, setRequestSubmitted] = useState(false);
+  const [showReading, setShowReading] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
   const [signDropdownOpen, setSignDropdownOpen] = useState(false);
   const [genError, setGenError] = useState('');
+  const [authRedirecting, setAuthRedirecting] = useState(false);
+  const [showFloatingBtn, setShowFloatingBtn] = useState(false);
+
+  const formRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('checkout') === 'success') {
       refreshProfile();
-      window.history.replaceState({}, '', '/dashboard');
+      window.history.replaceState({}, '', window.location.pathname);
     }
   }, [refreshProfile]);
+
+  useEffect(() => {
+    const onScroll = () => {
+      if (!formRef.current) return;
+      const formBottom = formRef.current.getBoundingClientRect().bottom;
+      setShowFloatingBtn(formBottom < 0 && !showReading && !requestSubmitted);
+    };
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [showReading, requestSubmitted]);
 
   if (loading) {
     return (
       <div className="relative min-h-screen flex items-center justify-center">
         <StarryBackground />
-        <Loader2 className="w-8 h-8 animate-spin text-amber-300" />
+        <Loader2 className="w-8 h-8 animate-spin text-champagne-300" />
       </div>
     );
   }
 
-  if (!user || !profile) {
-    return <SignUpPrompt onBack={onNavigateHome} />;
-  }
-
-  const isMonthly = profile.subscription_status === 'monthly';
+  const isMonthly = profile?.subscription_status === 'monthly';
   const hasWeeklyUnlock =
-    profile.weekly_unlocked_until && new Date(profile.weekly_unlocked_until) > new Date();
-
-  const hasFreeReadingLeft = !profile.has_used_free_reading;
-  const canGenerate = hasFreeReadingLeft || isMonthly || hasWeeklyUnlock;
+    profile?.weekly_unlocked_until && new Date(profile.weekly_unlocked_until) > new Date();
+  const hasFreeReadingLeft = !profile?.has_used_free_reading;
+  const canGenerate = !user ? true : hasFreeReadingLeft || isMonthly || hasWeeklyUnlock;
 
   const getAllowanceText = () => {
+    if (!user) return '1 Free Initial Reading Available';
     if (hasFreeReadingLeft) return '1 Free Initial Reading Available';
     if (isMonthly) return 'Unlimited Weekly Readings Active';
     if (hasWeeklyUnlock) return '1 Reading Available This Week';
     return '0 Readings Left This Week';
+  };
+
+  const scrollToForm = () => {
+    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
   const handleRequestReading = async () => {
@@ -267,7 +98,23 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
       setGenError('Please select your zodiac sign first.');
       return;
     }
+    if (!personalFocus.trim()) {
+      setGenError('Please share what you need guidance about to continue.');
+      return;
+    }
     setGenError('');
+
+    if (!user) {
+      setAuthRedirecting(true);
+      sessionStorage.setItem('pending_reading_sign', selectedSign);
+      sessionStorage.setItem('pending_reading_focus', personalFocus.trim());
+      const { error } = await signInWithGoogle();
+      if (error) {
+        setAuthRedirecting(false);
+        setGenError(error);
+      }
+      return;
+    }
 
     if (!canGenerate) {
       setShowPaywall(true);
@@ -277,7 +124,7 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
     setSubmitting(true);
 
     try {
-      const userEmail = profile.email || user.email || '';
+      const userEmail = profile?.email || user.email || '';
 
       const { error: requestError } = await supabase
         .from('reading_requests')
@@ -285,7 +132,7 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
           user_id: user.id,
           email: userEmail,
           zodiac_sign: selectedSign,
-          personal_focus: personalFocus || null,
+          personal_focus: personalFocus.trim(),
           status: 'pending',
         });
 
@@ -302,6 +149,7 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
       }
 
       setRequestSubmitted(true);
+      setShowReading(true);
     } catch (err) {
       setGenError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
     } finally {
@@ -309,164 +157,336 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
     }
   };
 
+  useEffect(() => {
+    if (user && profile) {
+      const pendingSign = sessionStorage.getItem('pending_reading_sign');
+      const pendingFocus = sessionStorage.getItem('pending_reading_focus');
+      if (pendingSign && pendingFocus) {
+        setSelectedSign(pendingSign);
+        setPersonalFocus(pendingFocus);
+        sessionStorage.removeItem('pending_reading_sign');
+        sessionStorage.removeItem('pending_reading_focus');
+      }
+    }
+  }, [user, profile]);
+
   return (
     <div className="relative min-h-screen">
       <StarryBackground />
 
+      {/* Header */}
       <header className="relative z-10 pt-8 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <button onClick={onNavigateHome} className="flex items-center gap-2">
-            <Telescope className="w-5 h-5 text-amber-300" />
-            <span className="text-lg font-serif text-white">Astrologlimpse</span>
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <button onClick={onNavigateHome} className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-champagne-400/10 border border-champagne-400/20 flex items-center justify-center">
+              <Sparkles className="w-4 h-4 text-champagne-300" />
+            </div>
+            <span className="text-base font-serif text-champagne-50 tracking-wide">Astrologlimpse</span>
           </button>
-          <span className="text-sm text-slate-400">{profile.email || user.email}</span>
+          {user && profile ? (
+            <span className="text-sm text-slate-400">{profile.email}</span>
+          ) : (
+            <span className="text-xs text-slate-400 px-3 py-1.5 rounded-full bg-white/[0.05] border border-white/[0.1]">
+              Not signed in
+            </span>
+          )}
         </div>
       </header>
 
-      <main className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 py-8 pb-16">
+      <main className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-8 pb-16">
+        {/* ===== HERO ===== */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-4">
-            <Sparkles className="w-4 h-4 text-amber-300" />
-            <span className="text-sm text-slate-300 tracking-wide">Your Reading Hub</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-champagne-400/[0.08] border border-champagne-400/20 backdrop-blur-sm mb-4">
+            <span className="w-1.5 h-1.5 rounded-full bg-champagne-300 animate-[glow_3s_ease-in-out_infinite]" />
+            <span className="text-xs text-champagne-200 tracking-[0.15em] uppercase">Your Cosmic Dashboard</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-serif font-light text-white mb-3">
-            Welcome to your reading hub
+          <h1 className="text-3xl sm:text-5xl font-serif font-light text-champagne-50 mb-3 leading-tight tracking-tight">
+            Your 10-Point Cosmic Blueprint is Ready.
+            <span className="block mt-1 bg-gradient-to-r from-champagne-200 via-champagne-300 to-champagne-200 bg-clip-text text-transparent">
+              Reveal the Planetary Forces Shaping Your Week.
+            </span>
           </h1>
-
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-amber-300/10 border border-amber-300/20 text-amber-200 mt-1 mb-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-champagne-400/[0.08] border border-champagne-400/20 text-champagne-200 mt-2 mb-2">
             <Compass className="w-3.5 h-3.5" />
             <span>{getAllowanceText()}</span>
           </div>
-
-          <p className="text-slate-400 max-w-lg mx-auto text-sm sm:text-base">
-            {hasFreeReadingLeft
-              ? 'Your free 10-point cosmic reading is ready. Select your sign and request your reading.'
-              : canGenerate
-                ? 'Select your sign and set your intentions for this week’s reading request.'
-                : 'You have used your available readings for this week. Subscribe to request more readings.'}
+          <p className="text-slate-300 max-w-xl mx-auto text-sm sm:text-base font-light">
+            {user
+              ? hasFreeReadingLeft
+                ? 'Your free 10-point cosmic reading is ready. Select your sign, share what is on your mind, and request your reading.'
+                : 'Select your sign, share what you need guidance about, and request your reading.'
+              : 'Select your zodiac sign, tell us what you need guidance about, and request your free cosmic reading. You will sign in with Google to claim it.'}
           </p>
         </div>
 
-        {requestSubmitted ? (
-          <div className="rounded-3xl border border-amber-300/30 bg-gradient-to-br from-amber-300/10 to-white/[0.02] backdrop-blur-xl p-8 mb-12 text-center animate-[fadeInUp_0.4s_ease-out]">
-            <div className="w-16 h-16 rounded-2xl bg-amber-300/20 border border-amber-300/40 flex items-center justify-center mx-auto mb-4">
-              <CheckCircle2 className="w-8 h-8 text-amber-300" />
-            </div>
-            <h3 className="text-2xl font-serif text-white mb-2">Reading Request Received!</h3>
-            <p className="text-slate-300 text-sm max-w-md mx-auto mb-6">
-              Your request for <strong className="text-amber-200">{selectedSign}</strong> has been logged. We are preparing your reading and will deliver it directly to <strong className="text-white">{profile.email || user.email}</strong>.
-            </p>
-            <button
-              onClick={() => {
-                setRequestSubmitted(false);
-                setPersonalFocus('');
-              }}
-              className="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 text-sm hover:bg-white/10 transition-all"
-            >
-              Request Another Reading
-            </button>
-          </div>
-        ) : (
-          <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.06] to-white/[0.02] backdrop-blur-xl p-6 sm:p-8 mb-12">
-            <div className="mb-6">
-              <label className="block text-sm text-slate-400 mb-2">Select your zodiac sign</label>
-              <div className="relative">
-                <button
-                  onClick={() => setSignDropdownOpen(!signDropdownOpen)}
-                  className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-all"
-                >
-                  <span className="flex items-center gap-3">
-                    {selectedSign ? (
-                      <>
-                        <span className="text-2xl" style={{ color: zodiacSigns.find((s) => s.name === selectedSign)?.color }}>
-                          {zodiacSigns.find((s) => s.name === selectedSign)?.glyph}
-                        </span>
-                        <span>{selectedSign}</span>
-                      </>
-                    ) : (
-                      <span className="text-slate-500">Choose your sign...</span>
-                    )}
-                  </span>
-                  <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${signDropdownOpen ? 'rotate-180' : ''}`} />
-                </button>
-                {signDropdownOpen && (
-                  <div className="absolute top-full left-0 right-0 mt-2 rounded-xl bg-[#111936] border border-white/10 shadow-xl z-20 max-h-64 overflow-y-auto">
-                    {zodiacSigns.map((sign) => (
-                      <button
-                        key={sign.name}
-                        onClick={() => {
-                          setSelectedSign(sign.name);
-                          setSignDropdownOpen(false);
-                          setGenError('');
-                        }}
-                        className="w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-white/5 transition-colors first:rounded-t-xl last:rounded-b-xl"
-                      >
-                        <span className="text-xl" style={{ color: sign.color }}>{sign.glyph}</span>
-                        <span className="text-sm text-white">{sign.name}</span>
-                        <span className="text-xs text-slate-500 ml-auto">{sign.dates}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
+        {/* ===== READING REQUEST FORM — FIRST THING USERS SEE ===== */}
+        {!showReading && !requestSubmitted && (
+          <div ref={formRef} className="max-w-2xl mx-auto mb-16 scroll-mt-8">
+            <div className="rounded-2xl border border-champagne-400/20 bg-gradient-to-br from-champagne-400/[0.06] to-white/[0.02] backdrop-blur-xl p-6 sm:p-8 shadow-[0_0_60px_rgba(196,163,116,0.05)]">
+              {/* Section header inside form */}
+              <div className="flex items-center gap-2 mb-6">
+                <div className="w-8 h-8 rounded-lg bg-champagne-400/15 border border-champagne-400/25 flex items-center justify-center">
+                  <HeartHandshake className="w-4 h-4 text-champagne-300" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-serif text-champagne-50">Request Your Reading</h2>
+                  <p className="text-xs text-slate-400">Two quick steps to unlock your cosmic blueprint</p>
+                </div>
               </div>
-            </div>
 
-            <div className="mb-6">
-              <label className="flex items-center gap-2 text-sm text-slate-300 mb-1.5">
-                <HeartHandshake className="w-4 h-4 text-amber-300" />
-                <span>Personal Focus & Preoccupations <span className="text-slate-500 text-xs">(Optional)</span></span>
-              </label>
-              <textarea
-                value={personalFocus}
-                onChange={(e) => setPersonalFocus(e.target.value)}
-                rows={3}
-                placeholder="Share what is currently on your mind: career choices, relationship questions, fears, or hopes for this period..."
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-amber-300/40 focus:bg-white/10 transition-all resize-none"
-              />
-              <p className="mt-1.5 text-xs text-slate-500">
-                Sharing your thoughts helps attune the reading to your personal path.
-              </p>
-            </div>
+              {/* Step 1: Sign selector */}
+              <div className="mb-6">
+                <label className="flex items-center gap-2 text-sm text-champagne-100 mb-2 font-medium">
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-champagne-400/15 text-xs font-mono text-champagne-300">1</span>
+                  Select Your Zodiac Sign
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-red-400/10 border border-red-400/20 text-red-300/90 font-normal normal-case tracking-normal">Required</span>
+                </label>
+                <div className="relative">
+                  <button
+                    onClick={() => setSignDropdownOpen(!signDropdownOpen)}
+                    className="w-full flex items-center justify-between px-4 py-3.5 rounded-xl bg-white/[0.06] border border-white/[0.12] text-champagne-50 hover:bg-white/[0.08] hover:border-champagne-400/30 transition-all duration-300"
+                  >
+                    <span className="flex items-center gap-3">
+                      {selectedSign ? (
+                        (() => {
+                          const sign = zodiacSigns.find((s) => s.name === selectedSign);
+                          return sign ? (
+                            <>
+                              <ZodiacSymbol sign={sign} className="w-6 h-6" />
+                              <span className="font-medium">{selectedSign}</span>
+                            </>
+                          ) : null;
+                        })()
+                      ) : (
+                        <span className="text-slate-400">Choose your sign...</span>
+                      )}
+                    </span>
+                    <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform duration-300 ${signDropdownOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  {signDropdownOpen && (
+                    <div className="absolute top-full left-0 right-0 mt-2 rounded-xl bg-midnight-700 border border-white/[0.12] shadow-xl z-30 max-h-64 overflow-y-auto">
+                      {zodiacSigns.map((sign) => (
+                        <button
+                          key={sign.name}
+                          onClick={() => {
+                            setSelectedSign(sign.name);
+                            setSignDropdownOpen(false);
+                            setGenError('');
+                          }}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-white/[0.06] transition-colors duration-200 first:rounded-t-xl last:rounded-b-xl"
+                        >
+                          <ZodiacSymbol sign={sign} className="w-5 h-5 flex-shrink-0" />
+                          <span className="text-sm text-champagne-50">{sign.name}</span>
+                          <span className="text-xs text-slate-500 ml-auto">{sign.dates}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
 
-            <button
-              onClick={handleRequestReading}
-              disabled={submitting || !selectedSign}
-              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-[#0a0e27] font-semibold hover:from-amber-300 hover:to-amber-400 transition-all disabled:opacity-50"
-            >
-              {submitting ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  Submitting Request...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-5 h-5" />
-                  {hasFreeReadingLeft
-                    ? 'Request My Free Cosmic Reading'
-                    : 'Request My Cosmic Reading'}
-                </>
+              {/* Step 2: Guidance prompt — MANDATORY */}
+              <div className="mb-6">
+                <label className="flex items-center gap-2 text-sm text-champagne-100 mb-2 font-medium">
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-champagne-400/15 text-xs font-mono text-champagne-300">2</span>
+                  What Do You Need Guidance About?
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-red-400/10 border border-red-400/20 text-red-300/90 font-normal normal-case tracking-normal">Required</span>
+                </label>
+                <textarea
+                  value={personalFocus}
+                  onChange={(e) => setPersonalFocus(e.target.value)}
+                  rows={4}
+                  placeholder="Share what is currently on your mind: a career decision, a relationship question, a crossroads you are facing, fears or hopes for this period..."
+                  className="w-full px-4 py-3.5 rounded-xl bg-white/[0.06] border border-white/[0.12] text-champagne-50 text-sm placeholder-slate-400 focus:outline-none focus:border-champagne-400/40 focus:bg-white/[0.08] transition-all duration-300 resize-none"
+                />
+                <p className="mt-2 text-xs text-slate-400">
+                  Your prompt helps attune the reading to your personal path. This is required to continue.
+                </p>
+              </div>
+
+              {/* Submit button */}
+              <button
+                onClick={handleRequestReading}
+                disabled={submitting || authRedirecting || !selectedSign || !personalFocus.trim()}
+                className="w-full flex items-center justify-center gap-2 py-4 rounded-xl bg-gradient-to-r from-champagne-300 to-champagne-400 text-midnight-950 font-semibold text-sm hover:from-champagne-200 hover:to-champagne-300 transition-all duration-300 disabled:opacity-40 shadow-lg"
+              >
+                {submitting ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Submitting Request...
+                  </>
+                ) : authRedirecting ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Redirecting to Google...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-5 h-5" />
+                    {user ? 'Request My Cosmic Reading' : 'Request My Free Cosmic Reading'}
+                  </>
+                )}
+              </button>
+
+              {!user && (
+                <p className="mt-3 text-center text-xs text-slate-400">
+                  You will sign in with Google to claim your reading. No password needed.
+                </p>
               )}
-            </button>
 
-            {genError && (
-              <p className="mt-3 text-red-400 text-xs text-center">{genError}</p>
-            )}
+              {genError && (
+                <p className="mt-3 text-red-400 text-xs text-center">{genError}</p>
+              )}
 
-            {!canGenerate && (
-              <p className="mt-3 text-center text-xs text-slate-500">
-                You have used your free reading. A subscription or weekly unlock is required for additional reading requests.
-              </p>
-            )}
+              {user && !canGenerate && (
+                <p className="mt-3 text-center text-xs text-slate-400">
+                  Your free reading has been used. A subscription or weekly unlock is required for additional readings.
+                </p>
+              )}
+            </div>
           </div>
         )}
 
-        <div className="mb-12 border-t border-white/10 pt-10">
-          <ZodiacExplorer />
-        </div>
+        {/* ===== CONFIRMATION STATE ===== */}
+        {requestSubmitted && showReading && selectedSign && (
+          <div className="max-w-2xl mx-auto mb-14">
+            <div className="rounded-2xl border border-champagne-400/25 bg-gradient-to-br from-champagne-400/[0.08] to-white/[0.02] backdrop-blur-xl p-8 text-center animate-[fadeInUp_0.4s_ease-out] mb-6">
+              <div className="w-16 h-16 rounded-2xl bg-champagne-400/15 border border-champagne-400/30 flex items-center justify-center mx-auto mb-4">
+                <CheckCircle2 className="w-8 h-8 text-champagne-300" />
+              </div>
+              <h3 className="text-2xl font-serif text-champagne-50 mb-2">Reading Request Received!</h3>
+              <p className="text-slate-200 text-sm max-w-md mx-auto mb-2">
+                Your request for <strong className="text-champagne-200">{selectedSign}</strong> has been logged. We are preparing your reading and will deliver it directly to <strong className="text-champagne-50">{profile?.email || user?.email}</strong>.
+              </p>
+              {personalFocus && (
+                <p className="text-slate-400 text-xs max-w-md mx-auto mt-3 italic font-serif">
+                  Your focus: "{personalFocus}"
+                </p>
+              )}
+              <button
+                onClick={() => {
+                  setRequestSubmitted(false);
+                  setShowReading(false);
+                  setPersonalFocus('');
+                }}
+                className="mt-5 px-5 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-slate-200 text-sm hover:bg-white/[0.08] hover:text-champagne-100 transition-all duration-300"
+              >
+                Request Another Reading
+              </button>
+            </div>
 
-        <AccountSettings onOpenPaywall={() => setShowPaywall(true)} />
+            <ReadingDisplay signName={selectedSign} />
+          </div>
+        )}
+
+        {/* ===== PROOF OF VALUE: Blurred Dashboard Preview ===== */}
+        <section className="mb-14">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-champagne-400/[0.08] border border-champagne-400/20 backdrop-blur-sm mb-4">
+              <span className="w-1.5 h-1.5 rounded-full bg-champagne-300 animate-[glow_3s_ease-in-out_infinite]" />
+              <span className="text-xs text-champagne-200 tracking-[0.15em] uppercase">Proof of Value</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-serif font-light text-champagne-50 mb-2 tracking-tight">
+              This Is What Your Dashboard Looks Like
+            </h2>
+            <p className="text-slate-300 max-w-lg mx-auto text-sm font-serif font-light italic">
+              Headers are readable so you can see the depth. The specific insights are unlocked once you claim your reading.
+            </p>
+          </div>
+          <BlurredDashboard />
+        </section>
+
+        {/* ===== LIVE NATAL WHEEL ===== */}
+        <section className="mb-14">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-champagne-400/[0.08] border border-champagne-400/20 backdrop-blur-sm mb-4">
+              <Globe className="w-4 h-4 text-champagne-300" />
+              <span className="text-xs text-champagne-200 tracking-[0.15em] uppercase">Live Natal Wheel</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-serif font-light text-champagne-50 mb-2 tracking-tight">
+              Watch the 12 Houses Light Up in Real Time
+            </h2>
+            <p className="text-slate-300 max-w-lg mx-auto text-sm font-serif font-light italic">
+              Hover over any house to see exactly what Astrologlimpse is analyzing right now.
+              We calculate exact planetary degrees every hour.
+            </p>
+          </div>
+          <div className="flex justify-center">
+            <NatalWheel />
+          </div>
+        </section>
+
+        {/* ===== 10-POINT CHECKLIST ===== */}
+        <section className="mb-14">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-champagne-400/[0.08] border border-champagne-400/20 backdrop-blur-sm mb-4">
+              <Check className="w-4 h-4 text-champagne-300" />
+              <span className="text-xs text-champagne-200 tracking-[0.15em] uppercase">What You Get Today</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-serif font-light text-champagne-50 mb-2 tracking-tight">
+              10 Specific Points of Value
+            </h2>
+            <p className="text-slate-300 max-w-lg mx-auto text-sm font-serif font-light italic">
+              Every point below is calculated from your exact natal chart, not a generic sun sign.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-4xl mx-auto">
+            {readingPoints.map((point, i) => (
+              <div
+                key={i}
+                className="group flex items-start gap-4 rounded-xl border border-white/[0.1] bg-white/[0.04] p-4 hover:bg-white/[0.06] hover:border-white/[0.15] transition-all duration-300"
+              >
+                <div
+                  className="flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center border relative overflow-hidden"
+                  style={{
+                    borderColor: `${point.color}30`,
+                    background: `linear-gradient(135deg, ${point.color}18, ${point.color}06)`,
+                  }}
+                >
+                  <point.icon className="w-5 h-5 relative z-10" style={{ color: point.color }} />
+                  <div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    style={{ background: `radial-gradient(circle at center, ${point.color}20, transparent)` }}
+                  />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-mono text-slate-400">{String(i + 1).padStart(2, '0')}</span>
+                    <h3 className="text-sm font-medium text-champagne-50">{point.title}</h3>
+                  </div>
+                  <p className="text-xs text-slate-400 mt-0.5">{point.subtitle}</p>
+                </div>
+                <Check className="w-4 h-4 text-champagne-400/60 flex-shrink-0 mt-1" />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ===== ZODIAC EXPLORER ===== */}
+        <section className="mb-14 border-t border-white/[0.08] pt-10">
+          <ZodiacExplorer />
+        </section>
+
+        {/* ===== ACCOUNT SETTINGS (only when logged in) ===== */}
+        {user && profile && (
+          <AccountSettings />
+        )}
       </main>
 
+      {/* ===== FLOATING "Generate My Cosmic Reading" button ===== */}
+      {showFloatingBtn && !showReading && !requestSubmitted && (
+        <button
+          onClick={scrollToForm}
+          className="fixed inset-x-4 bottom-5 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-50 flex items-center justify-center gap-2 px-5 py-4 rounded-2xl border-2 border-champagne-200/70 bg-gradient-to-r from-champagne-200 via-champagne-300 to-champagne-400 text-midnight-950 font-semibold text-sm shadow-[0_12px_40px_rgba(196,163,116,0.35)] hover:from-champagne-100 hover:to-champagne-300 transition-all duration-300 animate-[fadeInUp_0.3s_ease-out]"
+        >
+          <Sparkles className="w-4 h-4" />
+          Generate My Cosmic Reading
+          <ArrowUp className="w-4 h-4" />
+        </button>
+      )}
+
+      {/* Paywall */}
       <PaywallModal open={showPaywall} onClose={() => setShowPaywall(false)} />
     </div>
   );
