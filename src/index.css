@@ -1,8 +1,23 @@
 @import "tailwindcss";
 
 @theme {
-  --color-midnight-950: #0a0d1a;
   --font-serif: 'Fraunces', 'Georgia', serif;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --color-midnight-950: #060814;
+  --color-midnight-900: #0a0d1a;
+  --color-midnight-800: #0e1224;
+  --color-midnight-700: #131830;
+  --color-midnight-600: #1a2040;
+
+  --color-champagne-50: #fbf7f0;
+  --color-champagne-100: #f5ede0;
+  --color-champagne-200: #e8d5b7;
+  --color-champagne-300: #d4b896;
+  --color-champagne-400: #c4a374;
+  --color-champagne-500: #b08d56;
+  --color-champagne-600: #9a7a48;
+  --color-champagne-700: #7d6239;
 }
 
 @layer base {
@@ -11,8 +26,8 @@
   }
   body {
     background-color: var(--color-midnight-950);
-    color: #cbd5e1; /* slate-300 fallback */
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: #cbd5e1;
+    font-family: var(--font-sans);
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   }
   .font-serif {
