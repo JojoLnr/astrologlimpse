@@ -66,15 +66,6 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
     return () => window.removeEventListener('scroll', onScroll);
   }, [showReading, requestSubmitted]);
 
-  if (loading) {
-    return (
-      <div className="relative min-h-screen flex items-center justify-center">
-        <StarryBackground />
-        <Loader2 className="w-8 h-8 animate-spin text-champagne-300" />
-      </div>
-    );
-  }
-
   const isMonthly = profile?.subscription_status === 'monthly';
   const hasWeeklyUnlock =
     profile?.weekly_unlocked_until && new Date(profile.weekly_unlocked_until) > new Date();
@@ -91,6 +82,48 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
 
   const scrollToForm = () => {
     formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+
+  const executeReadingSubmission = async (sign: string, focus: string) => {
+    if (!user) return;
+    if (!canGenerate) {
+      setShowPaywall(true);
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const userEmail = profile?.email || user.email || '';
+
+      const { error: requestError } = await supabase
+        .from('reading_requests')
+        .insert({
+          user_id: user.id,
+          email: userEmail,
+          zodiac_sign: sign,
+          personal_focus: focus.trim(),
+          status: 'pending',
+        });
+
+      if (requestError) throw requestError;
+
+      if (hasFreeReadingLeft) {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({ has_used_free_reading: true })
+          .eq('id', user.id);
+
+        if (profileError) throw profileError;
+        await refreshProfile();
+      }
+
+      setRequestSubmitted(true);
+      setShowReading(true);
+    } catch (err) {
+      setGenError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleRequestReading = async () => {
@@ -116,47 +149,10 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
       return;
     }
 
-    if (!canGenerate) {
-      setShowPaywall(true);
-      return;
-    }
-
-    setSubmitting(true);
-
-    try {
-      const userEmail = profile?.email || user.email || '';
-
-      const { error: requestError } = await supabase
-        .from('reading_requests')
-        .insert({
-          user_id: user.id,
-          email: userEmail,
-          zodiac_sign: selectedSign,
-          personal_focus: personalFocus.trim(),
-          status: 'pending',
-        });
-
-      if (requestError) throw requestError;
-
-      if (hasFreeReadingLeft) {
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .update({ has_used_free_reading: true })
-          .eq('id', user.id);
-
-        if (profileError) throw profileError;
-        await refreshProfile();
-      }
-
-      setRequestSubmitted(true);
-      setShowReading(true);
-    } catch (err) {
-      setGenError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
-    } finally {
-      setSubmitting(false);
-    }
+    await executeReadingSubmission(selectedSign, personalFocus);
   };
 
+  // Automatically process pending reading request once user returns and authenticates via Google
   useEffect(() => {
     if (user && profile) {
       const pendingSign = sessionStorage.getItem('pending_reading_sign');
@@ -166,9 +162,19 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
         setPersonalFocus(pendingFocus);
         sessionStorage.removeItem('pending_reading_sign');
         sessionStorage.removeItem('pending_reading_focus');
+        executeReadingSubmission(pendingSign, pendingFocus);
       }
     }
   }, [user, profile]);
+
+  if (loading) {
+    return (
+      <div className="relative min-h-screen flex items-center justify-center">
+        <StarryBackground />
+        <Loader2 className="w-8 h-8 animate-spin text-champagne-300" />
+      </div>
+    );
+  }
 
   return (
     <div className="relative min-h-screen">
@@ -219,11 +225,10 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
           </p>
         </div>
 
-        {/* ===== READING REQUEST FORM — FIRST THING USERS SEE ===== */}
+        {/* ===== READING REQUEST FORM ===== */}
         {!showReading && !requestSubmitted && (
           <div ref={formRef} className="max-w-2xl mx-auto mb-16 scroll-mt-8">
             <div className="rounded-2xl border border-champagne-400/20 bg-gradient-to-br from-champagne-400/[0.06] to-white/[0.02] backdrop-blur-xl p-6 sm:p-8 shadow-[0_0_60px_rgba(196,163,116,0.05)]">
-              {/* Section header inside form */}
               <div className="flex items-center gap-2 mb-6">
                 <div className="w-8 h-8 rounded-lg bg-champagne-400/15 border border-champagne-400/25 flex items-center justify-center">
                   <HeartHandshake className="w-4 h-4 text-champagne-300" />
@@ -285,7 +290,7 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
                 </div>
               </div>
 
-              {/* Step 2: Guidance prompt — MANDATORY */}
+              {/* Step 2: Guidance prompt */}
               <div className="mb-6">
                 <label className="flex items-center gap-2 text-sm text-champagne-100 mb-2 font-medium">
                   <span className="flex items-center justify-center w-5 h-5 rounded-full bg-champagne-400/15 text-xs font-mono text-champagne-300">2</span>
@@ -468,13 +473,13 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
           <ZodiacExplorer />
         </section>
 
-        {/* ===== ACCOUNT SETTINGS (only when logged in) ===== */}
+        {/* ===== ACCOUNT SETTINGS ===== */}
         {user && profile && (
           <AccountSettings />
         )}
       </main>
 
-      {/* ===== FLOATING "Generate My Cosmic Reading" button ===== */}
+      {/* ===== FLOATING CTA ===== */}
       {showFloatingBtn && !showReading && !requestSubmitted && (
         <button
           onClick={scrollToForm}
