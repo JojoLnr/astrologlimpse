@@ -7,22 +7,26 @@ import { StarryBackground } from '@/components/StarryBackground';
 
 type View = 'home' | 'dashboard';
 
-function getRouteFromHash(): View {
-  return window.location.hash === '#/dashboard' ? 'dashboard' : 'home';
+// 1. Check the clean pathname instead of the hash
+function getRouteFromPath(): View {
+  return window.location.pathname === '/dashboard' ? 'dashboard' : 'home';
 }
 
 function App() {
   const { user, loading } = useAuth();
-  const [view, setView] = useState<View>(getRouteFromHash);
+  const [view, setView] = useState<View>(getRouteFromPath);
 
   useEffect(() => {
-    const onHashChange = () => setView(getRouteFromHash());
-    window.addEventListener('hashchange', onHashChange);
-    return () => window.removeEventListener('hashchange', onHashChange);
+    // 2. Listen to browser back/forward buttons (popstate) instead of hashchange
+    const onPopState = () => setView(getRouteFromPath());
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
   const navigate = (v: View) => {
-    window.location.hash = v === 'home' ? '' : `#/${v}`;
+    // 3. Push clean paths (e.g., '/dashboard') to the URL without reloading the page
+    const path = v === 'home' ? '/' : `/${v}`;
+    window.history.pushState(null, '', path);
     setView(v);
   };
 
