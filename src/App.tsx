@@ -4,6 +4,7 @@ import { Home } from '@/components/Home';
 import { Dashboard } from '@/components/Dashboard';
 import { Loader2 } from 'lucide-react';
 import { StarryBackground } from '@/components/StarryBackground';
+import { Analytics } from '@vercel/analytics/react';
 
 type View = 'home' | 'dashboard';
 
@@ -35,15 +36,21 @@ function App() {
       <div className="relative min-h-screen flex items-center justify-center">
         <StarryBackground />
         <Loader2 className="w-8 h-8 animate-spin text-amber-300" />
+        <Analytics />
       </div>
     );
   }
 
-  if (view === 'dashboard') {
-    return <Dashboard onNavigateHome={() => navigate('home')} />;
-  }
-
-  return <Home onNavigateDashboard={() => navigate('dashboard')} />;
+  return (
+    <>
+      {view === 'dashboard' ? (
+        <Dashboard onNavigateHome={() => navigate('home')} />
+      ) : (
+        <Home onNavigateDashboard={() => navigate('dashboard')} />
+      )}
+      <Analytics />
+    </>
+  );
 }
 
 export default App;
