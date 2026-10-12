@@ -117,6 +117,15 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
         await refreshProfile();
       }
 
+      // Fire Google Ads conversion tracking event when a sign-up / reading request succeeds
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('event', 'conversion', {
+          'send_to': 'AW-718364257/YOUR_CONVERSION_LABEL', // Replace YOUR_CONVERSION_LABEL with your actual Google Ads conversion label string
+          'value': 1.0,
+          'currency': 'USD'
+        });
+      }
+
       setRequestSubmitted(true);
       setShowReading(true);
     } catch (err) {
