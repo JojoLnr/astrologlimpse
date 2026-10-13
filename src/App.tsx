@@ -2,15 +2,18 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { Home } from '@/components/Home';
 import { Dashboard } from '@/components/Dashboard';
+import Privacy from '@/Privacy';
 import { Loader2 } from 'lucide-react';
 import { StarryBackground } from '@/components/StarryBackground';
 import { Analytics } from '@vercel/analytics/react';
 
-type View = 'home' | 'dashboard';
+type View = 'home' | 'dashboard' | 'privacy';
 
 // 1. Check the clean pathname instead of the hash
 function getRouteFromPath(): View {
-  return window.location.pathname === '/dashboard' ? 'dashboard' : 'home';
+  const path = window.location.pathname;
+  if (path === '/privacy') return 'privacy';
+  return path === '/dashboard' ? 'dashboard' : 'home';
 }
 
 function App() {
@@ -43,9 +46,13 @@ function App() {
 
   return (
     <>
-      {view === 'dashboard' ? (
+      {view === 'dashboard' && (
         <Dashboard onNavigateHome={() => navigate('home')} />
-      ) : (
+      )}
+      {view === 'privacy' && (
+        <Privacy onNavigateHome={() => navigate('home')} />
+      )}
+      {view === 'home' && (
         <Home onNavigateDashboard={() => navigate('dashboard')} />
       )}
       <Analytics />
