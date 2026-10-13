@@ -46,12 +46,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     });
 
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
       (async () => {
         setSession(session);
         setUser(session?.user ?? null);
         if (session?.user) {
           await fetchProfile(session.user.id);
+
+          // --- GOOGLE ADS CONVERSION LISTENER FOR SPA ---
+          if (event === 'SIGNED_IN' && session.user) {
+            const createdAt = new Date(session.user.created_at).getTime();
+            const lastSignInAt = new Date(session.user.last_sign_in_at || session.user.created_at).getTime();
+            
+            // Fire only for brand-new sign-ups to prevent double-counting existing users[span_1](start_span)[span_1](end_span)
+            if (Math.abs(createdAt - lastSignInAt) < 10000) {
+              if (typeof window !== 'undefined' && (window as any).gtag) {
+                (window as any).gtag('event', 'conversion', {
+                  'send_to': 'AW-718364257/20VjCLvy5sdeOG8xdYC',
+                  'value': 1.0,
+                  'currency': 'USD'
+                });
+              }
+            }
+          }
+          // ---------------------------------------------
         } else {
           setProfile(null);
         }
