@@ -117,19 +117,8 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
         await refreshProfile();
       }
 
-      // --- GOOGLE ADS CONVERSION SNIPPET ---
-      if (typeof window !== 'undefined' && (window as any).gtag) {
-        (window as any).gtag('event', 'conversion', {
-          'send_to': 'AW-718364257/20VjCLvy5sdeOG8xdYC',
-          'value': 1.0,
-          'currency': 'USD'
-        });
-      }
-      // -------------------------------------
-
       setRequestSubmitted(true);
       setShowReading(true);
-
     } catch (err) {
       setGenError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
     } finally {
@@ -163,9 +152,18 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
     await executeReadingSubmission(selectedSign, personalFocus);
   };
 
-  // Automatically process pending reading request once user returns and authenticates via Google
+  // Automatically process pending reading request and fire Google Ads conversion on successful auth return
   useEffect(() => {
     if (user && profile) {
+      // Fire Google Ads conversion snippet immediately upon successful authentication return
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('event', 'conversion', {
+          'send_to': 'AW-718364257/20VjCLvy5sdeOG8xdYC',
+          'value': 1.0,
+          'currency': 'USD'
+        });
+      }
+
       const pendingSign = sessionStorage.getItem('pending_reading_sign');
       const pendingFocus = sessionStorage.getItem('pending_reading_focus');
       if (pendingSign && pendingFocus) {
