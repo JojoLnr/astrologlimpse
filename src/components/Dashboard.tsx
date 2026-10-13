@@ -137,7 +137,7 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
     }
     setGenError('');
 
-    // --- GOOGLE ADS CONVERSION SNIPPET (Triggered on Button Click for Testing) ---
+    // --- FIRE CONVERSION ON BUTTON CLICK FOR TAG ASSISTANT TESTING ---
     if (typeof window !== 'undefined' && (window as any).gtag) {
       (window as any).gtag('event', 'conversion', {
         'send_to': 'AW-718364257/20VjCLvy5sdeOG8xdYC',
@@ -145,7 +145,7 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
         'currency': 'USD'
       });
     }
-    // --------------------------------------------------------------------------
+    // ----------------------------------------------------------------
 
     if (!user) {
       setAuthRedirecting(true);
