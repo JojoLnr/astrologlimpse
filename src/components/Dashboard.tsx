@@ -137,6 +137,16 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
     }
     setGenError('');
 
+    // --- GOOGLE ADS CONVERSION SNIPPET (Triggered on Button Click for Testing) ---
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'conversion', {
+        'send_to': 'AW-718364257/20VjCLvy5sdeOG8xdYC',
+        'value': 1.0,
+        'currency': 'USD'
+      });
+    }
+    // --------------------------------------------------------------------------
+
     if (!user) {
       setAuthRedirecting(true);
       sessionStorage.setItem('pending_reading_sign', selectedSign);
@@ -152,18 +162,9 @@ export function Dashboard({ onNavigateHome }: DashboardProps) {
     await executeReadingSubmission(selectedSign, personalFocus);
   };
 
-  // Automatically process pending reading request and fire Google Ads conversion on successful auth return
+  // Automatically process pending reading request once user returns and authenticates via Google
   useEffect(() => {
     if (user && profile) {
-      // Fire Google Ads conversion snippet immediately upon successful authentication return
-      if (typeof window !== 'undefined' && (window as any).gtag) {
-        (window as any).gtag('event', 'conversion', {
-          'send_to': 'AW-718364257/20VjCLvy5sdeOG8xdYC',
-          'value': 1.0,
-          'currency': 'USD'
-        });
-      }
-
       const pendingSign = sessionStorage.getItem('pending_reading_sign');
       const pendingFocus = sessionStorage.getItem('pending_reading_focus');
       if (pendingSign && pendingFocus) {
