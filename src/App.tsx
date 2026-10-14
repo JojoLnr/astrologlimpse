@@ -7,7 +7,6 @@ import { Loader2 } from 'lucide-react';
 import { StarryBackground } from '@/components/StarryBackground';
 import { Analytics } from '@vercel/analytics/react';
 
-// FIX: Tell TypeScript that window.gtag is safe to use
 declare global {
   interface Window {
     gtag?: (...args: any[]) => void;
@@ -17,14 +16,15 @@ declare global {
 type View = 'home' | 'dashboard' | 'privacy';
 
 function getRouteFromPath(): View {
+  if (typeof window === 'undefined') return 'home';
   const path = window.location.pathname;
   if (path === '/privacy') return 'privacy';
   return path === '/dashboard' ? 'dashboard' : 'home';
 }
 
 const trackSPAPageView = (path: string) => {
-  if (typeof window.gtag === 'function') {
-    window.gtag('config', 'AW-718364257', {
+  if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+    (window as any).gtag('config', 'AW-718364257', {
       page_path: path,
     });
   }
@@ -33,51 +33,43 @@ const trackSPAPageView = (path: string) => {
 function App() {
   const { user, loading } = useAuth();
   const [view, setView] = useState<View>(getRouteFromPath);
-  
-useEffect(() => {
-  // Automatically fires your Google Ads Conversion tag after 10 seconds
-  const testTimer = setTimeout(() => {
-    if (typeof window !== 'undefined') {
-      const globalWin = window as any;
-      globalWin.dataLayer = globalWin.dataLayer || [];
+
+  // 1. Dynamic Routing Guard: Detects login changes and forces the correct view state
+  useEffect(() => {
+    if (!loading) {
+      const currentPath = window.location.pathname;
       
-      globalWin.dataLayer.push({
-        'event': 'conversion',
-        'send_to': 'AW-718364257/20VjCLvyo5sdEOG8xdYC',
-        'value': 1.0,
-        'currency': 'USD'
-      });
-
-      if (typeof globalWin.gtag === 'function') {
-        globalWin.gtag('event', 'conversion', {
-          'send_to': 'AW-718364257/20VjCLvyo5sdEOG8xdYC',
-          'value': 1.0,
-          'currency': 'USD'
-        });
+      if (user && currentPath === '/') {
+        // If logged in but at root link, force view to dashboard view state
+        window.history.pushState(null, '', '/dashboard');
+        setView('dashboard');
+        trackSPAPageView('/dashboard');
+      } else if (!user && currentPath === '/dashboard') {
+        // If logged out but trying to view dashboard, force back home
+        window.history.pushState(null, '', '/');
+        setView('home');
+        trackSPAPageView('/');
       }
-      console.log('🚀 Automated Test Conversion Fired!');
     }
-  }, 10000); // 10000ms = 10 seconds
+  }, [user, loading]);
 
-  return () => clearTimeout(testTimer);
-}, []);
+  // 2. Initial Setup and PopState listener logic
+  useEffect(() => {
+    trackSPAPageView(window.location.pathname);
 
-  // useEffect(() => {
-    // TRACK INITIAL LANDING: Tracks the very first view when the component mounts
-    // trackSPAPageView(window.location.pathname);
-
-    // const onPopState = () => {
-      // const currentPath = window.location.pathname;
-      // setView(getRouteFromPath());
-      // trackSPAPageView(currentPath);
-    // };
-    // window.addEventListener('popstate', onPopState);
-    // return () => window.removeEventListener('popstate', onPopState);
-  // }, []);
+    const onPopState = () => {
+      setView(getRouteFromPath());
+      trackSPAPageView(window.location.pathname);
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
 
   const navigate = (v: View) => {
     const path = v === 'home' ? '/' : `/${v}`;
-    window.history.pushState(null, '', path);
+    if (typeof window !== 'undefined' && window.history) {
+      window.history.pushState(null, '', path);
+    }
     setView(v);
     trackSPAPageView(path);
   };
