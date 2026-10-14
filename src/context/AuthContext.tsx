@@ -64,11 +64,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             if (isBrandNewSignup || isLocalhost) {
               if (typeof window !== 'undefined') {
                 const globalWin = window as any;
-                
-                // Initialize the tracking arrays safely
                 globalWin.dataLayer = globalWin.dataLayer || [];
                 
-                // FIX: Standardize object payload structure to prevent array syntax crashes
+                // Track conversion
                 globalWin.dataLayer.push({
                   'event': 'conversion',
                   'send_to': 'AW-718364257/20VjCLvyo5sdEOG8xdYC',
@@ -76,7 +74,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                   'currency': 'USD'
                 });
 
-                // Also trigger gtag functional approach concurrently if loaded
                 if (typeof globalWin.gtag === 'function') {
                   globalWin.gtag('event', 'conversion', {
                     'send_to': 'AW-718364257/20VjCLvyo5sdEOG8xdYC',
@@ -84,19 +81,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     'currency': 'USD'
                   });
                 }
-                
-                console.log('✅ Conversion dispatch pushed successfully');
+                console.log('✅ Google Ads Conversion Data Dispatched!');
               }
             }
           }
-          // ---------------------------------------------
         } else {
           setProfile(null);
         }
-        
-        setTimeout(() => {
-          setLoading(false);
-        }, 1000);
+        setLoading(false); // Clean instantaneous update prevents home-route snapping
       })();
     });
 
