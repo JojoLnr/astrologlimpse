@@ -58,15 +58,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const createdAt = new Date(session.user.created_at).getTime();
             const lastSignInAt = new Date(session.user.last_sign_in_at || session.user.created_at).getTime();
             
-            // Fire only for brand-new sign-ups to prevent double-counting existing users[span_1](start_span)[span_1](end_span)
+            // Fire only for brand-new sign-ups to prevent double-counting existing users
             if (Math.abs(createdAt - lastSignInAt) < 10000) {
-              if (typeof window !== 'undefined' && (window as any).gtag) {
-                (window as any).gtag('event', 'conversion', {
-                  'send_to': 'AW-718364257/20VjCLvy5sdeOG8xdYC',
-                  'value': 1.0,
-                  'currency': 'USD'
-                });
-              }
+              let attempts = 0;
+              
+              const fireConversion = () => {
+                if (typeof window !== 'undefined' && (window as any).gtag) {
+                  (window as any).gtag('event', 'conversion', {
+                    'send_to': 'AW-718364257/20VjCLvy5sdeOG8xdYC',
+                    'value': 1.0,
+                    'currency': 'USD'
+                  });
+                  console.log('✅ Google Ads Conversion Successfully Sent!');
+                } else if (attempts < 10) {
+                  attempts++;
+                  console.warn(`⚠️ gtag not ready yet (attempt ${attempts}/10), retrying in 500ms...`);
+                  setTimeout(fireConversion, 500);
+                } else {
+                  console.error('❌ Google Ads Conversion failed: gtag script failed to load in time.');
+                }
+              };
+
+              fireConversion();
             }
           }
           // ---------------------------------------------
