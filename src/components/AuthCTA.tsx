@@ -13,8 +13,7 @@ declare global {
 const trackLeadConversion = () => {
   if (typeof window.gtag === 'function') {
     window.gtag('event', 'conversion', {
-      // REPLACE 'YOUR_CONVERSION_LABEL' with the exact string from your dashboard
-      'send_to': 'AW-718364257/YOUR_CONVERSION_LABEL'
+      'send_to': 'AW-7841839419/2OVjCLvyo5sdEOG8xdYC'
     });
   }
 };
