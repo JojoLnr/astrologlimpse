@@ -58,21 +58,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const createdAt = new Date(session.user.created_at).getTime();
             const lastSignInAt = new Date(session.user.last_sign_in_at || session.user.created_at).getTime();
             
-            // Safe filter for brand-new signups or localhost testing overrides
             const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
             const isBrandNewSignup = Math.abs(createdAt - lastSignInAt) < 10000;
 
             if (isBrandNewSignup || isLocalhost) {
-              if (typeof window !== 'undefined' && (window as any).gtag) {
-                // Fire conversion directly
-                (window as any).gtag('event', 'conversion', {
-                  'send_to': 'AW-718364257/20VjCLvy5sdeOG8xdYC',
+              if (typeof window !== 'undefined') {
+                // Initialize dataLayer array safely if missing
+                (window as any).dataLayer = (window as any).dataLayer || [];
+                
+                // Push standard event + corrected target conversion string properties
+                (window as any).dataLayer.push({
+                  'event': 'conversion',
+                  'send_to': 'AW-718364257/20VjCLvyo5sdEOG8xdYC',
                   'value': 1.0,
-                  'currency': 'USD',
-                  'event_callback': () => {
-                    console.log('✅ Google Tag confirmed receipt of conversion');
-                  }
+                  'currency': 'USD'
                 });
+                
+                console.log('✅ Conversion dispatch pushed straight to dataLayer array');
               }
             }
           }
@@ -81,7 +83,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setProfile(null);
         }
         
-        // Added 1-second delay so Google Tag Assistant catches event before state switches
         setTimeout(() => {
           setLoading(false);
         }, 1000);
