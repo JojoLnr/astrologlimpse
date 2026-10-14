@@ -58,35 +58,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const createdAt = new Date(session.user.created_at).getTime();
             const lastSignInAt = new Date(session.user.last_sign_in_at || session.user.created_at).getTime();
             
-            // Fire only for brand-new sign-ups to prevent double-counting existing users
-            if (Math.abs(createdAt - lastSignInAt) < 10000) {
-              let attempts = 0;
-              
-              const fireConversion = () => {
-                if (typeof window !== 'undefined' && (window as any).gtag) {
-                  (window as any).gtag('event', 'conversion', {
-                    'send_to': 'AW-718364257/20VjCLvy5sdeOG8xdYC',
-                    'value': 1.0,
-                    'currency': 'USD'
-                  });
-                  console.log('✅ Google Ads Conversion Successfully Sent!');
-                } else if (attempts < 10) {
-                  attempts++;
-                  console.warn(`⚠️ gtag not ready yet (attempt ${attempts}/10), retrying in 500ms...`);
-                  setTimeout(fireConversion, 500);
-                } else {
-                  console.error('❌ Google Ads Conversion failed: gtag script failed to load in time.');
-                }
-              };
+            // Safe filter for brand-new signups or localhost testing overrides
+            const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+            const isBrandNewSignup = Math.abs(createdAt - lastSignInAt) < 10000;
 
-              fireConversion();
+            if (isBrandNewSignup || isLocalhost) {
+              if (typeof window !== 'undefined' && (window as any).gtag) {
+                // Fire conversion directly
+                (window as any).gtag('event', 'conversion', {
+                  'send_to': 'AW-718364257/20VjCLvy5sdeOG8xdYC',
+                  'value': 1.0,
+                  'currency': 'USD',
+                  'event_callback': () => {
+                    console.log('✅ Google Tag confirmed receipt of conversion');
+                  }
+                });
+              }
             }
           }
           // ---------------------------------------------
         } else {
           setProfile(null);
         }
-        setLoading(false);
+        
+        // Added 1-second delay so Google Tag Assistant catches event before state switches
+        setTimeout(() => {
+          setLoading(false);
+        }, 1000);
       })();
     });
 
