@@ -7,31 +7,51 @@ import { Loader2 } from 'lucide-react';
 import { StarryBackground } from '@/components/StarryBackground';
 import { Analytics } from '@vercel/analytics/react';
 
+// FIX: Tell TypeScript that window.gtag is safe to use
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+  }
+}
+
 type View = 'home' | 'dashboard' | 'privacy';
 
-// 1. Check the clean pathname instead of the hash
 function getRouteFromPath(): View {
   const path = window.location.pathname;
   if (path === '/privacy') return 'privacy';
   return path === '/dashboard' ? 'dashboard' : 'home';
 }
 
+const trackSPAPageView = (path: string) => {
+  if (typeof window.gtag === 'function') {
+    window.gtag('config', 'AW-718364257', {
+      page_path: path,
+    });
+  }
+};
+
 function App() {
   const { user, loading } = useAuth();
   const [view, setView] = useState<View>(getRouteFromPath);
 
   useEffect(() => {
-    // 2. Listen to browser back/forward buttons (popstate) instead of hashchange
-    const onPopState = () => setView(getRouteFromPath());
+    // TRACK INITIAL LANDING: Tracks the very first view when the component mounts
+    trackSPAPageView(window.location.pathname);
+
+    const onPopState = () => {
+      const currentPath = window.location.pathname;
+      setView(getRouteFromPath());
+      trackSPAPageView(currentPath);
+    };
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
   const navigate = (v: View) => {
-    // 3. Push clean paths (e.g., '/dashboard') to the URL without reloading the page
     const path = v === 'home' ? '/' : `/${v}`;
     window.history.pushState(null, '', path);
     setView(v);
+    trackSPAPageView(path);
   };
 
   if (loading) {
