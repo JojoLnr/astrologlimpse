@@ -63,18 +63,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             if (isBrandNewSignup || isLocalhost) {
               if (typeof window !== 'undefined') {
-                // Initialize dataLayer array safely if missing
-                (window as any).dataLayer = (window as any).dataLayer || [];
+                const globalWin = window as any;
                 
-                // Push standard event + corrected target conversion string properties
-                (window as any).dataLayer.push({
+                // Initialize the tracking arrays safely
+                globalWin.dataLayer = globalWin.dataLayer || [];
+                
+                // FIX: Standardize object payload structure to prevent array syntax crashes
+                globalWin.dataLayer.push({
                   'event': 'conversion',
                   'send_to': 'AW-718364257/20VjCLvyo5sdEOG8xdYC',
                   'value': 1.0,
                   'currency': 'USD'
                 });
+
+                // Also trigger gtag functional approach concurrently if loaded
+                if (typeof globalWin.gtag === 'function') {
+                  globalWin.gtag('event', 'conversion', {
+                    'send_to': 'AW-718364257/20VjCLvyo5sdEOG8xdYC',
+                    'value': 1.0,
+                    'currency': 'USD'
+                  });
+                }
                 
-                console.log('✅ Conversion dispatch pushed straight to dataLayer array');
+                console.log('✅ Conversion dispatch pushed successfully');
               }
             }
           }
