@@ -33,19 +33,47 @@ const trackSPAPageView = (path: string) => {
 function App() {
   const { user, loading } = useAuth();
   const [view, setView] = useState<View>(getRouteFromPath);
+  
+useEffect(() => {
+  // Automatically fires your Google Ads Conversion tag after 10 seconds
+  const testTimer = setTimeout(() => {
+    if (typeof window !== 'undefined') {
+      const globalWin = window as any;
+      globalWin.dataLayer = globalWin.dataLayer || [];
+      
+      globalWin.dataLayer.push({
+        'event': 'conversion',
+        'send_to': 'AW-718364257/20VjCLvyo5sdEOG8xdYC',
+        'value': 1.0,
+        'currency': 'USD'
+      });
 
-  useEffect(() => {
+      if (typeof globalWin.gtag === 'function') {
+        globalWin.gtag('event', 'conversion', {
+          'send_to': 'AW-718364257/20VjCLvyo5sdEOG8xdYC',
+          'value': 1.0,
+          'currency': 'USD'
+        });
+      }
+      console.log('🚀 Automated Test Conversion Fired!');
+    }
+  }, 10000); // 10000ms = 10 seconds
+
+  return () => clearTimeout(testTimer);
+}, []);
+
+  // useEffect(() => {
     // TRACK INITIAL LANDING: Tracks the very first view when the component mounts
-    trackSPAPageView(window.location.pathname);
+    // trackSPAPageView(window.location.pathname);
 
-    const onPopState = () => {
-      const currentPath = window.location.pathname;
-      setView(getRouteFromPath());
-      trackSPAPageView(currentPath);
-    };
-    window.addEventListener('popstate', onPopState);
-    return () => window.removeEventListener('popstate', onPopState);
-  }, []);
+    // const onPopState = () => {
+      // const currentPath = window.location.pathname;
+      // setView(getRouteFromPath());
+      // trackSPAPageView(currentPath);
+    // };
+    // window.addEventListener('popstate', onPopState);
+    // return () => window.removeEventListener('popstate', onPopState);
+  // }, []);
 
   const navigate = (v: View) => {
     const path = v === 'home' ? '/' : `/${v}`;
