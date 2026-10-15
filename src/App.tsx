@@ -7,12 +7,6 @@ import { Loader2 } from 'lucide-react';
 import { StarryBackground } from '@/components/StarryBackground';
 import { Analytics } from '@vercel/analytics/react';
 
-declare global {
-  interface Window {
-    gtag?: (...args: any[]) => void;
-  }
-}
-
 type View = 'home' | 'dashboard' | 'privacy';
 
 function getRouteFromPath(): View {
@@ -23,8 +17,8 @@ function getRouteFromPath(): View {
 }
 
 const trackSPAPageView = (path: string) => {
-  if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
-    (window as any).gtag('config', 'AW-718364257', {
+  if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+    window.gtag('config', 'AW-718364257', {
       page_path: path,
     });
   }
