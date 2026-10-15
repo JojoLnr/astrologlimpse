@@ -60,31 +60,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             
             const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
             const isBrandNewSignup = Math.abs(createdAt - lastSignInAt) < 10000;
-
+          
             if (isBrandNewSignup || isLocalhost) {
-              if (typeof window !== 'undefined') {
-                const globalWin = window as any;
-                globalWin.dataLayer = globalWin.dataLayer || [];
-                
-                // Track conversion
-                globalWin.dataLayer.push({
-                  'event': 'conversion',
-                  'send_to': 'AW-718364257/20VjCLvyo5sdEOG8xdYC',
+              if (typeof window !== 'undefined' && window.gtag) {
+                window.gtag('event', 'conversion', {
+                  'send_to': 'AW-718364257/2OVjCLvyo5sdEOG8xdYC',
                   'value': 1.0,
                   'currency': 'USD'
                 });
-
-                if (typeof globalWin.gtag === 'function') {
-                  globalWin.gtag('event', 'conversion', {
-                    'send_to': 'AW-718364257/20VjCLvyo5sdEOG8xdYC',
-                    'value': 1.0,
-                    'currency': 'USD'
-                  });
-                }
-                console.log('✅ Google Ads Conversion Data Dispatched!');
+                console.log('✅ Conversion event successfully transmitted via gtag');
               }
             }
           }
+          // ---------------------------------------------
+
+          
         } else {
           setProfile(null);
         }
