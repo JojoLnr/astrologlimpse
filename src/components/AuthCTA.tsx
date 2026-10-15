@@ -6,8 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 const trackLeadConversion = () => {
   if (typeof window.gtag === 'function') {
     window.gtag('event', 'conversion', {
-      // 'send_to': 'AW-718364257/20VjCLvyo5sdEOG8xdYC'
-      'send_to': 'AW-10825313524/2OVjCLvyo5sdEOG8xdYC'
+      'send_to': 'AW-718364257/20VjCLvyo5sdEOG8xdYC'
     });
   }
 };
