@@ -18,8 +18,7 @@ function getRouteFromPath(): View {
 
 const trackSPAPageView = (path: string) => {
   if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
-    // window.gtag('config', 'AW-718364257', {
-    window.gtag('config', 'AW-10825313524', {
+    window.gtag('config', 'AW-718364257', {
       page_path: path,
     });
   }
