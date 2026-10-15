@@ -2,18 +2,11 @@ import { useState } from 'react';
 import { Mail, Sparkles, Loader2, Check } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
-// 1. Tell TypeScript window.gtag is safe to use in this file
-declare global {
-  interface Window {
-    gtag?: (...args: any[]) => void;
-  }
-}
-
-// 2. Helper function to trigger your Google Ads conversion event
+// 1. Helper function to trigger your Google Ads conversion event synchronized with your true account ID
 const trackLeadConversion = () => {
   if (typeof window.gtag === 'function') {
     window.gtag('event', 'conversion', {
-      'send_to': 'AW-7841839419/2OVjCLvyo5sdEOG8xdYC'
+      'send_to': 'AW-718364257/20VjCLvyo5sdEOG8xdYC'
     });
   }
 };
@@ -46,13 +39,13 @@ export function AuthCTA() {
       setErrorMsg(error);
     } else {
       setStatus('sent');
-      trackLeadConversion(); // 3. Fire conversion tracking when email submits successfully
+      trackLeadConversion(); // 2. Fire conversion tracking when email submits successfully
     }
   };
 
   const handleGoogle = async () => {
     setStatus('sending');
-    trackLeadConversion(); // 4. Fire conversion tracking when Google OAuth begins
+    trackLeadConversion(); // 3. Fire conversion tracking when Google OAuth begins
     const { error } = await signInWithGoogle();
     if (error) {
       setStatus('error');
