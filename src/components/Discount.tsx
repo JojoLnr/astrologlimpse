@@ -76,6 +76,17 @@ export function Discount({ onNavigateHome }: DiscountProps) {
         throw new Error(session.message || 'Failed to initiate secure checkout.');
       }
 
+      // --- GOOGLE TAG CONVERSION TRACKING EVENT ---
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('event', 'conversion', {
+          'send_to': 'AW-718364257/20VjCLvy5sdeOG8xdYC',
+          'value': priceType === 'single' ? 5.0 : 10.0,
+          'currency': 'USD',
+          'transaction_id': session.id // Links conversion to the unique Stripe session
+        });
+      }
+      // --------------------------------------------
+
       const stripe = await loadStripe(
         import.meta.env.VITE_PUBLIC_STRIPE_PUBLISHABLE_KEY || 
         import.meta.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || 
@@ -92,6 +103,7 @@ export function Discount({ onNavigateHome }: DiscountProps) {
       setCheckoutLoading(null);
     }
   };
+
 
   if (loading) {
     return (
