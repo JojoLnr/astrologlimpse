@@ -4,6 +4,7 @@ import { Home } from '@/components/Home';
 import { Dashboard } from '@/components/Dashboard';
 import { Privacy } from '@/components/Privacy';
 import { Discount } from '@/components/Discount';
+import { DiscountPurchased } from '@/components/DiscountPurchased';
 import { Loader2 } from 'lucide-react';
 import { StarryBackground } from '@/components/StarryBackground';
 import { Analytics } from '@vercel/analytics/react';
