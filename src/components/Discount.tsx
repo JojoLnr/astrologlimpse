@@ -134,14 +134,15 @@ export function Discount({ onNavigateHome }: DiscountProps) {
           </p>
         </div>
 
+        {/* High Brightness Pricing Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto mb-16">
           
           {/* Card Option 1: Single Reading */}
-          <div className="relative group rounded-2xl border border-white/[0.08] bg-gradient-to-b from-white/[0.04] to-white/[0.01] backdrop-blur-md p-6 flex flex-col justify-between transition-all duration-300 hover:border-white/[0.15] hover:shadow-[0_0_30px_rgba(255,255,255,0.02)]">
+          <div className="relative group rounded-2xl border-2 border-white/[0.15] bg-gradient-to-br from-slate-900/90 to-midnight-950/90 backdrop-blur-xl p-6 flex flex-col justify-between transition-all duration-300 hover:border-champagne-400/50 hover:shadow-[0_0_40px_rgba(251,191,36,0.05)]">
             <div>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-xs font-mono text-slate-400 uppercase tracking-wider">Single Entry</span>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-white/[0.06] border border-white/[0.1] text-slate-300">One-Time Pass</span>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">Save 66% Now</span>
               </div>
               
               <h3 className="text-xl font-serif text-champagne-50 mb-2">10-Point Cosmic Blueprint</h3>
@@ -149,10 +150,17 @@ export function Discount({ onNavigateHome }: DiscountProps) {
                 Full comprehensive reading derived from your deep natal charts and current house alignments.
               </p>
               
-              <div className="flex items-baseline gap-2 mb-6">
-                <span className="text-4xl font-light text-champagne-100 font-mono">$5</span>
-                <span className="text-sm text-slate-500 line-through font-mono">$15</span>
-                <span className="text-xs text-emerald-400 font-medium ml-1">Save 66%</span>
+              {/* High Contrast Pricing Stack */}
+              <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-4 mb-6">
+                <div className="text-xs text-slate-400 mb-1 flex justify-between items-center">
+                  <span>Regular Price:</span>
+                  <span className="line-through text-red-400 font-mono font-medium">$15.00</span>
+                </div>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-xs text-slate-400">Promotional Rate:</span>
+                  <span className="text-4xl font-light text-champagne-100 font-mono">$5</span>
+                  <span className="text-xs font-medium text-emerald-400 ml-auto">-$10.00 Off</span>
+                </div>
               </div>
 
               <ul className="space-y-3 mb-8">
@@ -184,7 +192,7 @@ export function Discount({ onNavigateHome }: DiscountProps) {
           </div>
 
           {/* Card Option 2: Subscription Tier */}
-          <div className="relative group rounded-2xl border border-champagne-400/30 bg-gradient-to-b from-champagne-400/[0.06] to-white/[0.01] backdrop-blur-md p-6 flex flex-col justify-between transition-all duration-300 hover:border-champagne-400/40 hover:shadow-[0_0_40px_rgba(196,163,116,0.05)]">
+          <div className="relative group rounded-2xl border-2 border-champagne-400/40 bg-gradient-to-br from-slate-900/90 to-midnight-950/90 backdrop-blur-xl p-6 flex flex-col justify-between transition-all duration-300 hover:border-champagne-400/70 hover:shadow-[0_0_45px_rgba(196,163,116,0.08)]">
             <div className="absolute -top-3 right-6 px-3 py-0.5 rounded-full text-[10px] font-semibold tracking-wider uppercase bg-gradient-to-r from-champagne-300 to-champagne-400 text-midnight-950 shadow-md">
               Best Cosmic Value
             </div>
@@ -192,9 +200,7 @@ export function Discount({ onNavigateHome }: DiscountProps) {
             <div>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-xs font-mono text-champagne-300 uppercase tracking-wider">Unlimited Access</span>
-                <span className="flex items-center gap-1 text-[10px] font-medium text-champagne-200">
-                  <Zap className="w-3 h-3 text-champagne-300" /> Recurring Access
-                </span>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">Save 66% Now</span>
               </div>
               
               <h3 className="text-xl font-serif text-champagne-50 mb-2">Unlimited Access Membership</h3>
@@ -202,11 +208,18 @@ export function Discount({ onNavigateHome }: DiscountProps) {
                 Ongoing systemic updates mapping planetary trajectories, Chiron shifts, and recurring chart resets.
               </p>
               
-              <div className="flex items-baseline gap-2 mb-6">
-                <span className="text-4xl font-light text-champagne-100 font-mono">$10</span>
-                <span className="text-xs text-slate-400 font-mono">/month</span>
-                <span className="text-sm text-slate-500 line-through font-mono ml-1">$30</span>
-                <span className="text-xs text-emerald-400 font-medium ml-1">Save 66%</span>
+              {/* High Contrast Pricing Stack */}
+              <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-4 mb-6">
+                <div className="text-xs text-slate-400 mb-1 flex justify-between items-center">
+                  <span>Regular Subscription:</span>
+                  <span className="line-through text-red-400 font-mono font-medium">$30.00 /mo</span>
+                </div>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-xs text-slate-400">Promotional Rate:</span>
+                  <span className="text-4xl font-light text-champagne-100 font-mono">$10</span>
+                  <span className="text-xs text-slate-400 font-mono">/month</span>
+                  <span className="text-xs font-medium text-emerald-400 ml-auto">-$20.00 Off</span>
+                </div>
               </div>
 
               <ul className="space-y-3 mb-8">
@@ -244,8 +257,8 @@ export function Discount({ onNavigateHome }: DiscountProps) {
           </div>
         )}
 
-        {/* ===== SECTION 1: THE 10 POINTS FIRST ===== */}
-        <section className="mb-16 border-t border-white/[0.06] pt-12">
+        {/* ===== ITEM 1: THE 10 POINTS FIRST ===== */}
+        <section className="mb-20 border-t border-white/[0.06] pt-16">
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-champagne-400/[0.08] border border-champagne-400/20 backdrop-blur-sm mb-4">
               <Check className="w-4 h-4 text-champagne-300" />
@@ -287,37 +300,74 @@ export function Discount({ onNavigateHome }: DiscountProps) {
           </div>
         </section>
 
-        {/* ===== SECTION 2: THE DIAGRAM (FANCY & ANIMATED) ===== */}
-        <section className="mb-16 rounded-2xl border border-white/[0.06] bg-gradient-to-br from-white/[0.02] to-transparent p-8 text-center max-w-3xl mx-auto overflow-hidden">
-          <div className="mb-6">
-            <h3 className="text-base font-serif text-champagne-50 mb-1">Live Planetary Trajectory Simulation</h3>
-            <p className="text-xs text-slate-400">Visualizing real-time rotational alignment tracks</p>
+        {/* ===== ITEM 2: THE DIAGRAM (FANCY 8-PLANET ORBIT ENGINE) ===== */}
+        <section className="mb-20 rounded-2xl border-2 border-white/[0.12] bg-gradient-to-br from-slate-900/90 to-midnight-950/90 backdrop-blur-xl p-8 text-center max-w-3xl mx-auto overflow-hidden shadow-2xl">
+          <div className="mb-8">
+            <h3 className="text-lg font-serif text-champagne-50 mb-1">Systemic Solar System Simulation</h3>
+            <p className="text-xs text-slate-400">8-Planet full astronomical coordinate trajectory mapping</p>
           </div>
           
-          <div className="relative w-64 h-64 mx-auto flex items-center justify-center rounded-full border border-white/[0.04] bg-slate-950/40 shadow-inner">
-            <div className="absolute w-10 h-10 bg-gradient-to-r from-amber-300 to-amber-500 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(245,158,11,0.4)] animate-pulse z-10">
-              <Sun className="w-5 h-5 text-slate-950 animate-spin [animation-duration:20s]" />
+          <div className="relative w-80 h-80 mx-auto flex items-center justify-center rounded-full border border-white/[0.04] bg-slate-950/80 shadow-2xl">
+            {/* Blazing Core Sun */}
+            <div className="absolute w-12 h-12 bg-gradient-to-r from-amber-300 via-amber-500 to-orange-500 rounded-full flex items-center justify-center shadow-[0_0_40px_rgba(245,158,11,0.6)] animate-pulse z-10">
+              <Sun className="w-6 h-6 text-slate-950 animate-spin [animation-duration:25s]" />
             </div>
             
-            <div className="absolute w-28 h-28 border border-dashed border-champagne-400/20 rounded-full animate-[spin_8s_linear_infinite]" />
-            <div className="absolute w-28 h-28 animate-[spin_8s_linear_infinite]">
-              <div className="w-2.5 h-2.5 bg-champagne-300 rounded-full shadow-[0_0_10px_#fde047] absolute -top-1.25 left-1/2 -translate-x-1/2" />
-            </div>
-            
-            <div className="absolute w-44 h-44 border border-double border-white/[0.08] rounded-full animate-[spin_18s_linear_infinite_reverse]" />
-            <div className="absolute w-44 h-44 animate-[spin_18s_linear_infinite_reverse]">
-              <div className="w-3.5 h-3.5 bg-orange-400 rounded-full shadow-[0_0_12px_#fb923c] absolute -bottom-1.75 left-1/2 -translate-x-1/2" />
+            {/* Planet 1: Mercury */}
+            <div className="absolute w-20 h-20 border border-white/[0.03] rounded-full" />
+            <div className="absolute w-20 h-20 animate-[spin_3s_linear_infinite]">
+              <div className="w-1.5 h-1.5 bg-slate-400 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
             </div>
 
-            <div className="absolute w-56 h-56 border border-white/[0.03] rounded-full animate-[spin_35s_linear_infinite]" />
-            <div className="absolute w-56 h-56 animate-[spin_35s_linear_infinite]">
-              <div className="w-2 h-2 bg-indigo-400 rounded-full shadow-[0_0_8px_#818cf8] absolute top-1/4 left-0" />
+            {/* Planet 2: Venus */}
+            <div className="absolute w-28 h-28 border border-white/[0.03] rounded-full" />
+            <div className="absolute w-28 h-28 animate-[spin_5s_linear_infinite_reverse]">
+              <div className="w-2 h-2 bg-amber-200 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
             </div>
+
+            {/* Planet 3: Earth */}
+            <div className="absolute w-36 h-36 border border-white/[0.04] rounded-full" />
+            <div className="absolute w-36 h-36 animate-[spin_7s_linear_infinite]">
+              <div className="w-2.5 h-2.5 bg-blue-400 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
+            </div>
+
+            {/* Planet 4: Mars */}
+            <div className="absolute w-44 h-44 border border-white/[0.04] rounded-full" />
+            <div className="absolute w-44 h-44 animate-[spin_10s_linear_infinite_reverse]">
+              <div className="w-2 h-2 bg-red-400 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
+            </div>
+
+            {/* Planet 5: Jupiter */}
+            <div className="absolute w-52 h-52 border border-white/[0.03] rounded-full" />
+            <div className="absolute w-52 h-52 animate-[spin_15s_linear_infinite]">
+              <div className="w-4 h-4 bg-amber-600 rounded-full absolute top-0 left-1/2 -translate-x-1/2 border border-orange-300/30" />
+            </div>
+
+            {/* Planet 6: Saturn */}
+            <div className="absolute w-60 h-60 border border-white/[0.03] rounded-full" />
+            <div className="absolute w-60 h-60 animate-[spin_22s_linear_infinite_reverse]">
+              <div className="relative w-3.5 h-3.5 bg-yellow-600 rounded-full absolute top-0 left-1/2 -translate-x-1/2">
+                <div className="absolute w-6 h-1.5 border border-amber-200/50 rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-12" />
+              </div>
+            </div>
+
+            {/* Planet 7: Uranus */}
+            <div className="absolute w-68 h-68 border border-white/[0.02] rounded-full" />
+            <div className="absolute w-68 h-68 animate-[spin_30s_linear_infinite]">
+              <div className="w-2.5 h-2.5 bg-cyan-400 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
+            </div>
+
+            {/* Planet 8: Neptune */}
+            <div className="absolute w-76 h-76 border border-white/[0.02] rounded-full" />
+            <div className="absolute w-76 h-76 animate-[spin_40s_linear_infinite_reverse]">
+              <div className="w-2.5 h-2.5 bg-indigo-500 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
+            </div>
+
           </div>
         </section>
 
-        {/* ===== SECTION 3: THE CHART ===== */}
-        <section className="max-w-3xl mx-auto mb-16 rounded-2xl border border-champagne-400/20 bg-gradient-to-br from-midnight-800/80 to-midnight-950/80 backdrop-blur-xl p-6 shadow-2xl">
+        {/* ===== ITEM 3: THE CHART ===== */}
+        <section className="max-w-3xl mx-auto mb-16 rounded-2xl border-2 border-white/[0.12] bg-gradient-to-br from-slate-900/90 to-midnight-950/90 backdrop-blur-xl p-6 shadow-2xl">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/[0.06] pb-4 mb-6">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-lg bg-champagne-400/10 border border-champagne-400/20 flex items-center justify-center">
