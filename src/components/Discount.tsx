@@ -5,7 +5,7 @@ import { StarryBackground } from '@/components/StarryBackground';
 import { 
   Sparkles, Loader2, ArrowLeft, CheckCircle2, 
   Zap, Calendar, ShieldCheck, HelpCircle, Check,
-  Sun, Moon, ArrowUpRight, TrendingUp, Heart, Lock, Compass
+  Sun, Moon, ArrowUpRight, TrendingUp, Heart, Lock, Compass, Eye
 } from 'lucide-react';
 
 interface DiscountProps {
@@ -134,7 +134,6 @@ export function Discount({ onNavigateHome }: DiscountProps) {
           </p>
         </div>
 
-        {/* High Brightness Pricing Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto mb-16">
           
           {/* Card Option 1: Single Reading */}
@@ -150,7 +149,6 @@ export function Discount({ onNavigateHome }: DiscountProps) {
                 Full comprehensive reading derived from your deep natal charts and current house alignments.
               </p>
               
-              {/* High Contrast Pricing Stack */}
               <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-4 mb-6">
                 <div className="text-xs text-slate-400 mb-1 flex justify-between items-center">
                   <span>Regular Price:</span>
@@ -208,7 +206,6 @@ export function Discount({ onNavigateHome }: DiscountProps) {
                 Ongoing systemic updates mapping planetary trajectories, Chiron shifts, and recurring chart resets.
               </p>
               
-              {/* High Contrast Pricing Stack */}
               <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-4 mb-6">
                 <div className="text-xs text-slate-400 mb-1 flex justify-between items-center">
                   <span>Regular Subscription:</span>
@@ -300,73 +297,88 @@ export function Discount({ onNavigateHome }: DiscountProps) {
           </div>
         </section>
 
-        {/* ===== ITEM 2: THE DIAGRAM (FANCY 8-PLANET ORBIT ENGINE) ===== */}
+        {/* ===== ITEM 2: THE DIAGRAM (8-PLANET MODEL, SLOWED SPIN, NO RINGS, INTEGRATED INSIGHTS) ===== */}
         <section className="mb-20 rounded-2xl border-2 border-white/[0.12] bg-gradient-to-br from-slate-900/90 to-midnight-950/90 backdrop-blur-xl p-8 text-center max-w-3xl mx-auto overflow-hidden shadow-2xl">
           <div className="mb-8">
             <h3 className="text-lg font-serif text-champagne-50 mb-1">Systemic Solar System Simulation</h3>
             <p className="text-xs text-slate-400">8-Planet full astronomical coordinate trajectory mapping</p>
           </div>
           
-          <div className="relative w-80 h-80 mx-auto flex items-center justify-center rounded-full border border-white/[0.04] bg-slate-950/80 shadow-2xl">
-            {/* Blazing Core Sun */}
-            <div className="absolute w-12 h-12 bg-gradient-to-r from-amber-300 via-amber-500 to-orange-500 rounded-full flex items-center justify-center shadow-[0_0_40px_rgba(245,158,11,0.6)] animate-pulse z-10">
-              <Sun className="w-6 h-6 text-slate-950 animate-spin [animation-duration:25s]" />
-            </div>
-            
-            {/* Planet 1: Mercury */}
-            <div className="absolute w-20 h-20 border border-white/[0.03] rounded-full" />
-            <div className="absolute w-20 h-20 animate-[spin_3s_linear_infinite]">
-              <div className="w-1.5 h-1.5 bg-slate-400 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+            {/* The Simulation Visual Frame */}
+            <div className="md:col-span-2 relative w-72 h-72 sm:w-80 sm:h-80 mx-auto flex items-center justify-center rounded-full border border-white/[0.04] bg-slate-950/80 shadow-2xl">
+              {/* Blazing Core Sun */}
+              <div className="absolute w-12 h-12 bg-gradient-to-r from-amber-300 via-amber-500 to-orange-500 rounded-full flex items-center justify-center shadow-[0_0_40px_rgba(245,158,11,0.6)] animate-pulse z-10">
+                <Sun className="w-6 h-6 text-slate-950 animate-spin [animation-duration:60s]" />
+              </div>
+              
+              {/* Planet 1: Mercury */}
+              <div className="absolute w-16 h-16 border border-white/[0.02] rounded-full" />
+              <div className="absolute w-16 h-16 animate-[spin_12s_linear_infinite]">
+                <div className="w-1.5 h-1.5 bg-slate-400 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
+              </div>
 
-            {/* Planet 2: Venus */}
-            <div className="absolute w-28 h-28 border border-white/[0.03] rounded-full" />
-            <div className="absolute w-28 h-28 animate-[spin_5s_linear_infinite_reverse]">
-              <div className="w-2 h-2 bg-amber-200 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
-            </div>
+              {/* Planet 2: Venus */}
+              <div className="absolute w-24 h-24 border border-white/[0.02] rounded-full" />
+              <div className="absolute w-24 h-24 animate-[spin_20s_linear_infinite_reverse]">
+                <div className="w-2 h-2 bg-amber-200 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
+              </div>
 
-            {/* Planet 3: Earth */}
-            <div className="absolute w-36 h-36 border border-white/[0.04] rounded-full" />
-            <div className="absolute w-36 h-36 animate-[spin_7s_linear_infinite]">
-              <div className="w-2.5 h-2.5 bg-blue-400 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
-            </div>
+              {/* Planet 3: Earth */}
+              <div className="absolute w-32 h-32 border border-white/[0.03] rounded-full" />
+              <div className="absolute w-32 h-32 animate-[spin_30s_linear_infinite]">
+                <div className="w-2.5 h-2.5 bg-blue-400 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
+              </div>
 
-            {/* Planet 4: Mars */}
-            <div className="absolute w-44 h-44 border border-white/[0.04] rounded-full" />
-            <div className="absolute w-44 h-44 animate-[spin_10s_linear_infinite_reverse]">
-              <div className="w-2 h-2 bg-red-400 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
-            </div>
+              {/* Planet 4: Mars */}
+              <div className="absolute w-40 h-40 border border-white/[0.03] rounded-full" />
+              <div className="absolute w-40 h-40 animate-[spin_42s_linear_infinite_reverse]">
+                <div className="w-2 h-2 bg-red-400 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
+              </div>
 
-            {/* Planet 5: Jupiter */}
-            <div className="absolute w-52 h-52 border border-white/[0.03] rounded-full" />
-            <div className="absolute w-52 h-52 animate-[spin_15s_linear_infinite]">
-              <div className="w-4 h-4 bg-amber-600 rounded-full absolute top-0 left-1/2 -translate-x-1/2 border border-orange-300/30" />
-            </div>
+              {/* Planet 5: Jupiter */}
+              <div className="absolute w-48 h-48 border border-white/[0.02] rounded-full" />
+              <div className="absolute w-48 h-48 animate-[spin_60s_linear_infinite]">
+                <div className="w-3.5 h-3.5 bg-amber-600 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
+              </div>
 
-            {/* Planet 6: Saturn */}
-            <div className="absolute w-60 h-60 border border-white/[0.03] rounded-full" />
-            <div className="absolute w-60 h-60 animate-[spin_22s_linear_infinite_reverse]">
-              <div className="relative w-3.5 h-3.5 bg-yellow-600 rounded-full absolute top-0 left-1/2 -translate-x-1/2">
-                <div className="absolute w-6 h-1.5 border border-amber-200/50 rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-12" />
+              {/* Planet 6: Saturn (No Rings) */}
+              <div className="absolute w-56 h-56 border border-white/[0.02] rounded-full" />
+              <div className="absolute w-56 h-56 animate-[spin_80s_linear_infinite_reverse]">
+                <div className="w-3 h-3 bg-yellow-600 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
+              </div>
+
+              {/* Planet 7: Uranus */}
+              <div className="absolute w-64 h-64 border border-white/[0.02] rounded-full" />
+              <div className="absolute w-64 h-64 animate-[spin_110s_linear_infinite]">
+                <div className="w-2.5 h-2.5 bg-cyan-400 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
+              </div>
+
+              {/* Planet 8: Neptune */}
+              <div className="absolute w-72 h-72 border border-white/[0.02] rounded-full" />
+              <div className="absolute w-72 h-72 animate-[spin_150s_linear_infinite_reverse]">
+                <div className="w-2.5 h-2.5 bg-indigo-500 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
               </div>
             </div>
 
-            {/* Planet 7: Uranus */}
-            <div className="absolute w-68 h-68 border border-white/[0.02] rounded-full" />
-            <div className="absolute w-68 h-68 animate-[spin_30s_linear_infinite]">
-              <div className="w-2.5 h-2.5 bg-cyan-400 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
+            {/* Educational Insights Block */}
+            <div className="text-left bg-white/[0.02] border border-white/[0.06] rounded-xl p-5 space-y-4 h-full flex flex-col justify-center">
+              <div className="flex items-center gap-2 text-champagne-300 font-serif text-sm font-medium">
+                <Eye className="w-4 h-4" />
+                <span>Cosmic Tracking Insights</span>
+              </div>
+              <p className="text-xs text-slate-300 leading-relaxed font-light">
+                By calculating the exact structural locations and geometric degrees of all 8 primary celestial bodies relative to your birth window, we uncover hidden behavioral matrices.
+              </p>
+              <div className="text-[11px] text-slate-400 space-y-2 border-t border-white/[0.06] pt-3">
+                <p>• <strong className="text-champagne-100">Inner Alignment:</strong> Governs temporary emotional tides, mood architectures, and micro-expressions.</p>
+                <p>• <strong className="text-champagne-100">Outer Alignment:</strong> Projects long-term career horizons, public destiny paths, and relational crossroads.</p>
+              </div>
             </div>
-
-            {/* Planet 8: Neptune */}
-            <div className="absolute w-76 h-76 border border-white/[0.02] rounded-full" />
-            <div className="absolute w-76 h-76 animate-[spin_40s_linear_infinite_reverse]">
-              <div className="w-2.5 h-2.5 bg-indigo-500 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
-            </div>
-
           </div>
         </section>
 
-        {/* ===== ITEM 3: THE CHART ===== */}
+        {/* ===== ITEM 3: THE CHART WITH INTERPRETATION VALUE ADDS ===== */}
         <section className="max-w-3xl mx-auto mb-16 rounded-2xl border-2 border-white/[0.12] bg-gradient-to-br from-slate-900/90 to-midnight-950/90 backdrop-blur-xl p-6 shadow-2xl">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/[0.06] pb-4 mb-6">
             <div className="flex items-center gap-2.5">
@@ -385,23 +397,31 @@ export function Discount({ onNavigateHome }: DiscountProps) {
             </div>
           </div>
 
-          <div className="space-y-4">
-            {[
-              { label: 'Natal Sun Alignment Density', value: '88%', width: 'w-[88%]', color: 'from-amber-400 to-orange-500' },
-              { label: 'Lunar Aspect Synthesis Vector', value: '74%', width: 'w-[74%]', color: 'from-blue-400 to-indigo-500' },
-              { label: 'House 10 Midheaven Velocity', value: '92%', width: 'w-[92%]', color: 'from-emerald-400 to-teal-500' },
-              { label: 'Chiron Vulnerability Delta', value: '41%', width: 'w-[41%]', color: 'from-pink-400 to-rose-500' }
-            ].map((chartRow, index) => (
-              <div key={index} className="space-y-1.5">
-                <div className="flex justify-between text-xs">
-                  <span className="text-slate-300 font-light">{chartRow.label}</span>
-                  <span className="font-mono text-champagne-300 font-medium">{chartRow.value}</span>
+          <div className="space-y-6">
+            <div className="space-y-4">
+              {[
+                { label: 'Natal Sun Alignment Density', value: '88%', width: 'w-[88%]', color: 'from-amber-400 to-orange-500' },
+                { label: 'Lunar Aspect Synthesis Vector', value: '74%', width: 'w-[74%]', color: 'from-blue-400 to-indigo-500' },
+                { label: 'House 10 Midheaven Velocity', value: '92%', width: 'w-[92%]', color: 'from-emerald-400 to-teal-500' },
+                { label: 'Chiron Vulnerability Delta', value: '41%', width: 'w-[41%]', color: 'from-pink-400 to-rose-500' }
+              ].map((chartRow, index) => (
+                <div key={index} className="space-y-1.5">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-slate-300 font-light">{chartRow.label}</span>
+                    <span className="font-mono text-champagne-300 font-medium">{chartRow.value}</span>
+                  </div>
+                  <div className="h-2 w-full bg-white/[0.04] rounded-full overflow-hidden border border-white/[0.06]">
+                    <div className={`h-full bg-gradient-to-r ${chartRow.color} ${chartRow.width} rounded-full`} />
+                  </div>
                 </div>
-                <div className="h-2 w-full bg-white/[0.04] rounded-full overflow-hidden border border-white/[0.06]">
-                  <div className={`h-full bg-gradient-to-r ${chartRow.color} ${chartRow.width} rounded-full`} />
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            {/* Insight value descriptor text */}
+            <div className="bg-white/[0.01] border border-white/[0.04] rounded-xl p-4 text-xs text-slate-400 leading-relaxed font-light">
+              <span className="text-champagne-200 font-medium font-serif block mb-1">Interpretation Blueprint Guide:</span>
+              These real-time metrics indicate the current planetary pressure matrix applied to your unique baseline chart. Sudden high-velocity thresholds reveal open windows of action where cosmic resistance is lowest—ideal for timing corporate initiatives, unlocking deep self-healing states, or initiating critical interpersonal dialogues.
+            </div>
           </div>
         </section>
 
