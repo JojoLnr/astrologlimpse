@@ -42,10 +42,9 @@ export function Discount({ onNavigateHome }: DiscountProps) {
     }
   }, [user]);
 
-      const handleCheckout = async (priceType: 'single' | 'subscription') => {
+  const handleCheckout = async (priceType: 'single' | 'subscription') => {
     setErrorMsg('');
 
-    // 1. Google Sign Up redirect if user session does not exist
     if (!user) {
       try {
         sessionStorage.setItem('pending_discount_checkout', priceType);
@@ -59,7 +58,6 @@ export function Discount({ onNavigateHome }: DiscountProps) {
 
     setCheckoutLoading(priceType);
 
-    // 2. Production Call: Initiate secure session communication
     try {
       const response = await fetch('/api/checkout', {
         method: 'POST',
@@ -67,7 +65,7 @@ export function Discount({ onNavigateHome }: DiscountProps) {
         body: JSON.stringify({
           userId: user.id,
           email: user.email,
-          priceType: priceType, // 'single' ($5) or 'subscription' ($10)
+          priceType: priceType,
           isDiscountRoute: true
         }),
       });
@@ -152,14 +150,18 @@ export function Discount({ onNavigateHome }: DiscountProps) {
               </p>
               
               <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-4 mb-6">
-                <div className="text-xs text-slate-400 mb-1 flex justify-between items-center">
+                <div className="text-xs text-slate-400 mb-2 flex justify-between items-center">
                   <span>Regular Price:</span>
                   <span className="line-through text-red-400 font-mono font-medium">$15.00</span>
                 </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-xs text-slate-400">Promotional Rate:</span>
-                  <span className="text-4xl font-light text-champagne-100 font-mono">$5</span>
-                  <span className="text-xs font-medium text-emerald-400 ml-auto">-$10.00 Off</span>
+                <div className="flex items-baseline justify-between gap-2">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-3xl font-light text-champagne-100 font-mono">$5</span>
+                    <span className="text-xs text-slate-400">Promotional</span>
+                  </div>
+                  <span className="text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 whitespace-nowrap">
+                    Save 66%
+                  </span>
                 </div>
               </div>
 
@@ -193,10 +195,6 @@ export function Discount({ onNavigateHome }: DiscountProps) {
 
           {/* Card Option 2: Subscription Tier */}
           <div className="relative group rounded-2xl border-2 border-champagne-400/40 bg-gradient-to-br from-slate-900/90 to-midnight-950/90 backdrop-blur-xl p-6 flex flex-col justify-between transition-all duration-300 hover:border-champagne-400/70 hover:shadow-[0_0_45px_rgba(196,163,116,0.08)]">
-            <div className="absolute -top-3 right-6 px-3 py-0.5 rounded-full text-[10px] font-semibold tracking-wider uppercase bg-gradient-to-r from-champagne-300 to-champagne-400 text-midnight-950 shadow-md">
-              Best Cosmic Value
-            </div>
-
             <div>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-xs font-mono text-champagne-300 uppercase tracking-wider">Unlimited Access</span>
@@ -207,17 +205,19 @@ export function Discount({ onNavigateHome }: DiscountProps) {
               <p className="text-xs text-slate-400 mb-6 leading-relaxed">
                 Ongoing systemic updates mapping planetary trajectories, Chiron shifts, and recurring chart resets.
               </p>
-              
               <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-4 mb-6">
-                <div className="text-xs text-slate-400 mb-1 flex justify-between items-center">
+                <div className="text-xs text-slate-400 mb-2 flex justify-between items-center">
                   <span>Regular Subscription:</span>
-                  <span className="line-through text-red-400 font-mono font-medium">$30.00 /mo</span>
+                  <span className="line-through text-red-400 font-mono font-medium">$30.00/mo</span>
                 </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-xs text-slate-400">Promotional Rate:</span>
-                  <span className="text-4xl font-light text-champagne-100 font-mono">$10</span>
-                  <span className="text-xs text-slate-400 font-mono">/month</span>
-                  <span className="text-xs font-medium text-emerald-400 ml-auto">-$20.00 Off</span>
+                <div className="flex items-baseline justify-between gap-2">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-3xl font-light text-champagne-100 font-mono">$10</span>
+                    <span className="text-xs text-slate-400">/mo</span>
+                  </div>
+                  <span className="text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 whitespace-nowrap">
+                    Save 66%
+                  </span>
                 </div>
               </div>
 
@@ -307,63 +307,52 @@ export function Discount({ onNavigateHome }: DiscountProps) {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-            {/* The Simulation Visual Frame */}
             <div className="md:col-span-2 relative w-72 h-72 sm:w-80 sm:h-80 mx-auto flex items-center justify-center rounded-full border border-white/[0.04] bg-slate-950/80 shadow-2xl">
-              {/* Blazing Core Sun */}
               <div className="absolute w-12 h-12 bg-gradient-to-r from-amber-300 via-amber-500 to-orange-500 rounded-full flex items-center justify-center shadow-[0_0_40px_rgba(245,158,11,0.6)] animate-pulse z-10">
                 <Sun className="w-6 h-6 text-slate-950 animate-spin [animation-duration:60s]" />
               </div>
               
-              {/* Planet 1: Mercury */}
               <div className="absolute w-16 h-16 border border-white/[0.02] rounded-full" />
               <div className="absolute w-16 h-16 animate-[spin_12s_linear_infinite]">
                 <div className="w-1.5 h-1.5 bg-slate-400 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
               </div>
 
-              {/* Planet 2: Venus */}
               <div className="absolute w-24 h-24 border border-white/[0.02] rounded-full" />
               <div className="absolute w-24 h-24 animate-[spin_20s_linear_infinite_reverse]">
                 <div className="w-2 h-2 bg-amber-200 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
               </div>
 
-              {/* Planet 3: Earth */}
               <div className="absolute w-32 h-32 border border-white/[0.03] rounded-full" />
               <div className="absolute w-32 h-32 animate-[spin_30s_linear_infinite]">
                 <div className="w-2.5 h-2.5 bg-blue-400 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
               </div>
 
-              {/* Planet 4: Mars */}
               <div className="absolute w-40 h-40 border border-white/[0.03] rounded-full" />
               <div className="absolute w-40 h-40 animate-[spin_42s_linear_infinite_reverse]">
                 <div className="w-2 h-2 bg-red-400 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
               </div>
 
-              {/* Planet 5: Jupiter */}
               <div className="absolute w-48 h-48 border border-white/[0.02] rounded-full" />
               <div className="absolute w-48 h-48 animate-[spin_60s_linear_infinite]">
                 <div className="w-3.5 h-3.5 bg-amber-600 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
               </div>
 
-              {/* Planet 6: Saturn (No Rings) */}
               <div className="absolute w-56 h-56 border border-white/[0.02] rounded-full" />
               <div className="absolute w-56 h-56 animate-[spin_80s_linear_infinite_reverse]">
                 <div className="w-3 h-3 bg-yellow-600 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
               </div>
 
-              {/* Planet 7: Uranus */}
               <div className="absolute w-64 h-64 border border-white/[0.02] rounded-full" />
               <div className="absolute w-64 h-64 animate-[spin_110s_linear_infinite]">
                 <div className="w-2.5 h-2.5 bg-cyan-400 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
               </div>
 
-              {/* Planet 8: Neptune */}
               <div className="absolute w-72 h-72 border border-white/[0.02] rounded-full" />
               <div className="absolute w-72 h-72 animate-[spin_150s_linear_infinite_reverse]">
                 <div className="w-2.5 h-2.5 bg-indigo-500 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
               </div>
             </div>
 
-            {/* Educational Insights Block */}
             <div className="text-left bg-white/[0.02] border border-white/[0.06] rounded-xl p-5 space-y-4 h-full flex flex-col justify-center">
               <div className="flex items-center gap-2 text-champagne-300 font-serif text-sm font-medium">
                 <Eye className="w-4 h-4" />
@@ -419,7 +408,6 @@ export function Discount({ onNavigateHome }: DiscountProps) {
               ))}
             </div>
 
-            {/* Insight value descriptor text */}
             <div className="bg-white/[0.01] border border-white/[0.04] rounded-xl p-4 text-xs text-slate-400 leading-relaxed font-light">
               <span className="text-champagne-200 font-medium font-serif block mb-1">Interpretation Blueprint Guide:</span>
               These real-time metrics indicate the current planetary pressure matrix applied to your unique baseline chart. Sudden high-velocity thresholds reveal open windows of action where cosmic resistance is lowest—ideal for timing corporate initiatives, unlocking deep self-healing states, or initiating critical interpersonal dialogues.
