@@ -8,13 +8,14 @@ import { Loader2 } from 'lucide-react';
 import { StarryBackground } from '@/components/StarryBackground';
 import { Analytics } from '@vercel/analytics/react';
 
-type View = 'home' | 'dashboard' | 'privacy' | 'discount';
+type View = 'home' | 'dashboard' | 'privacy' | 'discount' | 'discountPurchased';
 
 function getRouteFromPath(): View {
   if (typeof window === 'undefined') return 'home';
   const path = window.location.pathname;
   if (path === '/privacy') return 'privacy';
   if (path === '/discount') return 'discount';
+  if (path === '/discount-purchased') return 'discountPurchased';
   return path === '/dashboard' ? 'dashboard' : 'home';
 }
 
@@ -90,6 +91,9 @@ function App() {
       )}
       {view === 'discount' && (
         <Discount onNavigateHome={() => navigate('home')} />
+      )}
+      {view === 'discountPurchased' && (
+        <DiscountPurchased onNavigateDashboard={() => navigate('dashboard')} />
       )}
       {view === 'home' && (
         <Home onNavigateDashboard={() => navigate('dashboard')} />
