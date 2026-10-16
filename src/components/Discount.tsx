@@ -42,9 +42,10 @@ export function Discount({ onNavigateHome }: DiscountProps) {
     }
   }, [user]);
 
-  const handleCheckout = async (priceType: 'single' | 'subscription') => {
+    const handleCheckout = async (priceType: 'single' | 'subscription') => {
     setErrorMsg('');
 
+    // 1. Google Sign Up redirect if user session does not exist
     if (!user) {
       try {
         sessionStorage.setItem('pending_discount_checkout', priceType);
@@ -58,51 +59,24 @@ export function Discount({ onNavigateHome }: DiscountProps) {
 
     setCheckoutLoading(priceType);
 
-    try {
-      const response = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: user.id,
-          email: user.email,
-          priceType: priceType,
-          isDiscountRoute: true
-        }),
+    // 2. YOUR EXACT GOOGLE TAG EVENT SNIPPET BINDING
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      console.log('Firing live Google Conversion Tag...');
+      (window as any).gtag('event', 'conversion', {
+        'send_to': 'AW-718364257/nmRzCKfQ8J4dEOG8xdYC', // Your real tag from Google
+        'value': priceType === 'single' ? 5.0 : 10.0,    // Populates dynamically based on card click
+        'currency': 'USD',
+        'transaction_id': `mock_test_${Date.now()}`      // Generates a mock transaction id for testing
       });
-
-      const session = await response.json();
-
-      if (!response.ok) {
-        throw new Error(session.message || 'Failed to initiate secure checkout.');
-      }
-
-      // --- GOOGLE TAG CONVERSION TRACKING EVENT ---
-      if (typeof window !== 'undefined' && (window as any).gtag) {
-        (window as any).gtag('event', 'conversion', {
-          'send_to': 'AW-718364257/20VjCLvy5sdeOG8xdYC',
-          'value': priceType === 'single' ? 5.0 : 10.0,
-          'currency': 'USD',
-          'transaction_id': session.id // Links conversion to the unique Stripe session
-        });
-      }
-      // --------------------------------------------
-
-      const stripe = await loadStripe(
-        import.meta.env.VITE_PUBLIC_STRIPE_PUBLISHABLE_KEY || 
-        import.meta.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || 
-        ''
-      );
-      
-      if (stripe && session.id) {
-        await stripe.redirectToCheckout({ sessionId: session.id });
-      } else {
-        throw new Error('Stripe configuration missing.');
-      }
-    } catch (err) {
-      setErrorMsg(err instanceof Error ? err.message : 'An error occurred.');
-      setCheckoutLoading(null);
     }
+
+    // 3. Fake success feedback window
+    setTimeout(() => {
+      setCheckoutLoading(null);
+      alert(`Success! Mock purchase processed for a ${priceType} pass.`);
+    }, 800);
   };
+
 
 
   if (loading) {
