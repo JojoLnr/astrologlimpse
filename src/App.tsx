@@ -16,7 +16,7 @@ function getRouteFromPath(): View {
   const path = window.location.pathname;
   if (path === '/privacy') return 'privacy';
   if (path === '/discount') return 'discount';
-  if (path === '/discount-purchased') return 'discountPurchased';
+  if (path === '/discountpurchased') return 'discountPurchased';
   return path === '/dashboard' ? 'dashboard' : 'home';
 }
 
