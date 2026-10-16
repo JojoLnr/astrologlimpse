@@ -5,7 +5,7 @@ import { StarryBackground } from '@/components/StarryBackground';
 import { 
   Sparkles, Loader2, ArrowLeft, CheckCircle2, 
   Zap, Calendar, ShieldCheck, HelpCircle, Check,
-  Sun, Moon, ArrowUpRight, TrendingUp, Heart, Lock
+  Sun, Moon, ArrowUpRight, TrendingUp, Heart, Lock, Compass
 } from 'lucide-react';
 
 interface DiscountProps {
@@ -134,7 +134,7 @@ export function Discount({ onNavigateHome }: DiscountProps) {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto mb-12">
           
           {/* Card Option 1: Single Reading */}
           <div className="relative group rounded-2xl border border-white/[0.08] bg-gradient-to-b from-white/[0.04] to-white/[0.01] backdrop-blur-md p-6 flex flex-col justify-between transition-all duration-300 hover:border-white/[0.15] hover:shadow-[0_0_30px_rgba(255,255,255,0.02)]">
@@ -244,6 +244,46 @@ export function Discount({ onNavigateHome }: DiscountProps) {
           </div>
         )}
 
+        {/* ===== NEW COSMIC DATA REAL-TIME TRANSIT CHART ===== */}
+        <section className="max-w-3xl mx-auto mb-16 rounded-2xl border border-champagne-400/20 bg-gradient-to-br from-midnight-800/80 to-midnight-950/80 backdrop-blur-xl p-6 shadow-2xl">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/[0.06] pb-4 mb-6">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-champagne-400/10 border border-champagne-400/20 flex items-center justify-center">
+                <Compass className="w-4 h-4 text-champagne-300" />
+              </div>
+              <div>
+                <h3 className="text-sm font-serif text-champagne-50 font-medium">Ephemeris Live Metric Feed</h3>
+                <p className="text-[11px] text-slate-400">Current active systemic weight balances</p>
+              </div>
+            </div>
+            <div className="text-right sm:text-right">
+              <span className="text-[10px] font-mono px-2 py-1 rounded bg-white/[0.04] border border-white/[0.08] text-champagne-200">
+                Calculations: 3,600s intervals
+              </span>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {[
+              { label: 'Natal Sun Alignment Density', value: '88%', width: 'w-[88%]', color: 'from-amber-400 to-orange-500' },
+              { label: 'Lunar Aspect Synthesis Vector', value: '74%', width: 'w-[74%]', color: 'from-blue-400 to-indigo-500' },
+              { label: 'House 10 Midheaven Velocity', value: '92%', width: 'w-[92%]', color: 'from-emerald-400 to-teal-500' },
+              { label: 'Chiron Vulnerability Delta', value: '41%', width: 'w-[41%]', color: 'from-pink-400 to-rose-500' }
+            ].map((chartRow, index) => (
+              <div key={index} className="space-y-1.5">
+                <div className="flex justify-between text-xs">
+                  <span className="text-slate-300 font-light">{chartRow.label}</span>
+                  <span className="font-mono text-champagne-300 font-medium">{chartRow.value}</span>
+                </div>
+                <div className="h-2 w-full bg-white/[0.04] rounded-full overflow-hidden border border-white/[0.06]">
+                  <div className={`h-full bg-gradient-to-r ${chartRow.color} ${chartRow.width} rounded-full`} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ===== FEATURE PROOF DISPLAY GRID ===== */}
         <section className="mb-20 border-t border-white/[0.06] pt-16">
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-champagne-400/[0.08] border border-champagne-400/20 backdrop-blur-sm mb-4">
