@@ -3,16 +3,18 @@ import { useAuth } from '@/context/AuthContext';
 import { Home } from '@/components/Home';
 import { Dashboard } from '@/components/Dashboard';
 import { Privacy } from '@/components/Privacy';
+import { Discount } from '@/components/Discount';
 import { Loader2 } from 'lucide-react';
 import { StarryBackground } from '@/components/StarryBackground';
 import { Analytics } from '@vercel/analytics/react';
 
-type View = 'home' | 'dashboard' | 'privacy';
+type View = 'home' | 'dashboard' | 'privacy' | 'discount';
 
 function getRouteFromPath(): View {
   if (typeof window === 'undefined') return 'home';
   const path = window.location.pathname;
   if (path === '/privacy') return 'privacy';
+  if (path === '/discount') return 'discount';
   return path === '/dashboard' ? 'dashboard' : 'home';
 }
 
@@ -85,6 +87,9 @@ function App() {
       )}
       {view === 'privacy' && (
         <Privacy onNavigateHome={() => navigate('home')} />
+      )}
+      {view === 'discount' && (
+        <Discount onNavigateHome={() => navigate('home')} />
       )}
       {view === 'home' && (
         <Home onNavigateDashboard={() => navigate('dashboard')} />
