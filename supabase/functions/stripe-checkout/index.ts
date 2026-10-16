@@ -11,7 +11,6 @@ const stripe = new Stripe(stripeSecret, {
   },
 });
 
-// Helper function to create responses with CORS headers
 function corsResponse(body: string | object | null, status = 200) {
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -19,7 +18,6 @@ function corsResponse(body: string | object | null, status = 200) {
     'Access-Control-Allow-Headers': '*',
   };
 
-  // For 204 No Content, don't include Content-Type or body
   if (status === 204) {
     return new Response(null, { status, headers });
   }
@@ -35,6 +33,7 @@ function corsResponse(body: string | object | null, status = 200) {
 
 Deno.serve(async (req) => {
   try {
+    // 1. FIRST check the method style type to block body-less preflights from throwing crashes
     if (req.method === 'OPTIONS') {
       return corsResponse({}, 204);
     }
@@ -43,7 +42,36 @@ Deno.serve(async (req) => {
       return corsResponse({ error: 'Method not allowed' }, 405);
     }
 
-    const { price_id, success_url, cancel_url, mode } = await req.json();
+    // 2. NOW it is safe to read the incoming JSON data stream payload safely
+    const body = await req.json();
+    const { priceType, isDiscountRoute } = body;
+
+    let price_id = '';
+    let mode: 'payment' | 'subscription' = 'payment';
+    let success_url = '';
+    let cancel_url = '';
+
+    // Define your fixed Stripe Price IDs here
+    const PRICE_SINGLE_DISCOUNT = 'price_12345_single_id';       // <--- REPLACE WITH YOUR \$5 STRIPE PRICE ID
+    const PRICE_SUBSCRIPTION_DISCOUNT = 'price_67890_sub_id'; // <--- REPLACE WITH YOUR \$10 STRIPE PRICE ID
+
+    if (isDiscountRoute) {
+      if (priceType === 'subscription') {
+        price_id = PRICE_SUBSCRIPTION_DISCOUNT;
+        mode = 'subscription';
+        success_url = `${req.headers.get('origin')}/discountpurchased?checkout=success&plan=subscription&session_id={CHECKOUT_SESSION_ID}`;
+      } else {
+        price_id = PRICE_SINGLE_DISCOUNT;
+        mode = 'payment';
+        success_url = `${req.headers.get('origin')}/discountpurchased?checkout=success&plan=single&session_id={CHECKOUT_SESSION_ID}`;
+      }
+      cancel_url = `${req.headers.get('origin')}/discount`;
+    } else {
+      price_id = body.price_id;
+      mode = body.mode;
+      success_url = body.success_url;
+      cancel_url = body.cancel_url;
+    }
 
     const error = validateParameters(
       { price_id, success_url, cancel_url, mode },
@@ -83,15 +111,11 @@ Deno.serve(async (req) => {
 
     if (getCustomerError) {
       console.error('Failed to fetch customer information from the database', getCustomerError);
-
       return corsResponse({ error: 'Failed to fetch customer information' }, 500);
     }
 
     let customerId;
 
-    /**
-     * In case we don't have a mapping yet, the customer does not exist and we need to create one.
-     */
     if (!customer || !customer.customer_id) {
       const newCustomer = await stripe.customers.create({
         email: user.email,
@@ -109,15 +133,12 @@ Deno.serve(async (req) => {
 
       if (createCustomerError) {
         console.error('Failed to save customer information in the database', createCustomerError);
-
-        // Try to clean up both the Stripe customer and subscription record
         try {
           await stripe.customers.del(newCustomer.id);
           await supabase.from('stripe_subscriptions').delete().eq('customer_id', newCustomer.id);
         } catch (deleteError) {
           console.error('Failed to clean up after customer mapping error:', deleteError);
         }
-
         return corsResponse({ error: 'Failed to create customer mapping' }, 500);
       }
 
@@ -129,26 +150,21 @@ Deno.serve(async (req) => {
 
         if (createSubscriptionError) {
           console.error('Failed to save subscription in the database', createSubscriptionError);
-
-          // Try to clean up the Stripe customer since we couldn't create the subscription
           try {
             await stripe.customers.del(newCustomer.id);
           } catch (deleteError) {
             console.error('Failed to delete Stripe customer after subscription creation error:', deleteError);
           }
-
           return corsResponse({ error: 'Unable to save the subscription in the database' }, 500);
         }
       }
 
       customerId = newCustomer.id;
-
       console.log(`Successfully set up new customer ${customerId} with subscription record`);
     } else {
       customerId = customer.customer_id;
 
       if (mode === 'subscription') {
-        // Verify subscription exists for existing customer
         const { data: subscription, error: getSubscriptionError } = await supabase
           .from('stripe_subscriptions')
           .select('status')
@@ -157,12 +173,10 @@ Deno.serve(async (req) => {
 
         if (getSubscriptionError) {
           console.error('Failed to fetch subscription information from the database', getSubscriptionError);
-
           return corsResponse({ error: 'Failed to fetch subscription information' }, 500);
         }
 
         if (!subscription) {
-          // Create subscription record for existing customer if missing
           const { error: createSubscriptionError } = await supabase.from('stripe_subscriptions').insert({
             customer_id: customerId,
             status: 'not_started',
@@ -170,14 +184,12 @@ Deno.serve(async (req) => {
 
           if (createSubscriptionError) {
             console.error('Failed to create subscription record for existing customer', createSubscriptionError);
-
             return corsResponse({ error: 'Failed to create subscription record for existing customer' }, 500);
           }
         }
       }
     }
 
-    // create Checkout Session
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       payment_method_types: ['card'],
@@ -193,7 +205,6 @@ Deno.serve(async (req) => {
     });
 
     console.log(`Created checkout session ${session.id} for customer ${customerId}`);
-
     return corsResponse({ sessionId: session.id, url: session.url });
   } catch (error: any) {
     console.error(`Checkout error: ${error.message}`);
@@ -222,6 +233,5 @@ function validateParameters<T extends Record<string, any>>(values: T, expected: 
       }
     }
   }
-
   return undefined;
 }
