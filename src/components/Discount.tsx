@@ -61,7 +61,7 @@ export function Discount({ onNavigateHome }: DiscountProps) {
       }
 
       // Redirect to Stripe Checkout using your publishable key
-      const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
+      const stripe = await loadStripe(import.meta.env.VITE_PUBLIC_STRIPE_PUBLISHABLE_KEY || import.meta.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
       if (stripe && session.id) {
         await stripe.redirectToCheckout({ sessionId: session.id });
       } else {
