@@ -28,43 +28,47 @@ const trackSPAPageView = (path: string) => {
   }
 };
 
+
 function App() {
   const { user, loading } = useAuth();
+  
+  // Set the structural deep-link intent permanently on mount
   const [view, setView] = useState<View>(getRouteFromPath);
 
-  // 1. Dynamic Routing Guard: Detects login changes and forces the correct view state
+  // 1. Guard Loop: Validates path changes ONLY when Supabase state is fully verified
   useEffect(() => {
-    if (!loading) {
-      const currentPath = window.location.pathname;
-      
-      if (user && currentPath === '/') {
-        // If logged in but at root link, force view to dashboard view state
-        window.history.pushState(null, '', '/dashboard');
-        setView('dashboard');
-        trackSPAPageView('/dashboard');
-      } else if (!user && currentPath === '/dashboard') {
-        // If logged out but trying to view dashboard, force back home
-        window.history.pushState(null, '', '/');
-        setView('home');
-        trackSPAPageView('/');
-      }
+    if (loading) return; // Wait until loading completes before shifting any states
+
+    const currentPath = window.location.pathname;
+    
+    if (user && currentPath === '/') {
+      window.history.pushState(null, '', '/dashboard');
+      setView('dashboard');
+      trackSPAPageView('/dashboard');
+    } else if (!user && currentPath === '/dashboard') {
+      window.history.pushState(null, '', '/');
+      setView('home');
+      trackSPAPageView('/');
+    } else {
+      // Safely preserve valid guest pathways like /discount or verified deep-links
+      setView(getRouteFromPath());
     }
   }, [user, loading]);
 
-  // 2. Initial Setup and PopState listener logic
+  // 2. Continuous PopState History Watcher
   useEffect(() => {
-    trackSPAPageView(window.location.pathname);
-
     const onPopState = () => {
       setView(getRouteFromPath());
-      trackSPAPageView(window.location.pathname);
+      if (!loading) {
+        trackSPAPageView(window.location.pathname);
+      }
     };
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
-  }, []);
+  }, [loading]);
 
   const navigate = (v: View) => {
-    const path = v === 'home' ? '/' : `/${v}`;
+    const path = v === 'home' ? '/' : v === 'discountPurchased' ? '/discountpurchased' : `/${v}`;
     if (typeof window !== 'undefined' && window.history) {
       window.history.pushState(null, '', path);
     }
@@ -72,18 +76,17 @@ function App() {
     trackSPAPageView(path);
   };
 
-  if (loading) {
-    return (
-      <div className="relative min-h-screen flex items-center justify-center">
-        <StarryBackground />
-        <Loader2 className="w-8 h-8 animate-spin text-amber-300" />
-        <Analytics />
-      </div>
-    );
-  }
-
   return (
     <>
+      {/* 🛡️ Full-Screen Loading Mask Overlay (Preserves the main component trees behind it) */}
+      {loading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-midnight-950">
+          <StarryBackground />
+          <Loader2 className="w-8 h-8 animate-spin text-amber-300" />
+        </div>
+      )}
+
+      {/* Main Structural Components */}
       {view === 'dashboard' && (
         <Dashboard onNavigateHome={() => navigate('home')} />
       )}
