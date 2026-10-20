@@ -45,11 +45,7 @@ function App() {
       window.history.pushState(null, '', '/dashboard');
       setView('dashboard');
       trackSPAPageView('/dashboard');
-    } else if (!user && currentPath === '/dashboard') {
-      window.history.pushState(null, '', '/');
-      setView('home');
-      trackSPAPageView('/');
-    } else {
+    }else {
       // Safely preserve valid guest pathways like /discount or verified deep-links
       setView(getRouteFromPath());
     }
