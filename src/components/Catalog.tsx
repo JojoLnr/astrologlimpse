@@ -17,42 +17,49 @@ interface ProductItem {
   priceId: string;
   name: string;
   tagline: string;
+  description: string;
   price: string;
   numericValue: number;
   mode: 'payment' | 'subscription';
-  isHero?: boolean;
-  isAnchor?: boolean;
-  isTest?: boolean;
-  badge?: string;
+  badge: string;
   features: string[];
   icon: React.ElementType;
   accentColor: string;
-  previewSnippet: string;
+  review: {
+    text: string;
+    author: string;
+    sign: string;
+  };
   riskCopy: string;
 }
 
-const PRODUCTS: Record<string, ProductItem> = {
-  test: {
+const PRODUCTS: ProductItem[] = [
+  {
     id: 'test',
     priceId: 'price_test_placeholder',
-    name: 'Test Entry',
-    tagline: 'Internal sandbox verification flow',
+    name: 'Test Sandbox Entry',
+    tagline: 'Internal validation & conversion tag testing flow',
+    description: 'Designed exclusively for technical verification. Executes a $1.00 test charge in Stripe sandbox mode to confirm webhook triggers and Google Ads conversion tag dispatching.',
     price: '$1.00',
     numericValue: 1.0,
     mode: 'payment',
-    isTest: true,
     badge: 'DEV ONLY',
     features: ['Instant $1 checkout test', 'Validates Stripe redirection', 'Fires conversion tag verification'],
     icon: Zap,
     accentColor: '#94a3b8',
-    previewSnippet: 'SYSTEM_TEST_MODE_ACTIVE // 001',
+    review: {
+      text: 'Runs clean test transactions instantly without hitting live merchant accounts.',
+      author: 'System Admin',
+      sign: 'Dev Mode',
+    },
     riskCopy: 'Sandbox mode test transaction.',
   },
-  transit: {
+  {
     id: 'transit',
     priceId: 'price_transit_placeholder',
     name: 'The Today Transit Flash',
     tagline: 'Instant single-transit scan for immediate planetary clarity',
+    description: 'When you need a quick, highly specific answer to what today holds. This scan pinpoints active transits crossing your natal house cusps right now, giving you precise timing windows for daily action.',
     price: '$1.00',
     numericValue: 1.0,
     mode: 'payment',
@@ -60,14 +67,19 @@ const PRODUCTS: Record<string, ProductItem> = {
     features: ['Single-page real-time transit scan', 'Live planetary degree positions', 'Actionable daily timing window'],
     icon: Compass,
     accentColor: '#38bdf8',
-    previewSnippet: 'Moon conjunct Midheaven at 14° Taurus. Favorable for public communication between 2:00 PM and 4:30 PM.',
+    review: {
+      text: 'The transit breakdown showed me exactly when the pressure lifted. Incredible clarity for a single dollar.',
+      author: 'Sarah M.',
+      sign: 'Capricorn',
+    },
     riskCopy: 'Instant digital access delivered on screen within seconds.',
   },
-  full_package: {
+  {
     id: 'full_package',
     priceId: 'price_full_package_placeholder',
     name: 'The 10-Point Life Crossroads Blueprint',
     tagline: 'Comprehensive natal breakdown covering love, career & karmic nodes',
+    description: 'A deep-dive reading examining your core psychological and structural roadmap. Analyzes 10 crucial chart points including House 7 (relationships) and House 10 (career trajectory) using Swiss Ephemeris math.',
     price: '$5.00',
     numericValue: 5.0,
     mode: 'payment',
@@ -75,30 +87,39 @@ const PRODUCTS: Record<string, ProductItem> = {
     features: ['Complete 10-point cosmic blueprint', 'Sun, Moon & Rising Sign analysis', 'House 7 & 10 detailed alerts', 'Delivered to dashboard & email'],
     icon: BookOpen,
     accentColor: '#48bb78',
-    previewSnippet: 'House 7 Activation: Saturn pressure clearing. Expect structural partnership shifts over the next 30 days.',
+    review: {
+      text: 'I have tried three other astrology apps. This is the only one that gave me specific dates instead of vague personality descriptions.',
+      author: 'Priya D.',
+      sign: 'Libra',
+    },
     riskCopy: 'Instant access sent to your dashboard and email.',
   },
-  premium_membership: {
+  {
     id: 'premium_membership',
     priceId: 'price_premium_sub_placeholder',
     name: 'The Premium Cosmic Access Pass',
     tagline: 'Continuous weekly ephemeris calculations & live dashboard unblurs',
+    description: 'Our flagship subscription. Never miss a planetary shift again. Unlocks unlimited web dashboard access, weekly transit alerts mapped directly to your chart, and up to 2 full readings every week.',
     price: '$9.99',
     numericValue: 9.99,
     mode: 'subscription',
-    isHero: true,
-    badge: 'MOST POPULAR ACCESS',
+    badge: 'MOST POPULAR',
     features: ['Up to 2 full readings every week', 'Unlimited web dashboard unblurs', 'Real-time ephemeris degree metrics', 'Cancel anytime with 1-click'],
     icon: Crown,
     accentColor: '#c4a374',
-    previewSnippet: 'RECURRING SYNC: Live weekly planetary transit feeds mapped directly to your unique natal house coordinates.',
+    review: {
+      text: 'Having weekly updates mapped to my exact chart transformed how I plan my business launches.',
+      author: 'Marcus K.',
+      sign: 'Scorpio',
+    },
     riskCopy: 'Cancel anytime in 1 click from your account settings. No commitment.',
   },
-  vip_orbit: {
+  {
     id: 'vip_orbit',
     priceId: 'price_vip_orbit_placeholder',
     name: 'The VIP Orbit Pass',
     tagline: 'Priority queue skip & direct astrological Q&A access',
+    description: 'For seekers who demand white-glove attention. Bypasses standard queue limits, unlocks all Premium features, and grants direct monthly Q&A submissions answered via computational coordinate audits.',
     price: '$99.99',
     numericValue: 99.99,
     mode: 'subscription',
@@ -106,18 +127,22 @@ const PRODUCTS: Record<string, ProductItem> = {
     features: ['Priority queue skip on all readings', 'Everything in Premium Membership', 'Monthly direct Q&A submission (3 questions)', 'Dedicated cosmic concierge support'],
     icon: Rocket,
     accentColor: '#a855f7',
-    previewSnippet: 'VIP DIRECT CHANNEL: Direct coordinate auditing with priority computational allocation.',
+    review: {
+      text: 'The concierge responses are remarkably thorough. It feels like having a personal astrologer on retainer.',
+      author: 'Elena R.',
+      sign: 'Leo',
+    },
     riskCopy: 'Priority queue entry with dedicated concierge support.',
   },
-  cosmic_horizon: {
+  {
     id: 'cosmic_horizon',
     priceId: 'price_cosmic_horizon_placeholder',
     name: 'Executive Custom Birth Sky Art',
     tagline: 'High-res digital masterpiece depicting your exact birth night sky coordinates',
+    description: 'An heirloom-grade physical canvas paired with a digital vector file. Renders the exact celestial canopy above your birthplace down to the minute, accompanied by an executive Swiss Ephemeris breakdown certificate.',
     price: '$249.99',
     numericValue: 249.99,
     mode: 'payment',
-    isAnchor: true,
     badge: 'LUXURY ARTIFACT',
     features: [
       'High-res digital birth sky art (exact coordinates & time)',
@@ -127,37 +152,13 @@ const PRODUCTS: Record<string, ProductItem> = {
     ],
     icon: Sparkles,
     accentColor: '#f59e0b',
-    previewSnippet: 'SWISS EPHEMERIS ARTIFACT: 300 DPI vector sky mapping with gold-foil border geometry layout.',
+    review: {
+      text: 'Absolute museum-quality piece hanging in my study. The astronomical precision is breathtaking.',
+      author: 'Jonathan W.',
+      sign: 'Taurus',
+    },
     riskCopy: 'Securely processed and printed to exact Swiss Ephemeris metrics.',
   },
-};
-
-const testimonials = [
-  {
-    name: 'Sarah M.',
-    location: 'Chicago, IL',
-    text: 'I finally understood why my career felt stalled. The transit breakdown showed me exactly when Mars leaves my 10th house. Game changer.',
-    sign: 'Capricorn',
-  },
-  {
-    name: 'Marcus K.',
-    location: 'Brooklyn, NY',
-    text: 'The Chiron reading nailed a pattern I have been circling for 15 years. Seeing the exact degree and transit window gave me something to actually work with.',
-    sign: 'Scorpio',
-  },
-  {
-    name: 'Priya D.',
-    location: 'Austin, TX',
-    text: 'I have tried three other astrology apps. This is the only one that gave me specific dates instead of vague personality descriptions. Eerily accurate.',
-    sign: 'Libra',
-  },
-];
-
-const comparisonRows = [
-  { feature: 'Data Calculation', generic: 'Sun Sign Only (1/12th of world)', ours: 'Exact Natal Chart (Unique to your time/coords)' },
-  { feature: 'Forecast Timing', generic: 'Pre-written monthly horoscope columns', ours: 'Live, Real-Time Swiss Ephemeris Degrees' },
-  { feature: 'Astrological Depth', generic: 'Basic 12 signs and planets', ours: 'Chiron, Black Moon Lilith, Nodes & Asteroids' },
-  { feature: 'Actionable Output', generic: 'Vague personality affirmations', ours: 'Specific calendar timing windows for action' },
 ];
 
 const trustBadges = [
@@ -197,11 +198,10 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
 
   return (
     <div className="relative min-h-screen text-slate-100 selection:bg-champagne-400/20 bg-[#04060b]">
-      {/* Immersive Background Elements */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-950/40 via-[#04060b] to-[#04060b] pointer-events-none" />
       <StarryBackground />
 
-      <main className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-12 pb-28">
+      <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-12 pb-28">
         
         {/* Navigation Header */}
         <div className="flex items-center justify-between mb-12 border-b border-white/[0.08] pb-6">
@@ -223,19 +223,19 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
 
         {/* Editorial Title Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-champagne-400/[0.06] border border-champagne-400/20 backdrop-blur-md mb-6 shadow-[0_0_20px_rgba(196,163,116,0.1)]">
+          <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-champagne-400/[0.06] border border-champagne-400/25 backdrop-blur-md mb-6 shadow-[0_0_25px_rgba(196,163,116,0.1)]">
             <span className="w-1.5 h-1.5 rounded-full bg-champagne-300 animate-pulse" />
-            <span className="text-[11px] font-mono tracking-[0.25em] uppercase text-champagne-200">Catalog Artifacts & Access Tiers</span>
+            <span className="text-[11px] font-mono tracking-[0.25em] uppercase text-champagne-200">The Observatory Codex</span>
           </div>
 
           <h1 className="text-4xl sm:text-6xl font-serif font-light text-champagne-50 mb-6 tracking-tight leading-[1.15]">
-            Calibrate Your <br />
+            Complete Catalog & <br />
             <span className="bg-gradient-to-r from-champagne-200 via-champagne-300 to-amber-200 bg-clip-text text-transparent italic font-normal">
-              Celestial Coordinates
+              Service Dossiers
             </span>
           </h1>
           <p className="text-slate-300 text-sm sm:text-base font-light tracking-wide max-w-xl mx-auto leading-relaxed">
-            Bypass generic astrology. Choose a single tactical flash reading, secure ongoing weekly synchronization, or commission a custom birth sky masterpiece.
+            Every product is custom calculated using precise Swiss Ephemeris planetary coordinates. Explore each offering below.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-8 mt-8 pt-6 border-t border-white/[0.06]">
@@ -255,314 +255,134 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
         )}
 
         {/* ================================================================ */}
-        {/* HERO SECTION: THE $9.99/mo SUBSCRIPTION (EDITORIAL BANNER)       */}
+        {/* EQUAL-SPACE FULL-WIDTH EDITORIAL DOSSIER ROWS                    */}
         {/* ================================================================ */}
-        {(() => {
-          const item = PRODUCTS.premium_membership;
-          const isLoading = loadingId === item.id;
-          return (
-            <div className="relative rounded-[2rem] border border-champagne-400/50 bg-gradient-to-br from-[#0c1224] via-[#070a14] to-[#04060b] p-8 sm:p-12 mb-12 shadow-[0_0_90px_rgba(196,163,116,0.15)] overflow-hidden">
-              {/* Glowing nebula effect inside card */}
-              <div className="absolute -top-24 -right-24 w-96 h-96 bg-champagne-400/[0.07] rounded-full blur-3xl pointer-events-none" />
-              <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-indigo-500/[0.05] rounded-full blur-3xl pointer-events-none" />
-              
-              <div className="absolute top-6 right-8 px-4 py-1.5 rounded-full text-[10px] font-mono tracking-widest uppercase bg-champagne-400/20 border border-champagne-400/40 text-champagne-100 shadow-md">
-                {item.badge}
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
-                
-                {/* Editorial Transmission Preview Box */}
-                <div className="lg:col-span-5 rounded-2xl border border-champagne-400/20 bg-black/70 p-6 flex flex-col justify-between relative shadow-2xl backdrop-blur-md">
-                  <div className="flex items-center justify-between pb-4 border-b border-white/[0.08] mb-5">
-                    <div className="flex items-center gap-2.5">
-                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.5)]" />
-                      <span className="text-[11px] font-mono tracking-widest text-champagne-200 uppercase">Live Dashboard Feed</span>
-                    </div>
-                    <Eye className="w-4 h-4 text-champagne-400" />
-                  </div>
-
-                  <div className="font-mono text-xs text-champagne-100/90 leading-relaxed bg-champagne-400/[0.04] p-5 rounded-xl border border-champagne-400/15 mb-5 shadow-inner">
-                    <p className="text-[10px] font-mono text-champagne-400 uppercase tracking-widest mb-2">// TRANSMISSION_SNIPPET</p>
-                    {item.previewSnippet}
-                  </div>
-
-                  <div className="flex items-center justify-between text-[10px] font-mono text-slate-400 pt-3 border-t border-white/[0.06]">
-                    <span className="text-slate-400">REF: SUB_ACTIVE_NODE</span>
-                    <span className="text-champagne-300 font-semibold">UNLIMITED UNBLURS</span>
-                  </div>
-                </div>
-
-                {/* Details & Action */}
-                <div className="lg:col-span-7 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 rounded-xl bg-champagne-400/10 border border-champagne-400/30 flex items-center justify-center">
-                        <Crown className="w-5 h-5 text-champagne-300" />
-                      </div>
-                      <h2 className="text-2xl sm:text-4xl font-serif font-light text-champagne-50">{item.name}</h2>
-                    </div>
-                    <p className="text-sm sm:text-base text-slate-300 font-light mb-6 leading-relaxed">{item.tagline}</p>
-
-                    <div className="flex items-baseline gap-3 mb-6 p-5 rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-sm">
-                      <span className="text-4xl sm:text-6xl font-serif text-champagne-100 font-light tracking-tight">{item.price}</span>
-                      <span className="text-xs font-mono text-slate-300 uppercase tracking-widest">/ monthly recurring sync</span>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
-                      {item.features.map((feat, idx) => (
-                        <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-200">
-                          <Check className="w-4 h-4 text-champagne-400 flex-shrink-0 mt-0.5" />
-                          <span className="font-light">{feat}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <button
-                      onClick={() => handleBuy(item)}
-                      disabled={loadingId !== null}
-                      className="w-full sm:w-auto px-10 py-4 rounded-xl bg-gradient-to-r from-champagne-200 via-champagne-300 to-amber-300 text-midnight-950 font-mono text-xs tracking-[0.2em] uppercase font-bold hover:brightness-110 transition-all shadow-[0_4px_30px_rgba(196,163,116,0.4)] disabled:opacity-40 flex items-center justify-center gap-2.5 mb-3"
-                    >
-                      {loadingId === item.id ? <Loader2 className="w-4 h-4 animate-spin" /> : `Acquire Membership (${item.price}/mo)`}
-                    </button>
-                    <p className="text-[11px] font-mono text-slate-400">{item.riskCopy}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
-        })()}
-
-        {/* ================================================================ */}
-        {/* EDITORIAL 3-COLUMN CARDS: TRANSIT, BLUEPRINT, VIP PASS           */}
-        {/* ================================================================ */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-          {[PRODUCTS.transit, PRODUCTS.full_package, PRODUCTS.vip_orbit].map((item) => {
+        <div className="space-y-12">
+          {PRODUCTS.map((item, index) => {
             const Icon = item.icon;
             const isLoading = loadingId === item.id;
+            const isAnchor = item.id === 'cosmic_horizon';
+            const isHero = item.id === 'premium_membership';
 
             return (
               <div
                 key={item.id}
-                className="relative rounded-3xl border border-white/[0.1] bg-gradient-to-br from-slate-900/80 via-[#0a0f1d]/90 to-midnight-950/90 backdrop-blur-2xl p-7 flex flex-col justify-between hover:border-champagne-400/40 transition-all duration-300 group shadow-xl"
+                className={`relative rounded-[2.5rem] border backdrop-blur-2xl p-8 sm:p-12 transition-all duration-300 shadow-2xl overflow-hidden ${
+                  isAnchor
+                    ? 'border-2 border-amber-500/50 bg-gradient-to-br from-amber-950/30 via-[#0a0d18]/95 to-slate-950/95 shadow-[0_0_80px_rgba(245,158,11,0.12)]'
+                    : isHero
+                    ? 'border-2 border-champagne-400/50 bg-gradient-to-br from-[#0c1224] via-[#070a14] to-[#04060b] shadow-[0_0_90px_rgba(196,163,116,0.15)]'
+                    : item.id === 'test'
+                    ? 'border border-dashed border-slate-700 bg-slate-900/40 opacity-80'
+                    : 'border-white/[0.12] bg-gradient-to-br from-slate-900/90 via-[#080c18]/90 to-midnight-950/95'
+                }`}
               >
-                <div>
-                  <div className="flex items-center justify-between mb-6">
-                    <div
-                      className="w-12 h-12 rounded-2xl border flex items-center justify-center shadow-lg"
-                      style={{ borderColor: `${item.accentColor}40`, background: `${item.accentColor}15` }}
-                    >
-                      <Icon className="w-6 h-6" style={{ color: item.accentColor }} />
+                {/* Background glow flare */}
+                <div className="absolute top-0 right-0 w-80 h-80 bg-champagne-400/[0.03] rounded-full blur-3xl pointer-events-none" />
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
+                  
+                  {/* LEFT COLUMN: Image Placeholder & Visual Specimen */}
+                  <div className="lg:col-span-5 h-72 sm:h-80 rounded-2xl border border-white/[0.1] bg-black/70 p-6 flex flex-col justify-between relative shadow-inner">
+                    <div className="flex items-center justify-between pb-4 border-b border-white/[0.08]">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-champagne-400 animate-pulse" />
+                        <span className="text-[10px] font-mono tracking-widest text-slate-400 uppercase">Visual Specimen #{index + 1}</span>
+                      </div>
+                      <Icon className="w-4 h-4 text-champagne-400" />
                     </div>
-                    <span className="text-[10px] font-mono tracking-widest text-slate-300 uppercase bg-white/[0.05] px-3 py-1 rounded-lg border border-white/[0.08]">
-                      {item.badge}
-                    </span>
+
+                    <div className="my-auto text-center py-6">
+                      <div 
+                        className="w-14 h-14 rounded-2xl border flex items-center justify-center mx-auto mb-3 shadow-md"
+                        style={{ borderColor: `${item.accentColor}40`, background: `${item.accentColor}15` }}
+                      >
+                        <Icon className="w-7 h-7" style={{ color: item.accentColor }} />
+                      </div>
+                      <p className="font-serif text-lg text-champagne-100 mb-1">{item.name}</p>
+                      <p className="text-[11px] font-mono text-slate-400 uppercase tracking-widest">Interactive Artifact Placeholder</p>
+                    </div>
+
+                    <div className="flex items-center justify-between text-[10px] font-mono text-slate-500 pt-3 border-t border-white/[0.06]">
+                      <span>ID: {item.id.toUpperCase()}</span>
+                      <span className="text-champagne-300">SWISS EPHEMERIS READY</span>
+                    </div>
                   </div>
 
-                  <h3 className="text-2xl font-serif text-champagne-50 mb-2 leading-snug">{item.name}</h3>
-                  <p className="text-xs text-slate-300 font-light mb-6 leading-relaxed">{item.tagline}</p>
+                  {/* RIGHT COLUMN: Description, Features, Review & Checkout */}
+                  <div className="lg:col-span-7 flex flex-col justify-between">
+                    <div>
+                      {/* Badge & Title */}
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-[10px] font-mono tracking-widest uppercase px-3 py-1 rounded-full bg-white/[0.06] border border-white/[0.1] text-champagne-200">
+                          {item.badge}
+                        </span>
+                        <span className="text-3xl sm:text-4xl font-serif text-champagne-100 font-light">
+                          {item.price} <span className="text-xs font-mono text-slate-400">{item.mode === 'subscription' ? '/mo' : ''}</span>
+                        </span>
+                      </div>
 
-                  <div className="bg-black/50 border border-white/[0.06] rounded-xl p-4 mb-6 shadow-inner">
-                    <p className="text-[10px] font-mono text-champagne-300/80 uppercase tracking-widest mb-1.5">// SAMPLE_OUTPUT</p>
-                    <p className="font-mono text-[11px] text-slate-300 italic leading-relaxed">"{item.previewSnippet}"</p>
+                      <h2 className="text-2xl sm:text-3xl font-serif font-light text-champagne-50 mb-2">{item.name}</h2>
+                      <p className="text-xs font-mono text-champagne-300/90 tracking-wider mb-4">{item.tagline}</p>
+                      
+                      {/* What it does / How it helps */}
+                      <p className="text-sm text-slate-300 font-light leading-relaxed mb-6">
+                        {item.description}
+                      </p>
+
+                      {/* Feature Checklist */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
+                        {item.features.map((feat, idx) => (
+                          <div key={idx} className="flex items-start gap-2 text-xs text-slate-200">
+                            <Check className="w-4 h-4 text-champagne-400 flex-shrink-0 mt-0.5" />
+                            <span className="font-light">{feat}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Embedded Review */}
+                      <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 mb-8">
+                        <div className="flex items-center gap-1 mb-2">
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} className="w-3 h-3 fill-champagne-400 text-champagne-400" />
+                          ))}
+                          <span className="text-[10px] font-mono text-slate-400 ml-2">Verified Field Report</span>
+                        </div>
+                        <p className="text-xs text-slate-300 italic mb-2">&quot;{item.review.text}&quot;</p>
+                        <div className="flex items-center justify-between text-[10px] font-mono text-slate-400">
+                          <span className="text-champagne-200">{item.review.author}</span>
+                          <span className="px-2 py-0.5 rounded bg-champagne-400/10 text-champagne-300">{item.review.sign}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Action Button & Risk Reversal */}
+                    <div>
+                      <button
+                        onClick={() => handleBuy(item)}
+                        disabled={loadingId !== null}
+                        className={`w-full py-4 rounded-xl font-mono text-xs tracking-[0.2em] uppercase font-bold transition-all shadow-lg disabled:opacity-40 flex items-center justify-center gap-2.5 mb-2.5 ${
+                          isAnchor
+                            ? 'bg-gradient-to-r from-amber-500/30 to-amber-600/40 border border-amber-500/60 text-amber-100 hover:bg-amber-500/40 shadow-[0_4px_30px_rgba(245,158,11,0.25)]'
+                            : isHero
+                            ? 'bg-gradient-to-r from-champagne-200 via-champagne-300 to-amber-300 text-midnight-950 hover:brightness-110 shadow-[0_4px_30px_rgba(196,163,116,0.4)]'
+                            : 'bg-white/[0.06] border border-white/[0.15] text-champagne-100 hover:bg-white/[0.1] hover:border-champagne-400/40'
+                        }`}
+                      >
+                        {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : `Acquire ${item.name} (${item.price}${item.mode === 'subscription' ? '/mo' : ''})`}
+                      </button>
+                      <p className="text-[11px] font-mono text-slate-400 text-center">{item.riskCopy}</p>
+                    </div>
+
                   </div>
-
-                  <div className="flex items-baseline gap-2 mb-6">
-                    <span className="text-4xl font-serif text-champagne-100 font-light">{item.price}</span>
-                    <span className="text-[10px] font-mono text-slate-400 uppercase tracking-widest">{item.mode === 'subscription' ? '/ month' : 'one-time'}</span>
-                  </div>
-
-                  <ul className="space-y-3 mb-8 border-t border-white/[0.06] pt-6">
-                    {item.features.map((feat, idx) => (
-                      <li key={idx} className="flex items-start gap-2.5 text-xs text-slate-200 font-light">
-                        <Check className="w-4 h-4 text-champagne-400 flex-shrink-0 mt-0.5" />
-                        <span>{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div>
-                  <button
-                    onClick={() => handleBuy(item)}
-                    disabled={loadingId !== null}
-                    className="w-full py-4 rounded-xl bg-white/[0.05] border border-white/[0.12] text-champagne-100 font-mono text-xs tracking-[0.15em] uppercase font-semibold hover:bg-white/[0.1] hover:border-champagne-400/40 transition-all disabled:opacity-40 flex items-center justify-center gap-2 mb-3 shadow-md"
-                  >
-                    {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : `Acquire for ${item.price}`}
-                  </button>
-                  <p className="text-[10px] font-mono text-slate-400 text-center">{item.riskCopy}</p>
                 </div>
               </div>
             );
           })}
         </div>
 
-        {/* ================================================================ */}
-        {/* LUXURY ANCHOR SECTION: $249.99 CUSTOM BIRTH SKY ART              */}
-        {/* ================================================================ */}
-        {(() => {
-          const item = PRODUCTS.cosmic_horizon;
-          const isLoading = loadingId === item.id;
-          return (
-            <div className="relative rounded-[2rem] border-2 border-amber-500/50 bg-gradient-to-br from-amber-950/30 via-[#0a0d18]/95 to-slate-950/95 p-8 sm:p-12 mb-16 shadow-[0_0_80px_rgba(245,158,11,0.12)]">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-                
-                <div className="lg:col-span-7 flex flex-col justify-between order-2 lg:order-1">
-                  <div>
-                    <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[10px] font-mono tracking-widest uppercase bg-amber-500/20 border border-amber-500/40 text-amber-200 mb-5 shadow-sm">
-                      {item.badge}
-                    </div>
-                    <h3 className="text-3xl sm:text-4xl font-serif font-light text-champagne-50 mb-3">{item.name}</h3>
-                    <p className="text-sm sm:text-base text-slate-300 font-light mb-6 leading-relaxed">{item.tagline}</p>
-
-                    <div className="flex items-baseline gap-3 mb-6 p-5 rounded-2xl bg-amber-950/20 border border-amber-500/30">
-                      <span className="text-4xl sm:text-5xl font-serif text-amber-200 font-light">{item.price}</span>
-                      <span className="text-xs font-mono text-amber-300 uppercase tracking-widest">/ physical canvas + digital vector output</span>
-                    </div>
-
-                    <div className="space-y-3 mb-8">
-                      {item.features.map((feat, idx) => (
-                        <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-200 font-light">
-                          <Check className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
-                          <span>{feat}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <button
-                      onClick={() => handleBuy(item)}
-                      disabled={loadingId !== null}
-                      className="w-full sm:w-auto px-10 py-4 rounded-xl bg-gradient-to-r from-amber-500/30 to-amber-600/40 border border-amber-500/60 text-amber-100 font-mono text-xs tracking-[0.2em] uppercase font-bold hover:bg-amber-500/40 transition-all shadow-[0_4px_30px_rgba(245,158,11,0.25)] disabled:opacity-40 flex items-center justify-center gap-2 mb-3"
-                    >
-                      {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : `Order Custom Sky Art (${item.price})`}
-                    </button>
-                    <p className="text-[11px] font-mono text-slate-400">{item.riskCopy}</p>
-                  </div>
-                </div>
-
-                <div className="lg:col-span-5 h-88 rounded-2xl border border-amber-500/40 bg-black/70 p-7 flex flex-col justify-between order-1 lg:order-2 relative overflow-hidden shadow-2xl backdrop-blur-md">
-                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-500/10 via-transparent to-transparent pointer-events-none" />
-                  
-                  <div className="flex items-center justify-between pb-4 border-b border-amber-500/30 relative z-10">
-                    <span className="text-[10px] font-mono tracking-widest text-amber-300 uppercase">Artifact Blueprint #001</span>
-                    <Sparkles className="w-4 h-4 text-amber-400" />
-                  </div>
-
-                  <div className="my-auto text-center relative z-10 py-8">
-                    <div className="w-16 h-16 rounded-full border border-amber-500/30 bg-amber-500/10 flex items-center justify-center mx-auto mb-4 shadow-[0_0_20px_rgba(245,158,11,0.2)]">
-                      <Sparkles className="w-8 h-8 text-amber-300" />
-                    </div>
-                    <p className="font-serif text-xl text-champagne-100 mb-1.5 italic">&quot;Exact Night Sky Mapping&quot;</p>
-                    <p className="text-xs font-mono text-amber-200/80 tracking-wider">Coordinates: 37.7749° N, 122.4194° W</p>
-                    <p className="text-[10px] font-mono text-slate-400 mt-2">Swiss Ephemeris Vector Calculation</p>
-                  </div>
-
-                  <div className="flex items-center justify-between text-[10px] font-mono text-slate-400 pt-4 border-t border-amber-500/30 relative z-10">
-                    <span>SPEC: 300 DPI CANVAS</span>
-                    <span className="text-amber-300 font-semibold">CUSTOM GENERATED</span>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          );
-        })()}
-
-        {/* ================================================================ */}
-        {/* TECHNICAL COMPARISON MATRIX                                      */}
-        {/* ================================================================ */}
-        <div className="mb-16 rounded-[2rem] border border-white/[0.1] bg-slate-900/40 backdrop-blur-xl p-8 sm:p-10 shadow-xl">
-          <div className="text-center max-w-xl mx-auto mb-10">
-            <h3 className="text-2xl sm:text-3xl font-serif text-champagne-50 mb-2">Technical Engine Comparison</h3>
-            <p className="text-xs font-mono text-slate-400 uppercase tracking-widest">Why precision computation replaces generalized horoscopes</p>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr className="border-b border-white/[0.1] text-champagne-200 font-mono tracking-wider">
-                  <th className="py-4 px-6 uppercase">Parameter</th>
-                  <th className="py-4 px-6 text-slate-400 uppercase">Generic Astrology Apps</th>
-                  <th className="py-4 px-6 text-champagne-300 font-semibold bg-champagne-400/[0.04] uppercase">Astrologlimpse Engine</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/[0.05] text-slate-200 font-light">
-                {comparisonRows.map((row, idx) => (
-                  <tr key={idx} className="hover:bg-white/[0.02] transition-colors">
-                    <td className="py-4 px-6 font-mono text-champagne-100 font-medium">{row.feature}</td>
-                    <td className="py-4 px-6 text-slate-400">{row.generic}</td>
-                    <td className="py-4 px-6 text-champagne-200 bg-champagne-400/[0.03] font-medium">{row.ours}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* ================================================================ */}
-        {/* VERIFIED FIELD REPORTS (TESTIMONIALS)                            */}
-        {/* ================================================================ */}
-        <div className="mb-16">
-          <div className="text-center mb-10">
-            <h3 className="text-2xl sm:text-3xl font-serif text-champagne-50 mb-2">Verified Field Reports</h3>
-            <p className="text-xs font-mono text-slate-400 uppercase tracking-widest">Observations from members navigating active transits</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {testimonials.map((t, idx) => (
-              <div key={idx} className="rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md p-7 flex flex-col justify-between shadow-lg">
-                <div>
-                  <div className="flex items-center gap-1 mb-4">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-3.5 h-3.5 fill-champagne-400 text-champagne-400" />
-                    ))}
-                  </div>
-                  <p className="text-xs text-slate-200 font-light leading-relaxed italic mb-6">&quot;{t.text}&quot;</p>
-                </div>
-                <div className="flex items-center justify-between border-t border-white/[0.06] pt-4 text-xs font-mono">
-                  <div>
-                    <span className="font-semibold text-champagne-100 block">{t.name}</span>
-                    <span className="text-[10px] text-slate-400">{t.location}</span>
-                  </div>
-                  <span className="px-2.5 py-1 rounded bg-champagne-400/10 border border-champagne-400/20 text-champagne-300 text-[10px]">
-                    {t.sign}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* DEV SANDBOX BAR */}
-        {(() => {
-          const item = PRODUCTS.test;
-          const isLoading = loadingId === item.id;
-          return (
-            <div className="rounded-2xl border border-dashed border-slate-700 bg-slate-900/40 p-5 flex flex-col sm:flex-row items-center justify-between gap-4 mb-12 shadow-sm">
-              <div className="flex items-center gap-3">
-                <Zap className="w-4 h-4 text-slate-400" />
-                <div>
-                  <p className="text-xs font-mono text-slate-300 font-semibold">{item.name} ({item.price})</p>
-                  <p className="text-[11px] font-mono text-slate-400">{item.tagline}</p>
-                </div>
-              </div>
-              <button
-                onClick={() => handleBuy(item)}
-                disabled={loadingId !== null}
-                className="px-5 py-2.5 rounded-xl bg-slate-800 border border-slate-600 font-mono text-xs text-slate-300 hover:bg-slate-700 transition-colors shadow-sm"
-              >
-                {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Run $1 Sandbox Checkout'}
-              </button>
-            </div>
-          );
-        })()}
-
         {/* Footer */}
-        <footer className="max-w-xl mx-auto text-center pt-8 border-t border-white/[0.06] flex items-center justify-center gap-2 text-xs font-mono text-slate-400">
+        <footer className="max-w-xl mx-auto text-center pt-16 border-t border-white/[0.06] flex items-center justify-center gap-2 text-xs font-mono text-slate-400">
           <ShieldCheck className="w-4 h-4 text-champagne-400/60" />
           <span>256-Bit Encrypted Stripe Processing & Swiss Ephemeris Calculations</span>
         </footer>
