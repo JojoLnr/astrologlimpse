@@ -5,11 +5,12 @@ import { Dashboard } from '@/components/Dashboard';
 import { Privacy } from '@/components/Privacy';
 import { Discount } from '@/components/Discount';
 import { DiscountPurchased } from '@/components/DiscountPurchased';
+import { Catalog } from '@/components/Catalog';
 import { Loader2 } from 'lucide-react';
 import { StarryBackground } from '@/components/StarryBackground';
 import { Analytics } from '@vercel/analytics/react';
 
-type View = 'home' | 'dashboard' | 'privacy' | 'discount' | 'discountPurchased';
+type View = 'home' | 'dashboard' | 'privacy' | 'discount' | 'discountPurchased' | 'catalog';
 
 function getRouteFromPath(): View {
   if (typeof window === 'undefined') return 'home';
@@ -17,6 +18,7 @@ function getRouteFromPath(): View {
   if (path === '/privacy') return 'privacy';
   if (path === '/discount') return 'discount';
   if (path === '/discountpurchased') return 'discountPurchased';
+  if (path === '/catalog' || path === '/products') return 'catalog';
   return path === '/dashboard' ? 'dashboard' : 'home';
 }
 
@@ -97,6 +99,11 @@ function App() {
       )}
       {view === 'home' && (
         <Home onNavigateDashboard={() => navigate('dashboard')} />
+      )}
+      {view === 'catalog' && (
+        <Catalog onNavigateHome={() => navigate('home')} 
+          onNavigateDashboard={() => navigate('dashboard')} 
+        />
       )}
       <Analytics />
     </>
