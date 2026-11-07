@@ -98,7 +98,7 @@ const PRODUCTS: Record<string, ProductItem> = {
     id: 'vip_orbit',
     priceId: 'price_vip_orbit_placeholder',
     name: 'The VIP Orbit Pass',
-    tagline: 'Priority priority queue skip & direct astrological Q&A access',
+    tagline: 'Priority queue skip & direct astrological Q&A access',
     price: '$99.99',
     numericValue: 99.99,
     mode: 'subscription',
@@ -196,23 +196,25 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
   };
 
   return (
-    <div className="relative min-h-screen text-slate-100 selection:bg-champagne-400/20 bg-[#060814]">
+    <div className="relative min-h-screen text-slate-100 selection:bg-champagne-400/20 bg-[#04060b]">
+      {/* Immersive Background Elements */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-950/40 via-[#04060b] to-[#04060b] pointer-events-none" />
       <StarryBackground />
 
       <main className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-12 pb-28">
         
         {/* Navigation Header */}
-        <div className="flex items-center justify-between mb-12 border-b border-white/[0.06] pb-6">
+        <div className="flex items-center justify-between mb-12 border-b border-white/[0.08] pb-6">
           <button
             onClick={onNavigateHome}
-            className="group inline-flex items-center gap-2 text-xs font-mono tracking-widest text-champagne-300 uppercase hover:text-champagne-100 transition-colors"
+            className="group inline-flex items-center gap-2 text-xs font-mono tracking-[0.2em] text-champagne-300 uppercase hover:text-champagne-100 transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
             [ Return to Observatory ]
           </button>
           <button
             onClick={onNavigateDashboard}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/[0.03] border border-white/[0.08] text-xs font-mono text-slate-300 hover:bg-white/[0.06] hover:border-champagne-400/30 transition-all"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.03] border border-white/[0.08] text-xs font-mono text-slate-300 hover:bg-white/[0.06] hover:border-champagne-400/30 transition-all shadow-sm"
           >
             <Compass className="w-3.5 h-3.5 text-champagne-300" />
             My Dashboard
@@ -221,18 +223,18 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
 
         {/* Editorial Title Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-champagne-400/[0.06] border border-champagne-400/20 backdrop-blur-md mb-6">
+          <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-champagne-400/[0.06] border border-champagne-400/20 backdrop-blur-md mb-6 shadow-[0_0_20px_rgba(196,163,116,0.1)]">
             <span className="w-1.5 h-1.5 rounded-full bg-champagne-300 animate-pulse" />
-            <span className="text-[11px] font-mono tracking-[0.2em] uppercase text-champagne-200">Catalog Artifacts & Access Tiers</span>
+            <span className="text-[11px] font-mono tracking-[0.25em] uppercase text-champagne-200">Catalog Artifacts & Access Tiers</span>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl font-serif font-light text-champagne-50 mb-4 tracking-tight leading-[1.1]">
+          <h1 className="text-4xl sm:text-6xl font-serif font-light text-champagne-50 mb-6 tracking-tight leading-[1.15]">
             Calibrate Your <br />
             <span className="bg-gradient-to-r from-champagne-200 via-champagne-300 to-amber-200 bg-clip-text text-transparent italic font-normal">
               Celestial Coordinates
             </span>
           </h1>
-          <p className="text-slate-300 text-sm sm:text-base font-light tracking-wide max-w-xl mx-auto">
+          <p className="text-slate-300 text-sm sm:text-base font-light tracking-wide max-w-xl mx-auto leading-relaxed">
             Bypass generic astrology. Choose a single tactical flash reading, secure ongoing weekly synchronization, or commission a custom birth sky masterpiece.
           </p>
 
@@ -247,65 +249,69 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
         </div>
 
         {errorMsg && (
-          <div className="max-w-md mx-auto mb-10 p-3 rounded-xl border border-red-500/30 bg-red-500/10 text-center text-xs text-red-300 font-mono">
+          <div className="max-w-md mx-auto mb-10 p-3.5 rounded-xl border border-red-500/30 bg-red-500/10 text-center text-xs text-red-300 font-mono">
             {errorMsg}
           </div>
         )}
 
         {/* ================================================================ */}
-        {/* HERO SECTION: THE $9.99/mo SUBSCRIPTION (THE MAIN ATTRACTION)     */}
+        {/* HERO SECTION: THE $9.99/mo SUBSCRIPTION (EDITORIAL BANNER)       */}
         {/* ================================================================ */}
         {(() => {
           const item = PRODUCTS.premium_membership;
           const isLoading = loadingId === item.id;
           return (
-            <div className="relative rounded-3xl border border-champagne-400/40 bg-gradient-to-br from-[#0c1021] via-[#080b16] to-[#04060b] p-8 sm:p-12 mb-12 shadow-[0_0_80px_rgba(196,163,116,0.12)] overflow-hidden">
-              <div className="absolute top-0 right-0 w-96 h-96 bg-champagne-400/[0.03] rounded-full blur-3xl pointer-events-none" />
+            <div className="relative rounded-[2rem] border border-champagne-400/50 bg-gradient-to-br from-[#0c1224] via-[#070a14] to-[#04060b] p-8 sm:p-12 mb-12 shadow-[0_0_90px_rgba(196,163,116,0.15)] overflow-hidden">
+              {/* Glowing nebula effect inside card */}
+              <div className="absolute -top-24 -right-24 w-96 h-96 bg-champagne-400/[0.07] rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-indigo-500/[0.05] rounded-full blur-3xl pointer-events-none" />
               
-              <div className="absolute top-6 right-8 px-4 py-1.5 rounded-full text-[10px] font-mono tracking-widest uppercase bg-champagne-400/15 border border-champagne-400/30 text-champagne-200">
+              <div className="absolute top-6 right-8 px-4 py-1.5 rounded-full text-[10px] font-mono tracking-widest uppercase bg-champagne-400/20 border border-champagne-400/40 text-champagne-100 shadow-md">
                 {item.badge}
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
                 
-                {/* Immersive Terminal Preview Box */}
-                <div className="lg:col-span-5 rounded-2xl border border-white/[0.1] bg-black/60 p-6 flex flex-col justify-between relative shadow-inner">
-                  <div className="flex items-center justify-between pb-4 border-b border-white/[0.06] mb-4">
-                    <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                      <span className="text-[10px] font-mono tracking-widest text-slate-400 uppercase">Live Dashboard Feed</span>
+                {/* Editorial Transmission Preview Box */}
+                <div className="lg:col-span-5 rounded-2xl border border-champagne-400/20 bg-black/70 p-6 flex flex-col justify-between relative shadow-2xl backdrop-blur-md">
+                  <div className="flex items-center justify-between pb-4 border-b border-white/[0.08] mb-5">
+                    <div className="flex items-center gap-2.5">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.5)]" />
+                      <span className="text-[11px] font-mono tracking-widest text-champagne-200 uppercase">Live Dashboard Feed</span>
                     </div>
                     <Eye className="w-4 h-4 text-champagne-400" />
                   </div>
 
-                  <div className="font-mono text-xs text-champagne-200/90 leading-relaxed bg-champagne-400/[0.03] p-4 rounded-xl border border-champagne-400/10 mb-4">
-                    <p className="text-[10px] text-slate-500 uppercase tracking-wider mb-1">// TRANSMISSION_SNIPPET</p>
+                  <div className="font-mono text-xs text-champagne-100/90 leading-relaxed bg-champagne-400/[0.04] p-5 rounded-xl border border-champagne-400/15 mb-5 shadow-inner">
+                    <p className="text-[10px] font-mono text-champagne-400 uppercase tracking-widest mb-2">// TRANSMISSION_SNIPPET</p>
                     {item.previewSnippet}
                   </div>
 
-                  <div className="flex items-center justify-between text-[10px] font-mono text-slate-500 pt-2">
-                    <span>REF: SUB_ACTIVE_NODE</span>
-                    <span className="text-champagne-300">UNLIMITED UNBLURS</span>
+                  <div className="flex items-center justify-between text-[10px] font-mono text-slate-400 pt-3 border-t border-white/[0.06]">
+                    <span className="text-slate-400">REF: SUB_ACTIVE_NODE</span>
+                    <span className="text-champagne-300 font-semibold">UNLIMITED UNBLURS</span>
                   </div>
                 </div>
 
                 {/* Details & Action */}
                 <div className="lg:col-span-7 flex flex-col justify-between">
                   <div>
-                    <div className="flex items-center gap-2.5 mb-2">
-                      <Crown className="w-5 h-5 text-champagne-300" />
-                      <h2 className="text-2xl sm:text-3xl font-serif font-light text-champagne-50">{item.name}</h2>
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-xl bg-champagne-400/10 border border-champagne-400/30 flex items-center justify-center">
+                        <Crown className="w-5 h-5 text-champagne-300" />
+                      </div>
+                      <h2 className="text-2xl sm:text-4xl font-serif font-light text-champagne-50">{item.name}</h2>
                     </div>
-                    <p className="text-sm text-slate-300 font-light mb-6 leading-relaxed">{item.tagline}</p>
+                    <p className="text-sm sm:text-base text-slate-300 font-light mb-6 leading-relaxed">{item.tagline}</p>
 
-                    <div className="flex items-baseline gap-3 mb-6 p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
-                      <span className="text-4xl sm:text-5xl font-serif text-champagne-100 font-light">{item.price}</span>
-                      <span className="text-xs font-mono text-slate-400 uppercase tracking-widest">/ monthly recurring sync</span>
+                    <div className="flex items-baseline gap-3 mb-6 p-5 rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-sm">
+                      <span className="text-4xl sm:text-6xl font-serif text-champagne-100 font-light tracking-tight">{item.price}</span>
+                      <span className="text-xs font-mono text-slate-300 uppercase tracking-widest">/ monthly recurring sync</span>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
                       {item.features.map((feat, idx) => (
-                        <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-300">
+                        <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-200">
                           <Check className="w-4 h-4 text-champagne-400 flex-shrink-0 mt-0.5" />
                           <span className="font-light">{feat}</span>
                         </div>
@@ -317,11 +323,11 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
                     <button
                       onClick={() => handleBuy(item)}
                       disabled={loadingId !== null}
-                      className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-champagne-200 via-champagne-300 to-amber-300 text-midnight-950 font-mono text-xs tracking-widest uppercase font-bold hover:brightness-110 transition-all shadow-[0_4px_25px_rgba(196,163,116,0.3)] disabled:opacity-40 flex items-center justify-center gap-2 mb-3"
+                      className="w-full sm:w-auto px-10 py-4 rounded-xl bg-gradient-to-r from-champagne-200 via-champagne-300 to-amber-300 text-midnight-950 font-mono text-xs tracking-[0.2em] uppercase font-bold hover:brightness-110 transition-all shadow-[0_4px_30px_rgba(196,163,116,0.4)] disabled:opacity-40 flex items-center justify-center gap-2.5 mb-3"
                     >
                       {loadingId === item.id ? <Loader2 className="w-4 h-4 animate-spin" /> : `Acquire Membership (${item.price}/mo)`}
                     </button>
-                    <p className="text-[11px] font-mono text-slate-500">{item.riskCopy}</p>
+                    <p className="text-[11px] font-mono text-slate-400">{item.riskCopy}</p>
                   </div>
                 </div>
               </div>
@@ -330,9 +336,9 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
         })()}
 
         {/* ================================================================ */}
-        {/* ASYMMETRICAL GRID: $1 TRANSIT, $5 BLUEPRINT, $99.99 VIP PASS     */}
+        {/* EDITORIAL 3-COLUMN CARDS: TRANSIT, BLUEPRINT, VIP PASS           */}
         {/* ================================================================ */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           {[PRODUCTS.transit, PRODUCTS.full_package, PRODUCTS.vip_orbit].map((item) => {
             const Icon = item.icon;
             const isLoading = loadingId === item.id;
@@ -340,38 +346,38 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
             return (
               <div
                 key={item.id}
-                className="relative rounded-2xl border border-white/[0.08] bg-gradient-to-br from-slate-900/60 to-midnight-950/80 backdrop-blur-xl p-6 flex flex-col justify-between hover:border-champagne-400/30 transition-all duration-300 group"
+                className="relative rounded-3xl border border-white/[0.1] bg-gradient-to-br from-slate-900/80 via-[#0a0f1d]/90 to-midnight-950/90 backdrop-blur-2xl p-7 flex flex-col justify-between hover:border-champagne-400/40 transition-all duration-300 group shadow-xl"
               >
                 <div>
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center justify-between mb-6">
                     <div
-                      className="w-10 h-10 rounded-xl border flex items-center justify-center"
-                      style={{ borderColor: `${item.accentColor}30`, background: `${item.accentColor}10` }}
+                      className="w-12 h-12 rounded-2xl border flex items-center justify-center shadow-lg"
+                      style={{ borderColor: `${item.accentColor}40`, background: `${item.accentColor}15` }}
                     >
-                      <Icon className="w-5 h-5" style={{ color: item.accentColor }} />
+                      <Icon className="w-6 h-6" style={{ color: item.accentColor }} />
                     </div>
-                    <span className="text-[10px] font-mono tracking-widest text-slate-400 uppercase bg-white/[0.04] px-2.5 py-1 rounded-md border border-white/[0.06]">
+                    <span className="text-[10px] font-mono tracking-widest text-slate-300 uppercase bg-white/[0.05] px-3 py-1 rounded-lg border border-white/[0.08]">
                       {item.badge}
                     </span>
                   </div>
 
-                  <h3 className="text-xl font-serif text-champagne-50 mb-2">{item.name}</h3>
-                  <p className="text-xs text-slate-400 font-light mb-6 leading-relaxed">{item.tagline}</p>
+                  <h3 className="text-2xl font-serif text-champagne-50 mb-2 leading-snug">{item.name}</h3>
+                  <p className="text-xs text-slate-300 font-light mb-6 leading-relaxed">{item.tagline}</p>
 
-                  <div className="bg-black/40 border border-white/[0.05] rounded-xl p-3.5 mb-6">
-                    <p className="text-[10px] font-mono text-slate-500 uppercase tracking-wider mb-1">// SAMPLE_OUTPUT</p>
-                    <p className="font-mono text-[11px] text-slate-300 italic">"{item.previewSnippet}"</p>
+                  <div className="bg-black/50 border border-white/[0.06] rounded-xl p-4 mb-6 shadow-inner">
+                    <p className="text-[10px] font-mono text-champagne-300/80 uppercase tracking-widest mb-1.5">// SAMPLE_OUTPUT</p>
+                    <p className="font-mono text-[11px] text-slate-300 italic leading-relaxed">"{item.previewSnippet}"</p>
                   </div>
 
                   <div className="flex items-baseline gap-2 mb-6">
-                    <span className="text-3xl font-serif text-champagne-100">{item.price}</span>
-                    <span className="text-[10px] font-mono text-slate-500 uppercase">{item.mode === 'subscription' ? '/ month' : 'one-time'}</span>
+                    <span className="text-4xl font-serif text-champagne-100 font-light">{item.price}</span>
+                    <span className="text-[10px] font-mono text-slate-400 uppercase tracking-widest">{item.mode === 'subscription' ? '/ month' : 'one-time'}</span>
                   </div>
 
-                  <ul className="space-y-2.5 mb-8">
+                  <ul className="space-y-3 mb-8 border-t border-white/[0.06] pt-6">
                     {item.features.map((feat, idx) => (
-                      <li key={idx} className="flex items-start gap-2 text-xs text-slate-300 font-light">
-                        <Check className="w-3.5 h-3.5 text-champagne-400 flex-shrink-0 mt-0.5" />
+                      <li key={idx} className="flex items-start gap-2.5 text-xs text-slate-200 font-light">
+                        <Check className="w-4 h-4 text-champagne-400 flex-shrink-0 mt-0.5" />
                         <span>{feat}</span>
                       </li>
                     ))}
@@ -382,11 +388,11 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
                   <button
                     onClick={() => handleBuy(item)}
                     disabled={loadingId !== null}
-                    className="w-full py-3.5 rounded-xl bg-white/[0.04] border border-white/[0.1] text-champagne-100 font-mono text-xs tracking-wider uppercase font-semibold hover:bg-white/[0.08] hover:border-champagne-400/30 transition-all disabled:opacity-40 flex items-center justify-center gap-2 mb-2"
+                    className="w-full py-4 rounded-xl bg-white/[0.05] border border-white/[0.12] text-champagne-100 font-mono text-xs tracking-[0.15em] uppercase font-semibold hover:bg-white/[0.1] hover:border-champagne-400/40 transition-all disabled:opacity-40 flex items-center justify-center gap-2 mb-3 shadow-md"
                   >
-                    {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : `Acquire for ${item.price}`}
+                    {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : `Acquire for ${item.price}`}
                   </button>
-                  <p className="text-[10px] font-mono text-slate-500 text-center">{item.riskCopy}</p>
+                  <p className="text-[10px] font-mono text-slate-400 text-center">{item.riskCopy}</p>
                 </div>
               </div>
             );
@@ -394,31 +400,31 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
         </div>
 
         {/* ================================================================ */}
-        {/* ANCHOR SECTION: $249.99 LUXURY CUSTOM BIRTH SKY ART             */}
+        {/* LUXURY ANCHOR SECTION: $249.99 CUSTOM BIRTH SKY ART              */}
         {/* ================================================================ */}
         {(() => {
           const item = PRODUCTS.cosmic_horizon;
           const isLoading = loadingId === item.id;
           return (
-            <div className="relative rounded-3xl border-2 border-amber-500/40 bg-gradient-to-br from-amber-950/25 via-midnight-900/90 to-slate-950/95 p-8 sm:p-10 mb-12 shadow-[0_0_60px_rgba(245,158,11,0.08)]">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div className="relative rounded-[2rem] border-2 border-amber-500/50 bg-gradient-to-br from-amber-950/30 via-[#0a0d18]/95 to-slate-950/95 p-8 sm:p-12 mb-16 shadow-[0_0_80px_rgba(245,158,11,0.12)]">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
                 
                 <div className="lg:col-span-7 flex flex-col justify-between order-2 lg:order-1">
                   <div>
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-mono tracking-widest uppercase bg-amber-500/15 border border-amber-500/30 text-amber-200 mb-4">
+                    <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[10px] font-mono tracking-widest uppercase bg-amber-500/20 border border-amber-500/40 text-amber-200 mb-5 shadow-sm">
                       {item.badge}
                     </div>
-                    <h3 className="text-2xl sm:text-3xl font-serif font-light text-champagne-50 mb-3">{item.name}</h3>
-                    <p className="text-sm text-slate-300 font-light mb-6 leading-relaxed">{item.tagline}</p>
+                    <h3 className="text-3xl sm:text-4xl font-serif font-light text-champagne-50 mb-3">{item.name}</h3>
+                    <p className="text-sm sm:text-base text-slate-300 font-light mb-6 leading-relaxed">{item.tagline}</p>
 
-                    <div className="flex items-baseline gap-3 mb-6 p-4 rounded-xl bg-amber-950/20 border border-amber-500/20">
-                      <span className="text-4xl font-serif text-amber-200 font-light">{item.price}</span>
-                      <span className="text-xs font-mono text-amber-300/80 uppercase tracking-widest">/ physical canvas + digital vector output</span>
+                    <div className="flex items-baseline gap-3 mb-6 p-5 rounded-2xl bg-amber-950/20 border border-amber-500/30">
+                      <span className="text-4xl sm:text-5xl font-serif text-amber-200 font-light">{item.price}</span>
+                      <span className="text-xs font-mono text-amber-300 uppercase tracking-widest">/ physical canvas + digital vector output</span>
                     </div>
 
                     <div className="space-y-3 mb-8">
                       {item.features.map((feat, idx) => (
-                        <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-300 font-light">
+                        <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-200 font-light">
                           <Check className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
                           <span>{feat}</span>
                         </div>
@@ -430,7 +436,7 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
                     <button
                       onClick={() => handleBuy(item)}
                       disabled={loadingId !== null}
-                      className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-amber-500/30 to-amber-600/40 border border-amber-500/50 text-amber-100 font-mono text-xs tracking-widest uppercase font-bold hover:bg-amber-500/40 transition-all shadow-lg disabled:opacity-40 flex items-center justify-center gap-2 mb-2"
+                      className="w-full sm:w-auto px-10 py-4 rounded-xl bg-gradient-to-r from-amber-500/30 to-amber-600/40 border border-amber-500/60 text-amber-100 font-mono text-xs tracking-[0.2em] uppercase font-bold hover:bg-amber-500/40 transition-all shadow-[0_4px_30px_rgba(245,158,11,0.25)] disabled:opacity-40 flex items-center justify-center gap-2 mb-3"
                     >
                       {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : `Order Custom Sky Art (${item.price})`}
                     </button>
@@ -438,24 +444,26 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
                   </div>
                 </div>
 
-                {/* Architectural Art Specimen Box */}
-                <div className="lg:col-span-5 h-80 rounded-2xl border border-amber-500/30 bg-black/60 p-6 flex flex-col justify-between order-1 lg:order-2 relative overflow-hidden">
+                <div className="lg:col-span-5 h-88 rounded-2xl border border-amber-500/40 bg-black/70 p-7 flex flex-col justify-between order-1 lg:order-2 relative overflow-hidden shadow-2xl backdrop-blur-md">
                   <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-500/10 via-transparent to-transparent pointer-events-none" />
                   
-                  <div className="flex items-center justify-between pb-4 border-b border-amber-500/20 relative z-10">
+                  <div className="flex items-center justify-between pb-4 border-b border-amber-500/30 relative z-10">
                     <span className="text-[10px] font-mono tracking-widest text-amber-300 uppercase">Artifact Blueprint #001</span>
                     <Sparkles className="w-4 h-4 text-amber-400" />
                   </div>
 
-                  <div className="my-auto text-center relative z-10">
-                    <p className="font-serif text-lg text-champagne-100 mb-1 italic">"Exact Night Sky Mapping"</p>
-                    <p className="text-xs font-mono text-amber-200/70 tracking-wider">Coordinates: 37.7749° N, 122.4194° W</p>
-                    <p className="text-[10px] font-mono text-slate-500 mt-2">Swiss Ephemeris Vector Calculation</p>
+                  <div className="my-auto text-center relative z-10 py-8">
+                    <div className="w-16 h-16 rounded-full border border-amber-500/30 bg-amber-500/10 flex items-center justify-center mx-auto mb-4 shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+                      <Sparkles className="w-8 h-8 text-amber-300" />
+                    </div>
+                    <p className="font-serif text-xl text-champagne-100 mb-1.5 italic">&quot;Exact Night Sky Mapping&quot;</p>
+                    <p className="text-xs font-mono text-amber-200/80 tracking-wider">Coordinates: 37.7749° N, 122.4194° W</p>
+                    <p className="text-[10px] font-mono text-slate-400 mt-2">Swiss Ephemeris Vector Calculation</p>
                   </div>
 
-                  <div className="flex items-center justify-between text-[10px] font-mono text-slate-500 pt-3 border-t border-amber-500/20 relative z-10">
+                  <div className="flex items-center justify-between text-[10px] font-mono text-slate-400 pt-4 border-t border-amber-500/30 relative z-10">
                     <span>SPEC: 300 DPI CANVAS</span>
-                    <span className="text-amber-300">CUSTOM GENERATED</span>
+                    <span className="text-amber-300 font-semibold">CUSTOM GENERATED</span>
                   </div>
                 </div>
 
@@ -465,11 +473,11 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
         })()}
 
         {/* ================================================================ */}
-        {/* FEATURE COMPARISON MATRIX TABLE                                  */}
+        {/* TECHNICAL COMPARISON MATRIX                                      */}
         {/* ================================================================ */}
-        <div className="mb-16 rounded-3xl border border-white/[0.1] bg-slate-900/40 backdrop-blur-xl p-8">
+        <div className="mb-16 rounded-[2rem] border border-white/[0.1] bg-slate-900/40 backdrop-blur-xl p-8 sm:p-10 shadow-xl">
           <div className="text-center max-w-xl mx-auto mb-10">
-            <h3 className="text-2xl font-serif text-champagne-50 mb-2">Technical Engine Comparison</h3>
+            <h3 className="text-2xl sm:text-3xl font-serif text-champagne-50 mb-2">Technical Engine Comparison</h3>
             <p className="text-xs font-mono text-slate-400 uppercase tracking-widest">Why precision computation replaces generalized horoscopes</p>
           </div>
 
@@ -482,12 +490,12 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
                   <th className="py-4 px-6 text-champagne-300 font-semibold bg-champagne-400/[0.04] uppercase">Astrologlimpse Engine</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/[0.05] text-slate-300 font-light">
+              <tbody className="divide-y divide-white/[0.05] text-slate-200 font-light">
                 {comparisonRows.map((row, idx) => (
                   <tr key={idx} className="hover:bg-white/[0.02] transition-colors">
                     <td className="py-4 px-6 font-mono text-champagne-100 font-medium">{row.feature}</td>
                     <td className="py-4 px-6 text-slate-400">{row.generic}</td>
-                    <td className="py-4 px-6 text-champagne-200 bg-champagne-400/[0.02] font-medium">{row.ours}</td>
+                    <td className="py-4 px-6 text-champagne-200 bg-champagne-400/[0.03] font-medium">{row.ours}</td>
                   </tr>
                 ))}
               </tbody>
@@ -496,29 +504,29 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
         </div>
 
         {/* ================================================================ */}
-        {/* SOCIAL PROOF TESTIMONIALS                                        */}
+        {/* VERIFIED FIELD REPORTS (TESTIMONIALS)                            */}
         {/* ================================================================ */}
         <div className="mb-16">
           <div className="text-center mb-10">
-            <h3 className="text-2xl font-serif text-champagne-50 mb-2">Verified Field Reports</h3>
+            <h3 className="text-2xl sm:text-3xl font-serif text-champagne-50 mb-2">Verified Field Reports</h3>
             <p className="text-xs font-mono text-slate-400 uppercase tracking-widest">Observations from members navigating active transits</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {testimonials.map((t, idx) => (
-              <div key={idx} className="rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md p-6 flex flex-col justify-between">
+              <div key={idx} className="rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md p-7 flex flex-col justify-between shadow-lg">
                 <div>
                   <div className="flex items-center gap-1 mb-4">
                     {[...Array(5)].map((_, i) => (
                       <Star key={i} className="w-3.5 h-3.5 fill-champagne-400 text-champagne-400" />
                     ))}
                   </div>
-                  <p className="text-xs text-slate-300 font-light leading-relaxed italic mb-6">"{t.text}"</p>
+                  <p className="text-xs text-slate-200 font-light leading-relaxed italic mb-6">&quot;{t.text}&quot;</p>
                 </div>
                 <div className="flex items-center justify-between border-t border-white/[0.06] pt-4 text-xs font-mono">
                   <div>
                     <span className="font-semibold text-champagne-100 block">{t.name}</span>
-                    <span className="text-[10px] text-slate-500">{t.location}</span>
+                    <span className="text-[10px] text-slate-400">{t.location}</span>
                   </div>
                   <span className="px-2.5 py-1 rounded bg-champagne-400/10 border border-champagne-400/20 text-champagne-300 text-[10px]">
                     {t.sign}
@@ -529,25 +537,23 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
           </div>
         </div>
 
-        {/* ================================================================ */}
-        {/* DEV SANDBOX BAR                                                  */}
-        {/* ================================================================ */}
+        {/* DEV SANDBOX BAR */}
         {(() => {
           const item = PRODUCTS.test;
           const isLoading = loadingId === item.id;
           return (
-            <div className="rounded-2xl border border-dashed border-slate-700 bg-slate-900/40 p-5 flex flex-col sm:flex-row items-center justify-between gap-4 mb-12">
+            <div className="rounded-2xl border border-dashed border-slate-700 bg-slate-900/40 p-5 flex flex-col sm:flex-row items-center justify-between gap-4 mb-12 shadow-sm">
               <div className="flex items-center gap-3">
                 <Zap className="w-4 h-4 text-slate-400" />
                 <div>
                   <p className="text-xs font-mono text-slate-300 font-semibold">{item.name} ({item.price})</p>
-                  <p className="text-[11px] font-mono text-slate-500">{item.tagline}</p>
+                  <p className="text-[11px] font-mono text-slate-400">{item.tagline}</p>
                 </div>
               </div>
               <button
                 onClick={() => handleBuy(item)}
                 disabled={loadingId !== null}
-                className="px-5 py-2.5 rounded-xl bg-slate-800 border border-slate-600 font-mono text-xs text-slate-300 hover:bg-slate-700 transition-colors"
+                className="px-5 py-2.5 rounded-xl bg-slate-800 border border-slate-600 font-mono text-xs text-slate-300 hover:bg-slate-700 transition-colors shadow-sm"
               >
                 {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Run $1 Sandbox Checkout'}
               </button>
@@ -556,7 +562,7 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
         })()}
 
         {/* Footer */}
-        <footer className="max-w-xl mx-auto text-center pt-8 border-t border-white/[0.06] flex items-center justify-center gap-2 text-xs font-mono text-slate-500">
+        <footer className="max-w-xl mx-auto text-center pt-8 border-t border-white/[0.06] flex items-center justify-center gap-2 text-xs font-mono text-slate-400">
           <ShieldCheck className="w-4 h-4 text-champagne-400/60" />
           <span>256-Bit Encrypted Stripe Processing & Swiss Ephemeris Calculations</span>
         </footer>
