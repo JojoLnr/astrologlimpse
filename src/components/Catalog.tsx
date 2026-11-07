@@ -564,4 +564,3 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
     </div>
   );
 }
-```[cite: 5, 7]
