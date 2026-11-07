@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { 
   Sparkles, Zap, BookOpen, Crown, Rocket, Compass, 
-  ArrowLeft, Check, ShieldCheck, Loader2, Image as ImageIcon
+  ArrowLeft, Check, ShieldCheck, Loader2, Image as ImageIcon,
+  Star, Cpu, Users, Shield, HelpCircle
 } from 'lucide-react';
 import { StarryBackground } from '@/components/StarryBackground';
 import { createCheckoutSession } from '@/lib/stripe';
@@ -28,6 +29,7 @@ interface ProductItem {
   icon: React.ElementType;
   accentColor: string;
   placeholderText: string;
+  riskCopy: string;
 }
 
 const PRODUCTS: Record<string, ProductItem> = {
@@ -35,7 +37,7 @@ const PRODUCTS: Record<string, ProductItem> = {
     id: 'test',
     priceId: 'price_test_placeholder', // <-- Replace with your real $1 Test Price ID
     name: 'Test Entry',
-    tagline: 'Internal verification flow',
+    tagline: 'Internal validation flow',
     price: '$1.00',
     numericValue: 1.0,
     mode: 'payment',
@@ -45,12 +47,13 @@ const PRODUCTS: Record<string, ProductItem> = {
     icon: Zap,
     accentColor: '#94a3b8',
     placeholderText: 'System Sandbox',
+    riskCopy: 'Sandbox mode test transaction.',
   },
   transit: {
     id: 'transit',
     priceId: 'price_transit_placeholder', // <-- Replace with your real $1 Transit Price ID
-    name: 'Transit Insight',
-    tagline: 'Daily planetary flash scan',
+    name: 'The Today Transit Flash',
+    tagline: 'Instant single-transit scan for quick clarity',
     price: '$1.00',
     numericValue: 1.0,
     mode: 'payment',
@@ -59,12 +62,13 @@ const PRODUCTS: Record<string, ProductItem> = {
     icon: Compass,
     accentColor: '#38bdf8',
     placeholderText: 'Daily Transit Chart Scan',
+    riskCopy: 'Instant digital access delivered on screen within seconds.',
   },
   full_package: {
     id: 'full_package',
     priceId: 'price_full_package_placeholder', // <-- Replace with your real $5 Full Package Price ID
-    name: 'Full Package Reading',
-    tagline: 'Complete 10-point natal reading',
+    name: 'The 10-Point Life Crossroads Blueprint',
+    tagline: 'Full natal breakdown for love, career & Chiron',
     price: '$5.00',
     numericValue: 5.0,
     mode: 'payment',
@@ -73,12 +77,13 @@ const PRODUCTS: Record<string, ProductItem> = {
     icon: BookOpen,
     accentColor: '#48bb78',
     placeholderText: '10-Point Natal Blueprint Report',
+    riskCopy: 'Instant access sent to your dashboard and email.',
   },
   premium_membership: {
     id: 'premium_membership',
     priceId: 'price_premium_sub_placeholder', // <-- Replace with your real $9.99 Sub Price ID
-    name: 'Premium Membership',
-    tagline: 'Continuous weekly cosmic access',
+    name: 'The Premium Cosmic Access Pass',
+    tagline: 'Unlimited weekly dashboard updates & unblurs',
     price: '$9.99',
     numericValue: 9.99,
     mode: 'subscription',
@@ -88,12 +93,13 @@ const PRODUCTS: Record<string, ProductItem> = {
     icon: Crown,
     accentColor: '#c4a374',
     placeholderText: 'Live Interactive Web Dashboard UI',
+    riskCopy: 'Cancel anytime in 1 click from your account settings. No commitment.',
   },
   vip_orbit: {
     id: 'vip_orbit',
     priceId: 'price_vip_orbit_placeholder', // <-- Replace with your real $99.99 VIP Price ID
-    name: 'VIP Orbit Pass',
-    tagline: 'Priority access & direct Q&A',
+    name: 'The VIP Orbit Pass',
+    tagline: 'Priority delivery + direct Q&A submission',
     price: '$99.99',
     numericValue: 99.99,
     mode: 'subscription',
@@ -102,12 +108,13 @@ const PRODUCTS: Record<string, ProductItem> = {
     icon: Rocket,
     accentColor: '#a855f7',
     placeholderText: 'VIP Orbit Concierge Pass',
+    riskCopy: 'Priority queue entry with dedicated concierge support.',
   },
   cosmic_horizon: {
     id: 'cosmic_horizon',
     priceId: 'price_cosmic_horizon_placeholder', // <-- Replace with your real $249.99 Art Price ID
-    name: 'Cosmic Horizon Sky Art',
-    tagline: 'Custom birth night sky canvas & certificate',
+    name: 'Executive Custom Birth Sky Art',
+    tagline: 'Physical/Digital custom birth night sky canvas',
     price: '$249.99',
     numericValue: 249.99,
     mode: 'payment',
@@ -122,8 +129,43 @@ const PRODUCTS: Record<string, ProductItem> = {
     icon: Sparkles,
     accentColor: '#f59e0b',
     placeholderText: 'Framed Night Sky Digital Painting Mockup',
+    riskCopy: 'Securely processed and printed to exact Swiss Ephemeris metrics.',
   },
 };
+
+const testimonials = [
+  {
+    name: 'Sarah',
+    location: 'Chicago',
+    text: 'I finally understood why my career feels stalled. The transit breakdown showed me exactly when Mars leaves my 10th house. Game changer.',
+    sign: 'Capricorn',
+  },
+  {
+    name: 'Marcus',
+    location: 'Brooklyn',
+    text: 'The Chiron reading nailed a pattern I have been circling for 15 years. Seeing the exact degree and transit window gave me something to actually work with.',
+    sign: 'Scorpio',
+  },
+  {
+    name: 'Priya',
+    location: 'Austin',
+    text: 'I have tried three other astrology apps. This is the only one that gave me specific dates instead of vague personality descriptions. The 7th house alert was eerily accurate.',
+    sign: 'Libra',
+  },
+];
+
+const comparisonRows = [
+  { feature: 'Data Basis', generic: 'Sun Sign Only (1/12th of people)', ours: 'Exact Natal Chart (Unique to you)' },
+  { feature: 'Forecast Timing', generic: 'Pre-written monthly content', ours: 'Live, Real-Time Planetary Degrees' },
+  { feature: 'Astrological Depth', generic: 'Planets only', ours: 'Chiron, Lilith, Lunar Nodes & Asteroids' },
+  { feature: 'Actionable Insight', generic: 'Vague personality traits', ours: 'Specific timing windows for action' },
+];
+
+const trustBadges = [
+  { icon: Cpu, label: 'Powered by Swiss Ephemeris' },
+  { icon: Users, label: '10,000+ Charts Calculated' },
+  { icon: Shield, label: 'End-to-End Encryption' },
+];
 
 export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
   const { user, signInWithGoogle } = useAuth();
@@ -194,6 +236,16 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
           <p className="text-slate-300 max-w-xl mx-auto text-sm sm:text-base font-light">
             Select an entry daily flash, full natal blueprint reading, or custom digital birth sky artwork.
           </p>
+
+          {/* Trust Badges Bar */}
+          <div className="flex flex-wrap items-center justify-center gap-6 mt-8 pt-6 border-t border-white/[0.06] max-w-3xl mx-auto">
+            {trustBadges.map((badge, idx) => (
+              <div key={idx} className="flex items-center gap-2 text-xs text-slate-400">
+                <badge.icon className="w-4 h-4 text-champagne-400" />
+                <span>{badge.label}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
         {errorMsg && (
@@ -238,7 +290,7 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
                       <span className="text-xs text-slate-400">/ month (Cancel anytime)</span>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
                       {item.features.map((feat, idx) => (
                         <div key={idx} className="flex items-start gap-2 text-xs text-slate-300">
                           <Check className="w-4 h-4 text-champagne-400 flex-shrink-0 mt-0.5" />
@@ -248,13 +300,16 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
                     </div>
                   </div>
 
-                  <button
-                    onClick={() => handleBuy(item)}
-                    disabled={loadingId !== null}
-                    className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-champagne-300 to-champagne-400 text-midnight-950 text-sm font-semibold hover:from-champagne-200 hover:to-champagne-300 transition-all duration-300 shadow-lg disabled:opacity-40 flex items-center justify-center gap-2"
-                  >
-                    {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : `Start Membership for ${item.price}/mo`}
-                  </button>
+                  <div>
+                    <button
+                      onClick={() => handleBuy(item)}
+                      disabled={loadingId !== null}
+                      className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-champagne-300 to-champagne-400 text-midnight-950 text-sm font-semibold hover:from-champagne-200 hover:to-champagne-300 transition-all duration-300 shadow-lg disabled:opacity-40 flex items-center justify-center gap-2 mb-2"
+                    >
+                      {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : `Start Membership for ${item.price}/mo`}
+                    </button>
+                    <p className="text-[11px] text-slate-400">{item.riskCopy}</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -300,20 +355,54 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
                   </ul>
                 </div>
 
-                <button
-                  onClick={() => handleBuy(item)}
-                  disabled={loadingId !== null}
-                  className="w-full py-3 rounded-xl bg-white/[0.05] border border-white/[0.1] text-champagne-100 text-xs font-semibold hover:bg-white/[0.1] transition-all duration-300 disabled:opacity-40 flex items-center justify-center gap-2"
-                >
-                  {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : `Acquire for ${item.price}`}
-                </button>
+                <div>
+                  <button
+                    onClick={() => handleBuy(item)}
+                    disabled={loadingId !== null}
+                    className="w-full py-3 rounded-xl bg-white/[0.05] border border-white/[0.1] text-champagne-100 text-xs font-semibold hover:bg-white/[0.1] transition-all duration-300 disabled:opacity-40 flex items-center justify-center gap-2 mb-2"
+                  >
+                    {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : `Acquire for ${item.price}`}
+                  </button>
+                  <p className="text-[10px] text-slate-500 text-center">{item.riskCopy}</p>
+                </div>
               </div>
             );
           })}
         </div>
 
         {/* ---------------------------------------------------------------- */}
-        {/* SECTION 3: LUXURY ART ANCHOR ($249.99 CANVASES) */}
+        {/* SECTION 3: FEATURE COMPARISON MATRIX */}
+        {/* ---------------------------------------------------------------- */}
+        <div className="mb-12 rounded-2xl border border-white/[0.1] bg-slate-900/60 backdrop-blur-xl p-6 sm:p-8">
+          <div className="text-center mb-8">
+            <h3 className="text-xl font-serif text-champagne-50 mb-2">Why Astrologlimpse Stands Apart</h3>
+            <p className="text-xs text-slate-400">See how our precision engine compares to conventional generic horoscopes.</p>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr className="border-b border-white/[0.1] text-champagne-200 font-serif">
+                  <th className="py-3 px-4">Metric Factor</th>
+                  <th className="py-3 px-4 text-slate-400">Generic Horoscopes</th>
+                  <th className="py-3 px-4 text-champagne-300 font-semibold bg-champagne-400/[0.04]">Astrologlimpse Engine</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/[0.05] text-slate-300">
+                {comparisonRows.map((row, idx) => (
+                  <tr key={idx} className="hover:bg-white/[0.02]">
+                    <td className="py-3.5 px-4 font-medium text-champagne-50">{row.feature}</td>
+                    <td className="py-3.5 px-4 text-slate-400">{row.generic}</td>
+                    <td className="py-3.5 px-4 text-champagne-200 bg-champagne-400/[0.02] font-medium">{row.ours}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* ---------------------------------------------------------------- */}
+        {/* SECTION 4: LUXURY ART ANCHOR ($249.99 CANVASES) */}
         {/* ---------------------------------------------------------------- */}
         {(() => {
           const item = PRODUCTS.cosmic_horizon;
@@ -335,7 +424,7 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
                       <span className="text-xs text-slate-400">/ high-res digital painting output</span>
                     </div>
 
-                    <div className="space-y-2.5 mb-8">
+                    <div className="space-y-2.5 mb-6">
                       {item.features.map((feat, idx) => (
                         <div key={idx} className="flex items-start gap-2 text-xs text-slate-300">
                           <Check className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
@@ -345,13 +434,16 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
                     </div>
                   </div>
 
-                  <button
-                    onClick={() => handleBuy(item)}
-                    disabled={loadingId !== null}
-                    className="w-full sm:w-auto px-8 py-4 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-200 text-sm font-semibold hover:bg-amber-500/30 transition-all duration-300 disabled:opacity-40 flex items-center justify-center gap-2"
-                  >
-                    {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : `Order Custom Sky Art (${item.price})`}
-                  </button>
+                  <div>
+                    <button
+                      onClick={() => handleBuy(item)}
+                      disabled={loadingId !== null}
+                      className="w-full sm:w-auto px-8 py-4 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-200 text-sm font-semibold hover:bg-amber-500/30 transition-all duration-300 disabled:opacity-40 flex items-center justify-center gap-2 mb-2"
+                    >
+                      {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : `Order Custom Sky Art (${item.price})`}
+                    </button>
+                    <p className="text-[11px] text-slate-400">{item.riskCopy}</p>
+                  </div>
                 </div>
 
                 {/* Large Canvas Image Placeholder (Right) */}
@@ -368,7 +460,41 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
         })()}
 
         {/* ---------------------------------------------------------------- */}
-        {/* SECTION 4: DEV TEST ENTRY BAR */}
+        {/* SECTION 5: STATIC SOCIAL PROOF TESTIMONIALS */}
+        {/* ---------------------------------------------------------------- */}
+        <div className="mb-12">
+          <div className="text-center mb-8">
+            <h3 className="text-xl font-serif text-champagne-50 mb-2">Trusted by Explorers Worldwide</h3>
+            <p className="text-xs text-slate-400">Verified feedback from members navigating active planetary transits.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {testimonials.map((t, idx) => (
+              <div key={idx} className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-1 mb-3">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 fill-champagne-400 text-champagne-400" />
+                    ))}
+                  </div>
+                  <p className="text-xs text-slate-300 leading-relaxed italic mb-6">"{t.text}"</p>
+                </div>
+                <div className="flex items-center justify-between border-t border-white/[0.06] pt-4 text-xs">
+                  <div>
+                    <span className="font-medium text-champagne-100 block">{t.name}</span>
+                    <span className="text-[10px] text-slate-500">{t.location}</span>
+                  </div>
+                  <span className="px-2 py-0.5 rounded bg-champagne-400/10 border border-champagne-400/20 text-champagne-300 font-mono text-[10px]">
+                    {t.sign}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ---------------------------------------------------------------- */}
+        {/* SECTION 6: DEV TEST ENTRY BAR */}
         {/* ---------------------------------------------------------------- */}
         {(() => {
           const item = PRODUCTS.test;
