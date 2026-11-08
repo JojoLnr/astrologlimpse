@@ -221,4 +221,3 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
     </div>
   );
 }
-```[cite: 10]
