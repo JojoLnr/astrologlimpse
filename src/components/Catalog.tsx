@@ -126,7 +126,7 @@ const PRODUCTS: CatalogProductItem[] = [
   },
 ];
 
-// Product Card Component with Built-in Interactive Review Carousel & Actual Images
+// Product Card Component with Built-in Interactive Review Carousel & Large Specimen Frames
 function ProductCard({ 
   item, 
   isFlipped, 
@@ -161,27 +161,27 @@ function ProductCard({
 
   return (
     <div className="flex flex-col md:flex-row items-center gap-8 lg:gap-12">
-      {/* Detached Image Container with Fade Effect */}
+      {/* Detached Image Container with Expanded Height and Clean Framing */}
       <div
-        className={`w-full md:w-5/12 h-64 sm:h-80 relative flex flex-col items-center justify-center p-6 text-center overflow-hidden transition-all duration-300 ${
+        className={`w-full md:w-5/12 h-80 sm:h-96 relative flex flex-col items-center justify-center p-2 text-center overflow-hidden transition-all duration-300 ${
           isFlipped ? 'md:order-2' : 'md:order-1'
         }`}
         style={{
-          maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)',
-          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)',
+          maskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
         }}
       >
         <div
-          className="absolute inset-0 opacity-20 blur-3xl pointer-events-none"
+          className="absolute inset-0 opacity-30 blur-3xl pointer-events-none"
           style={{ background: item.accentColor }}
         />
 
-        <div className="relative z-10 w-full h-full rounded-3xl border border-white/10 bg-slate-950/60 backdrop-blur-xl flex items-center justify-center p-4 shadow-[0_0_40px_rgba(0,0,0,0.6)] overflow-hidden">
+        <div className="relative z-10 w-full h-full rounded-3xl border border-white/15 bg-slate-950/80 backdrop-blur-2xl flex items-center justify-center p-2 shadow-[0_0_60px_rgba(0,0,0,0.8)] overflow-hidden">
           {item.image ? (
             <img
               src={item.image}
               alt={item.name}
-              className="w-full h-full object-cover rounded-2xl hover:scale-105 transition-transform duration-300"
+              className="w-full h-full object-contain rounded-2xl hover:scale-105 transition-transform duration-500 shadow-2xl"
             />
           ) : (
             <div className="flex flex-col items-center justify-center">
