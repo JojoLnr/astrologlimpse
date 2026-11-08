@@ -11,7 +11,7 @@ interface CatalogProps {
 const PRODUCTS: ProductItem[] = [
   {
     id: 'transit',
-    priceId: 'price_transit_placeholder',
+    priceId: import.meta.env.VITE_STRIPE_PRICE_TRANSIT || 'price_transit_placeholder',
     name: 'The Today Transit Flash',
     tagline: 'Instant single-transit planetary scan',
     mysteryTeaser: '“Moon conjunct Midheaven at 14° Taurus. Favorable window detected for decisive career communication...”',
@@ -24,7 +24,7 @@ const PRODUCTS: ProductItem[] = [
   },
   {
     id: 'full_package',
-    priceId: 'price_full_package_placeholder',
+    priceId: import.meta.env.VITE_STRIPE_PRICE_BLUEPRINT || 'price_full_package_placeholder',
     name: 'The 10-Point Life Crossroads Blueprint',
     tagline: 'Comprehensive natal breakdown for love & career',
     mysteryTeaser: '“House 7 Activation: Saturn pressure clearing. Expect structural partnership shifts over the next 30 days...”',
@@ -37,7 +37,7 @@ const PRODUCTS: ProductItem[] = [
   },
   {
     id: 'premium_membership',
-    priceId: 'price_premium_sub_placeholder',
+    priceId: import.meta.env.VITE_STRIPE_PRICE_PREMIUM || 'price_premium_sub_placeholder',
     name: 'The Premium Cosmic Access Pass',
     tagline: 'Continuous weekly ephemeris calculations & live unblurs',
     mysteryTeaser: '“RECURRING SYNC: Live weekly planetary transit feeds mapped directly to your unique natal house coordinates.”',
@@ -50,7 +50,7 @@ const PRODUCTS: ProductItem[] = [
   },
   {
     id: 'vip_orbit',
-    priceId: 'price_vip_orbit_placeholder',
+    priceId: import.meta.env.VITE_STRIPE_PRICE_VIP || 'price_vip_orbit_placeholder',
     name: 'The VIP Orbit Pass',
     tagline: 'Priority queue skip & direct astrological Q&A access',
     mysteryTeaser: '“VIP DIRECT CHANNEL: Direct coordinate auditing with priority computational allocation and monthly concierge review.”',
@@ -63,7 +63,7 @@ const PRODUCTS: ProductItem[] = [
   },
   {
     id: 'cosmic_horizon',
-    priceId: 'price_cosmic_horizon_placeholder',
+    priceId: import.meta.env.VITE_STRIPE_PRICE_ART || 'price_cosmic_horizon_placeholder',
     name: 'Executive Custom Birth Sky Art',
     tagline: 'High-res digital masterpiece of your exact birth night sky',
     mysteryTeaser: '“SWISS EPHEMERIS ARTIFACT: 300 DPI vector sky mapping with gold-foil border geometry layout for your exact birth minute.”',
@@ -76,7 +76,7 @@ const PRODUCTS: ProductItem[] = [
   },
   {
     id: 'test',
-    priceId: 'price_test_placeholder',
+    priceId: import.meta.env.VITE_STRIPE_PRICE_TEST || 'price_test_placeholder',
     name: 'Test Sandbox Entry',
     tagline: 'Internal validation & conversion tag testing flow',
     mysteryTeaser: '“SYSTEM_TEST_MODE_ACTIVE // 001 - Validating Google Ads dynamic conversion tracking pipeline.”',
@@ -142,7 +142,6 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
         </div>
 
         {/* RESPONSIVE CELESTIAL RADAR FEED LAYOUT */}
-        {/* On mobile: Left-aligned vertical line. On desktop: Centered vertical line. */}
         <div className="relative space-y-6 sm:space-y-10 pl-6 sm:pl-0 before:absolute before:inset-y-0 before:left-2.5 sm:before:left-1/2 sm:before:-translate-x-1/2 before:w-px before:bg-gradient-to-b before:from-transparent before:via-champagne-400/25 before:to-transparent">
           {PRODUCTS.map((item, index) => {
             const Icon = item.icon || Compass;
@@ -161,7 +160,7 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
                   <div className="w-1.5 h-1.5 rounded-full bg-champagne-300 animate-pulse" />
                 </div>
 
-                {/* Card Container: Full width on mobile, 50% width on desktop */}
+                {/* Card Container */}
                 <div className="w-full sm:w-[calc(50%-2rem)] relative rounded-2xl sm:rounded-3xl border border-white/[0.08] bg-slate-900/50 hover:bg-slate-900/85 backdrop-blur-xl p-5 sm:p-7 transition-all duration-300 group-hover:border-champagne-400/40 group-hover:shadow-[0_0_35px_rgba(196,163,116,0.12)] shadow-xl">
                   
                   <div className="flex items-center justify-between mb-3.5">
