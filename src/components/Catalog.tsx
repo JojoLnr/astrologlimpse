@@ -103,7 +103,7 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
         onClose={() => setSelectedProduct(null)} 
       />
 
-      <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-12 pb-48">
+      <main className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 py-12 pb-48">
         
         {/* Navigation Header */}
         <div className="flex items-center justify-between mb-16 border-b border-white/[0.08] pb-6">
@@ -141,89 +141,90 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
           </p>
         </div>
 
-        {/* JAGGED, CONSTELLATION-INSPIRED UNEVEN STAGGERED FEED */}
-        <div className="space-y-14 relative before:absolute before:top-10 before:bottom-10 before:left-6 sm:before:left-1/2 before:w-px before:bg-gradient-to-b before:from-transparent before:via-champagne-400/30 before:to-transparent before:opacity-40">
-          {PRODUCTS.map((item, index) => {
-            const Icon = item.icon || Compass;
-            
-            // Constellation-like jagged offsets (varying left/right margins and vertical shifts)
-            const offsets = [
-              'sm:translate-x-0 sm:mr-16',
-              'sm:translate-x-12 sm:ml-12',
-              'sm:-translate-x-10 sm:mr-8',
-              'sm:translate-x-8 sm:ml-16',
-              'sm:-translate-x-6 sm:mr-12',
-              'sm:translate-x-4 sm:ml-8',
-            ];
-            const offsetClass = offsets[index % offsets.length];
-            const isFlipped = index % 2 !== 0;
+        {/* UNIFORM CARDS WITH JAGGED CONSTELLATION SVG PATH CONNECTING THEM */}
+        <div className="relative">
+          {/* Jagged Constellation SVG Connecting Line */}
+          <svg className="absolute inset-0 w-full h-full pointer-events-none z-0 hidden sm:block stroke-champagne-400/30" fill="none" strokeWidth="1.5" strokeDasharray="4 4">
+            <path d="M 400 50 L 350 220 L 440 390 L 370 560 L 420 730 L 380 900" />
+          </svg>
 
-            return (
-              <div
-                key={item.id}
-                onClick={() => setSelectedProduct(item)}
-                className={`group relative rounded-3xl border border-white/[0.08] bg-slate-900/50 hover:bg-slate-900/90 backdrop-blur-xl p-6 sm:p-8 transition-all duration-300 cursor-pointer group-hover:border-champagne-400/50 group-hover:shadow-[0_0_50px_rgba(196,163,116,0.15)] shadow-xl ${offsetClass}`}
-              >
-                {/* Connecting Star Node on the Axis Line */}
-                <div className="absolute top-1/2 -left-6 sm:left-1/2 -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-[#04060b] border-2 border-champagne-400 group-hover:scale-150 transition-transform z-20 hidden sm:flex items-center justify-center shadow-[0_0_12px_rgba(196,163,116,0.8)]">
-                  <div className="w-1 h-1 rounded-full bg-champagne-200 animate-pulse" />
-                </div>
+          <div className="space-y-12 relative z-10">
+            {PRODUCTS.map((item, index) => {
+              const Icon = item.icon || Compass;
 
-                <div className={`grid grid-cols-1 md:grid-cols-12 gap-6 items-center ${isFlipped ? 'md:grid-flow-dense' : ''}`}>
-                  
-                  {/* Side Image Placeholder */}
-                  <div className={`md:col-span-4 h-36 sm:h-44 rounded-2xl border border-white/[0.1] bg-black/70 flex flex-col items-center justify-center p-4 text-center relative overflow-hidden group-hover:border-champagne-400/40 transition-colors ${isFlipped ? 'md:col-start-9' : ''}`}>
-                    <div className="w-10 h-10 rounded-xl bg-champagne-400/10 border border-champagne-400/20 flex items-center justify-center mb-2">
-                      <ImageIcon className="w-5 h-5 text-champagne-300" />
+              // Jagged constellation offsets (shifting left and right unevenly while cards remain uniform in size)
+              const constellationOffsets = [
+                'sm:-translate-x-8',
+                'sm:translate-x-12',
+                'sm:-translate-x-4',
+                'sm:translate-x-10',
+                'sm:-translate-x-6',
+                'sm:translate-x-4',
+              ];
+              const offsetClass = constellationOffsets[index % constellationOffsets.length];
+
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => setSelectedProduct(item)}
+                  className={`group relative w-full rounded-3xl border border-white/[0.08] bg-slate-900/60 hover:bg-slate-900/90 backdrop-blur-xl p-6 sm:p-8 transition-all duration-300 cursor-pointer group-hover:border-champagne-400/50 group-hover:shadow-[0_0_50px_rgba(196,163,116,0.15)] shadow-xl ${offsetClass}`}
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                    
+                    {/* Side Image Placeholder */}
+                    <div className="md:col-span-4 h-36 sm:h-40 rounded-2xl border border-white/[0.1] bg-black/70 flex flex-col items-center justify-center p-4 text-center relative overflow-hidden group-hover:border-champagne-400/40 transition-colors">
+                      <div className="w-10 h-10 rounded-xl bg-champagne-400/10 border border-champagne-400/20 flex items-center justify-center mb-2">
+                        <ImageIcon className="w-5 h-5 text-champagne-300" />
+                      </div>
+                      <p className="text-[10px] font-mono text-champagne-300 uppercase tracking-wider">Specimen View #{index + 1}</p>
+                      <span className="text-[9px] font-mono text-slate-500 mt-0.5">Placeholder Mockup</span>
                     </div>
-                    <p className="text-[10px] font-mono text-champagne-300 uppercase tracking-wider">Specimen View #{index + 1}</p>
-                    <span className="text-[9px] font-mono text-slate-500 mt-0.5">Placeholder Mockup</span>
-                  </div>
 
-                  {/* Node Content */}
-                  <div className={`md:col-span-8 flex flex-col justify-between ${isFlipped ? 'md:col-start-1 md:row-start-1' : ''}`}>
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-[10px] font-mono tracking-widest uppercase px-2.5 py-0.5 rounded-full bg-white/[0.05] border border-white/[0.08] text-champagne-200">
-                          {item.badge}
-                        </span>
-                        <div 
-                          className="w-8 h-8 rounded-xl border flex items-center justify-center shadow-inner"
-                          style={{ borderColor: `${item.accentColor}40`, background: `${item.accentColor}15` }}
-                        >
-                          <Icon className="w-4 h-4" style={{ color: item.accentColor }} />
+                    {/* Uniform Card Content */}
+                    <div className="md:col-span-8 flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-[10px] font-mono tracking-widest uppercase px-2.5 py-0.5 rounded-full bg-white/[0.05] border border-white/[0.08] text-champagne-200">
+                            {item.badge}
+                          </span>
+                          <div 
+                            className="w-8 h-8 rounded-xl border flex items-center justify-center shadow-inner"
+                            style={{ borderColor: `${item.accentColor}40`, background: `${item.accentColor}15` }}
+                          >
+                            <Icon className="w-4 h-4" style={{ color: item.accentColor }} />
+                          </div>
+                        </div>
+
+                        <h2 className="text-xl sm:text-2xl font-serif font-light text-champagne-50 group-hover:text-champagne-200 transition-colors leading-snug mb-1">
+                          {item.name}
+                        </h2>
+                        <p className="text-xs text-slate-400 font-light mb-3">
+                          {item.tagline}
+                        </p>
+
+                        <div className="bg-black/40 border border-white/[0.05] rounded-xl p-3 mb-4 group-hover:border-champagne-400/25 transition-colors">
+                          <p className="font-mono text-xs text-champagne-200/90 italic">
+                            {item.mysteryTeaser}
+                          </p>
                         </div>
                       </div>
 
-                      <h2 className="text-xl sm:text-2xl font-serif font-light text-champagne-50 group-hover:text-champagne-200 transition-colors leading-snug mb-1">
-                        {item.name}
-                      </h2>
-                      <p className="text-xs text-slate-400 font-light mb-3">
-                        {item.tagline}
-                      </p>
-
-                      <div className="bg-black/40 border border-white/[0.05] rounded-xl p-3 mb-4 group-hover:border-champagne-400/25 transition-colors">
-                        <p className="font-mono text-xs text-champagne-200/90 italic">
-                          {item.mysteryTeaser}
-                        </p>
+                      <div className="flex items-center justify-between pt-3 border-t border-white/[0.06] text-xs font-mono">
+                        <span className="text-slate-400 group-hover:text-champagne-300 transition-colors flex items-center gap-1.5">
+                          <Eye className="w-3.5 h-3.5" /> Initialize Calibration
+                        </span>
+                        <div className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center group-hover:bg-champagne-400/10 group-hover:border-champagne-400/30 transition-all">
+                          <ArrowRight className="w-3.5 h-3.5 text-champagne-300 group-hover:translate-x-0.5 transition-transform" />
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="flex items-center justify-between pt-3 border-t border-white/[0.06] text-xs font-mono">
-                      <span className="text-slate-400 group-hover:text-champagne-300 transition-colors flex items-center gap-1.5">
-                        <Eye className="w-3.5 h-3.5" /> Initialize Calibration
-                      </span>
-                      <div className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center group-hover:bg-champagne-400/10 group-hover:border-champagne-400/30 transition-all">
-                        <ArrowRight className="w-3.5 h-3.5 text-champagne-300 group-hover:translate-x-0.5 transition-transform" />
-                      </div>
                     </div>
 
                   </div>
-
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
 
         {/* Footer with Bottom Gradient Fade */}
