@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Sparkles, Calendar, Clock, MapPin, ArrowRight, X, Loader2, ShieldCheck, Lock } from 'lucide-react';
+import { useState } from 'react';
+import { Sparkles, Calendar, Clock, MapPin, ArrowRight, X, Loader2 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { createCheckoutSession } from '@/lib/stripe';
 
@@ -35,33 +35,13 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
-  // Auto-resume checkout when user returns authenticated from Google sign-in
-  useEffect(() => {
-    const pendingIntake = sessionStorage.getItem('pending_cosmic_intake');
-    const pendingPriceId = sessionStorage.getItem('pending_catalog_checkout');
-    const pendingMode = sessionStorage.getItem('pending_catalog_mode');
-
-    if (user && pendingPriceId && pendingMode) {
-      setIsLoading(true);
-      createCheckoutSession(pendingPriceId, pendingMode as 'payment' | 'subscription')
-        .then((url) => {
-          sessionStorage.removeItem('pending_catalog_checkout');
-          sessionStorage.removeItem('pending_catalog_mode');
-          window.location.href = url;
-        })
-        .catch((err) => {
-          setErrorMsg(err instanceof Error ? err.message : 'Unable to initialize checkout session.');
-          setIsLoading(false);
-        });
-    }
-  }, [user]);
-
   if (!product) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
 
+    // Save intake data and chosen product intent first
     const intakeData = {
       email: user?.email || '',
       fullName: user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Seeker',
@@ -73,11 +53,14 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
     };
     sessionStorage.setItem('pending_cosmic_intake', JSON.stringify(intakeData));
 
+    // RULE: Sign up/Sign in FIRST before mentioning or initiating payment
     if (!user) {
       try {
         sessionStorage.setItem('pending_catalog_checkout', product.priceId);
         sessionStorage.setItem('pending_catalog_mode', product.mode);
         sessionStorage.setItem('pending_catalog_value', product.numericValue.toString());
+        
+        // Triggers sign up / sign in so we capture their email immediately
         await signInWithGoogle();
         return;
       } catch (err) {
@@ -86,12 +69,13 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
       }
     }
 
+    // If user is already authenticated, proceed directly to payment
     setIsLoading(true);
     try {
       const url = await createCheckoutSession(product.priceId, product.mode);
       window.location.href = url;
     } catch (err) {
-      setErrorMsg(err instanceof Error ? err.message : 'Failed to reach calculation backend.');
+      setErrorMsg(err instanceof Error ? err.message : 'Failed to reach payment gateway.');
       setIsLoading(false);
     }
   };
@@ -117,10 +101,10 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
         <div className="mb-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-champagne-400/10 border border-champagne-400/20 text-[10px] font-mono tracking-widest text-champagne-300 uppercase mb-3">
             <Sparkles className="w-3 h-3" />
-            <span>Step 1: Coordinate Calibration</span>
+            <span>Step 1: Cosmic Intake & Profile Setup</span>
           </div>
           <h2 className="text-2xl font-serif text-white tracking-wide">{product.name}</h2>
-          <p className="text-sm text-slate-400 mt-1">{product.tagline}</p>
+          <p className="text-sm text-slate-400 mt-1">Provide your birth details to initialize your reading profile.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -206,11 +190,11 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
               {isLoading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Connecting to Stripe...</span>
+                  <span>Processing...</span>
                 </>
               ) : (
                 <>
-                  <span>Proceed to Secure Checkout ({product.price})</span>
+                  <span>{user ? `Proceed to Secure Checkout (${product.price})` : 'Continue with Google & Save Profile'}</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
