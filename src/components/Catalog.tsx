@@ -1,230 +1,229 @@
 import { useState } from 'react';
-import { Sparkles, Zap, BookOpen, Crown, Rocket, Compass, ArrowLeft, ShieldCheck, ArrowRight, Eye, Orbit } from 'lucide-react';
-import { StarryBackground } from '@/components/StarryBackground';
-import { CosmicIntakeModal } from '@/components/CosmicIntakeModal';
-import { ProductItem } from '@/components/CosmicIntakeModal'; // Assuming ProductItem matches
+import { Sparkles, Calendar, Clock, MapPin, ArrowRight, X, Loader2, ShieldCheck, Lock } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { createCheckoutSession } from '@/lib/stripe';
 
-interface CatalogProps {
-  onNavigateHome: () => void;
-  onNavigateDashboard: () => void;
+export interface ProductItem {
+  id: string;
+  priceId: string;
+  name: string;
+  tagline: string;
+  mysteryTeaser?: string;
+  description?: string;
+  price: string;
+  numericValue: number;
+  mode: 'payment' | 'subscription';
+  badge: string;
+  icon?: React.ElementType;
+  accentColor: string;
 }
 
-const PRODUCTS = [
-  {
-    id: 'transit',
-    priceId: 'price_transit_placeholder',
-    name: 'The Today Transit Flash',
-    tagline: 'Instant single-transit planetary scan',
-    mysteryTeaser: '“Moon conjunct Midheaven at 14° Taurus. Favorable window detected for decisive career communication...”',
-    price: '$1.00',
-    numericValue: 1.0,
-    mode: 'payment' as const,
-    badge: 'MICRO-SCAN',
-    icon: Compass,
-    accentColor: '#38bdf8',
-    orbitPosition: 'Sector 01 // Daily Ephemeris',
-  },
-  {
-    id: 'full_package',
-    priceId: 'price_full_package_placeholder',
-    name: 'The 10-Point Life Crossroads Blueprint',
-    tagline: 'Comprehensive natal breakdown for love & career',
-    mysteryTeaser: '“House 7 Activation: Saturn pressure clearing. Expect structural partnership shifts over the next 30 days...”',
-    price: '$5.00',
-    numericValue: 5.0,
-    mode: 'payment' as const,
-    badge: 'CORE BLUEPRINT',
-    icon: BookOpen,
-    accentColor: '#48bb78',
-    orbitPosition: 'Sector 02 // Natal Mapping',
-  },
-  {
-    id: 'premium_membership',
-    priceId: 'price_premium_sub_placeholder',
-    name: 'The Premium Cosmic Access Pass',
-    tagline: 'Continuous weekly ephemeris calculations & live unblurs',
-    mysteryTeaser: '“RECURRING SYNC: Live weekly planetary transit feeds mapped directly to your unique natal house coordinates.”',
-    price: '$9.99',
-    numericValue: 9.99,
-    mode: 'subscription' as const,
-    badge: 'FLAGSHIP PASS',
-    icon: Crown,
-    accentColor: '#c4a374',
-    orbitPosition: 'Sector 03 // Unlimited Sync',
-  },
-  {
-    id: 'vip_orbit',
-    priceId: 'price_vip_orbit_placeholder',
-    name: 'The VIP Orbit Pass',
-    tagline: 'Priority queue skip & direct astrological Q&A access',
-    mysteryTeaser: '“VIP DIRECT CHANNEL: Direct coordinate auditing with priority computational allocation and monthly concierge review.”',
-    price: '$99.99',
-    numericValue: 99.99,
-    mode: 'subscription' as const,
-    badge: 'CONCIERGE TIER',
-    icon: Rocket,
-    accentColor: '#a855f7',
-    orbitPosition: 'Sector 04 // Priority Channel',
-  },
-  {
-    id: 'cosmic_horizon',
-    priceId: 'price_cosmic_horizon_placeholder',
-    name: 'Executive Custom Birth Sky Art',
-    tagline: 'High-res digital masterpiece of your exact birth night sky',
-    mysteryTeaser: '“SWISS EPHEMERIS ARTIFACT: 300 DPI vector sky mapping with gold-foil border geometry layout for your exact birth minute.”',
-    price: '$249.99',
-    numericValue: 249.99,
-    mode: 'payment' as const,
-    badge: 'LUXURY ARTIFACT',
-    icon: Sparkles,
-    accentColor: '#f59e0b',
-    orbitPosition: 'Sector 05 // Masterpiece Canvas',
-  },
-  {
-    id: 'test',
-    priceId: 'price_test_placeholder',
-    name: 'Test Sandbox Entry',
-    tagline: 'Internal validation & conversion tag testing flow',
-    mysteryTeaser: '“SYSTEM_TEST_MODE_ACTIVE // 001 - Validating Google Ads dynamic conversion tracking pipeline.”',
-    price: '$1.00',
-    numericValue: 1.0,
-    mode: 'payment' as const,
-    badge: 'DEV ONLY',
-    icon: Zap,
-    accentColor: '#94a3b8',
-    orbitPosition: 'Sector 00 // System Sandbox',
-  },
-];
+interface CosmicIntakeModalProps {
+  product: ProductItem | null;
+  onClose: () => void;
+}
 
-export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
-  const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
+export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) {
+  const { user, signInWithGoogle } = useAuth();
+  
+  const [birthDate, setBirthDate] = useState('');
+  const [birthTime, setBirthTime] = useState('');
+  const [unknownTime, setUnknownTime] = useState(false);
+  const [birthLocation, setBirthLocation] = useState('');
+  const [focusArea, setFocusArea] = useState('General Life Path');
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+
+  if (!product) return null;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMsg('');
+
+    const intakeData = {
+      email: user?.email || '',
+      fullName: user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Seeker',
+      birthDate,
+      birthTime: unknownTime ? '12:00 (Approx)' : birthTime,
+      birthLocation,
+      focusArea,
+      productId: product.id,
+    };
+    sessionStorage.setItem('pending_cosmic_intake', JSON.stringify(intakeData));
+
+    if (!user) {
+      try {
+        sessionStorage.setItem('pending_catalog_checkout', product.priceId);
+        sessionStorage.setItem('pending_catalog_mode', product.mode);
+        sessionStorage.setItem('pending_catalog_value', product.numericValue.toString());
+        await signInWithGoogle();
+        return;
+      } catch (err) {
+        setErrorMsg(err instanceof Error ? err.message : 'Google authentication failed');
+        return;
+      }
+    }
+
+    setIsLoading(true);
+    try {
+      const url = await createCheckoutSession(product.priceId, product.mode);
+      window.location.href = url;
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : 'Failed to launch checkout');
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <div className="relative min-h-screen text-slate-100 selection:bg-champagne-400/20 bg-[#04060b] overflow-hidden">
-      {/* Background ambient cosmic glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-b from-indigo-950/30 via-champagne-400/[0.02] to-transparent rounded-full blur-3xl pointer-events-none" />
-      <StarryBackground />
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
+      <div 
+        className="relative w-full max-w-xl rounded-3xl border border-white/[0.12] bg-gradient-to-br from-[#0c1021] via-[#080b16] to-[#04060b] p-6 sm:p-8 shadow-[0_0_80px_rgba(196,163,116,0.15)] overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div 
+          className="absolute -top-24 -right-24 w-72 h-72 rounded-full blur-3xl opacity-20 pointer-events-none"
+          style={{ background: product.accentColor }}
+        />
 
-      <CosmicIntakeModal 
-        product={selectedProduct} 
-        onClose={() => setSelectedProduct(null)} 
-      />
+        <button
+          onClick={onClose}
+          className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-slate-200 hover:bg-white/[0.06] transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
 
-      <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-12 pb-28">
-        
-        {/* Navigation Header */}
-        <div className="flex items-center justify-between mb-16 border-b border-white/[0.08] pb-6">
-          <button
-            onClick={onNavigateHome}
-            className="group inline-flex items-center gap-2 text-xs font-mono tracking-[0.2em] text-champagne-300 uppercase hover:text-champagne-100 transition-colors"
-          >
-            <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
-            [ Return to Observatory ]
-          </button>
-          <button
-            onClick={onNavigateDashboard}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.03] border border-white/[0.08] text-xs font-mono text-slate-300 hover:bg-white/[0.06] hover:border-champagne-400/30 transition-all shadow-sm"
-          >
-            <Compass className="w-3.5 h-3.5 text-champagne-300" />
-            My Dashboard
-          </button>
-        </div>
-
-        {/* Observatory Header */}
-        <div className="text-center max-w-2xl mx-auto mb-20">
-          <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-champagne-400/[0.06] border border-champagne-400/25 backdrop-blur-md mb-6 shadow-[0_0_25px_rgba(196,163,116,0.1)]">
-            <Orbit className="w-3.5 h-3.5 text-champagne-300 animate-spin" style={{ animationDuration: '12s' }} />
-            <span className="text-[11px] font-mono tracking-[0.25em] uppercase text-champagne-200">Observatory Feed // Live Codex</span>
+        <div className="mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-champagne-400/10 border border-champagne-400/20 text-[10px] font-mono tracking-widest text-champagne-300 uppercase mb-3">
+            <Sparkles className="w-3 h-3" />
+            <span>Step 1: Coordinate Calibration</span>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl font-serif font-light text-champagne-50 mb-6 tracking-tight leading-[1.1]">
-            Select Your <br />
-            <span className="bg-gradient-to-r from-champagne-200 via-champagne-300 to-amber-200 bg-clip-text text-transparent italic font-normal">
-              Celestial Coordinate
-            </span>
-          </h1>
-          <p className="text-slate-400 text-xs sm:text-sm font-light tracking-wide font-mono">
-            // Click any transmission node below to calibrate parameters and unlock tailored insights.
+          <h3 className="text-2xl font-serif text-champagne-50">
+            Calibrating: <span className="text-champagne-200">{product.name}</span>
+          </h3>
+          <p className="text-xs text-slate-400 mt-1">
+            {user ? (
+              <span className="text-emerald-400 font-mono">Authenticated as {user.email}</span>
+            ) : (
+              <span>You will be prompted to sign in with Google securely upon submission.</span>
+            )}
           </p>
         </div>
 
-        {/* STAGGERED CELESTIAL RADAR FEED LAYOUT */}
-        <div className="relative space-y-8 before:absolute before:inset-0 before:left-8 sm:before:left-1/2 before:w-px before:bg-gradient-to-b before:from-transparent before:via-champagne-400/20 before:to-transparent">
-          {PRODUCTS.map((item, index) => {
-            const Icon = item.icon;
-            const isEven = index % 2 === 0;
+        {errorMsg && (
+          <div className="mb-4 p-3 rounded-xl border border-red-500/20 bg-red-500/10 text-xs text-red-300 font-mono text-center">
+            {errorMsg}
+          </div>
+        )}
 
-            return (
-              <div
-                key={item.id}
-                onClick={() => setSelectedProduct(item)}
-                className={`group relative flex flex-col sm:flex-row items-start sm:items-center gap-6 cursor-pointer ${
-                  isEven ? 'sm:flex-row-reverse' : ''
-                }`}
-              >
-                {/* Central Node Indicator */}
-                <div className="absolute left-8 sm:left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-[#04060b] border-2 border-champagne-400/60 group-hover:border-champagne-300 group-hover:scale-125 transition-all z-20 flex items-center justify-center shadow-[0_0_15px_rgba(196,163,116,0.4)] hidden sm:flex">
-                  <div className="w-1.5 h-1.5 rounded-full bg-champagne-300 animate-pulse" />
-                </div>
-
-                {/* Transmission Node Card */}
-                <div className="w-full sm:w-[calc(50%-3rem)] relative rounded-3xl border border-white/[0.08] bg-slate-900/40 hover:bg-slate-900/80 backdrop-blur-xl p-7 transition-all duration-300 group-hover:border-champagne-400/40 group-hover:shadow-[0_0_40px_rgba(196,163,116,0.1)] shadow-xl">
-                  
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-[10px] font-mono tracking-widest text-champagne-300/80 uppercase">
-                      {item.orbitPosition}
-                    </span>
-                    <span className="text-[10px] font-mono tracking-widest uppercase px-2.5 py-0.5 rounded-full bg-white/[0.05] border border-white/[0.08] text-champagne-200">
-                      {item.badge}
-                    </span>
-                  </div>
-
-                  <div className="flex items-start gap-4 mb-4">
-                    <div 
-                      className="w-12 h-12 rounded-2xl border flex items-center justify-center flex-shrink-0 shadow-inner group-hover:scale-105 transition-transform"
-                      style={{ borderColor: `${item.accentColor}40`, background: `${item.accentColor}15` }}
-                    >
-                      <Icon className="w-5 h-5" style={{ color: item.accentColor }} />
-                    </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-serif font-light text-champagne-50 group-hover:text-champagne-200 transition-colors leading-snug">
-                        {item.name}
-                      </h2>
-                      <p className="text-xs text-slate-400 font-light mt-1">
-                        {item.tagline}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Mysterious Ephemeris Preview Snippet */}
-                  <div className="bg-black/40 border border-white/[0.05] rounded-xl p-3.5 mb-5 group-hover:border-champagne-400/20 transition-colors">
-                    <p className="text-[10px] font-mono text-slate-500 uppercase tracking-wider mb-1">// LIVE_FEED_SNIPPET</p>
-                    <p className="font-mono text-xs text-champagne-200/90 italic">
-                      {item.mysteryTeaser}
-                    </p>
-                  </div>
-
-                  <div className="flex items-center justify-between pt-3 border-t border-white/[0.06] text-xs font-mono">
-                    <span className="text-slate-500 group-hover:text-champagne-300 transition-colors flex items-center gap-1.5">
-                      <Eye className="w-3.5 h-3.5" /> Initialize Calibration
-                    </span>
-                    <div className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center group-hover:bg-champagne-400/10 group-hover:border-champagne-400/30 transition-all">
-                      <ArrowRight className="w-3.5 h-3.5 text-champagne-300 group-hover:translate-x-0.5 transition-transform" />
-                    </div>
-                  </div>
-
-                </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-300 mb-1.5">
+                Date of Birth
+              </label>
+              <div className="relative">
+                <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                <input
+                  type="date"
+                  required
+                  value={birthDate}
+                  onChange={(e) => setBirthDate(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs text-slate-100 focus:outline-none focus:border-champagne-400/50"
+                />
               </div>
-            );
-          })}
-        </div>
+            </div>
 
-        {/* Footer */}
-        <footer className="max-w-xl mx-auto text-center pt-20 border-t border-white/[0.06] flex items-center justify-center gap-2 text-xs font-mono text-slate-400">
-          <ShieldCheck className="w-4 h-4 text-champagne-400/60" />
-          <span>256-Bit Encrypted Secure Processing & Swiss Ephemeris Calculations</span>
-        </footer>
-      </main>
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-300">
+                  Exact Time of Birth
+                </label>
+                <label className="inline-flex items-center gap-1.5 text-[10px] font-mono text-slate-400 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={unknownTime}
+                    onChange={(e) => setUnknownTime(e.target.checked)}
+                    className="rounded border-slate-700 bg-slate-900 text-champagne-400 focus:ring-0"
+                  />
+                  <span>Unknown</span>
+                </label>
+              </div>
+              <div className="relative">
+                <Clock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                <input
+                  type="time"
+                  disabled={unknownTime}
+                  required={!unknownTime}
+                  value={birthTime}
+                  onChange={(e) => setBirthTime(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs text-slate-100 focus:outline-none focus:border-champagne-400/50 disabled:opacity-30"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-300 mb-1.5">
+              Birth Location (City, Country)
+            </label>
+            <div className="relative">
+              <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <input
+                type="text"
+                required
+                value={birthLocation}
+                onChange={(e) => setBirthLocation(e.target.value)}
+                placeholder="Chicago, IL, USA"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-champagne-400/50"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-300 mb-1.5">
+              Primary Focus Area
+            </label>
+            <select
+              value={focusArea}
+              onChange={(e) => setFocusArea(e.target.value)}
+              className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-white/[0.1] text-xs text-slate-200 focus:outline-none focus:border-champagne-400/50"
+            >
+              <option value="General Life Path">General Life Path & Destiny</option>
+              <option value="Love & Relationships">Love, House 7 & Soulmate Timing</option>
+              <option value="Career & Wealth">Career, House 10 & Financial Shift</option>
+              <option value="Karmic Chiron Healing">Karmic Chiron & Wounding</option>
+            </select>
+          </div>
+
+          <div className="pt-4 border-t border-white/[0.08]">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-4 rounded-xl bg-gradient-to-r from-champagne-200 via-champagne-300 to-amber-300 text-midnight-950 font-mono text-xs tracking-[0.2em] uppercase font-bold hover:brightness-110 transition-all shadow-[0_4px_30px_rgba(196,163,116,0.3)] disabled:opacity-40 flex items-center justify-center gap-2"
+            >
+              {isLoading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <>
+                  <span>{user ? 'Proceed to Secure Checkout' : 'Sign in with Google & Proceed'}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
+            </button>
+
+            <div className="flex items-center justify-center gap-4 text-[10px] font-mono text-slate-400 mt-3">
+              <span className="flex items-center gap-1">
+                <Lock className="w-3 h-3 text-champagne-400" /> Secure Google Auth
+              </span>
+              <span className="flex items-center gap-1">
+                <ShieldCheck className="w-3 h-3 text-champagne-400" /> 256-Bit Stripe Checkout
+              </span>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
