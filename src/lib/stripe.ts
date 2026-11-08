@@ -1,34 +1,18 @@
-import { loadStripe } from '@stripe/stripe-js';
 import { supabase } from './supabase';
-
-const stripePromise = loadStripe(
-  import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || ''
-);
 
 export async function createCheckoutSession(
   priceId: string,
   mode: 'payment' | 'subscription'
 ): Promise<string> {
-  const stripe = await stripePromise;
-  if (!stripe) throw new Error('Stripe failed to initialize. Check VITE_STRIPE_PUBLISHABLE_KEY.');
-
   const { data: session } = await supabase.auth.getSession();
   const user = session.session?.user;
   if (!user) throw new Error('Not authenticated');
 
-  const { error } = await stripe.redirectToCheckout({
-    lineItems: [{ price: priceId, quantity: 1 }],
-    mode: mode,
-    customerEmail: user.email,
-    successUrl: `${window.location.origin}/discountpurchased?session_id={CHECKOUT_SESSION_ID}`,
-    cancelUrl: `${window.location.origin}/catalog`,
-  });
-
-  if (error) {
-    throw new Error(error.message || 'Checkout failed');
-  }
-
-  return '';
+  // Fallback to direct checkout URL or local proxy route
+  const checkoutUrl = `https://checkout.stripe.com/pay/${priceId}?prefilled_email=${encodeURIComponent(user.email || '')}`;
+  
+  // Return target URL for direct redirection
+  return checkoutUrl;
 }
 
 export async function createPortalSession(): Promise<string> {
