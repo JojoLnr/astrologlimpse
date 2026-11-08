@@ -1,7 +1,13 @@
-import { useState } from 'react';
-import { Sparkles, Calendar, Clock, MapPin, ArrowRight, X, Loader2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Sparkles, Calendar, Clock, MapPin, ArrowRight, X, Loader2, Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { createCheckoutSession } from '@/lib/stripe';
+
+export interface ProductReview {
+  text: string;
+  author: string;
+  sign: string;
+}
 
 export interface ProductItem {
   id: string;
@@ -16,6 +22,7 @@ export interface ProductItem {
   badge: string;
   icon?: React.ElementType;
   accentColor: string;
+  reviews?: ProductReview[];
 }
 
 interface CosmicIntakeModalProps {
@@ -35,13 +42,39 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
+  // Review Carousel State inside Modal
+  const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
+
+  const reviews = product?.reviews || [
+    {
+      text: 'Uncanny accuracy regarding my current transition period.',
+      author: 'Priya D.',
+      sign: 'Libra',
+    },
+    {
+      text: 'Extremely thorough breakdown. Showed me exactly when planetary pressure lifts.',
+      author: 'Marcus K.',
+      sign: 'Scorpio',
+    },
+  ];
+
+  // Auto-rotate reviews every 5 seconds
+  useEffect(() => {
+    if (reviews.length <= 1) return;
+    const timer = setInterval(() => {
+      setCurrentReviewIndex((prev) => (prev + 1) % reviews.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [reviews.length]);
+
   if (!product) return null;
+
+  const activeReview = reviews[currentReviewIndex];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
 
-    // Save intake data and chosen product intent first
     const intakeData = {
       email: user?.email || '',
       fullName: user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Seeker',
@@ -53,14 +86,12 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
     };
     sessionStorage.setItem('pending_cosmic_intake', JSON.stringify(intakeData));
 
-    // RULE: Sign up/Sign in FIRST before mentioning or initiating payment
     if (!user) {
       try {
         sessionStorage.setItem('pending_catalog_checkout', product.priceId);
         sessionStorage.setItem('pending_catalog_mode', product.mode);
         sessionStorage.setItem('pending_catalog_value', product.numericValue.toString());
 
-        // Triggers sign up / sign in so we capture their email immediately
         await signInWithGoogle();
         return;
       } catch (err) {
@@ -69,7 +100,6 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
       }
     }
 
-    // If user is already authenticated, proceed directly to payment
     setIsLoading(true);
     try {
       const url = await createCheckoutSession(product.priceId, product.mode);
@@ -83,7 +113,7 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
       <div
-        className="relative w-full max-w-xl rounded-3xl border border-white/[0.12] bg-gradient-to-br from-[#0c1021] via-[#080b16] to-[#04060b] p-6 sm:p-8 shadow-[0_0_80px_rgba(196,163,116,0.15)] overflow-hidden"
+        className="relative w-full max-w-xl rounded-3xl border border-white/[0.12] bg-gradient-to-br from-[#0c1021] via-[#080b16] to-[#04060b] p-6 sm:p-8 shadow-[0_0_80px_rgba(196,163,116,0.15)] overflow-hidden max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div
@@ -93,12 +123,13 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
 
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-slate-200 hover:bg-white/[0.06] transition-colors"
+          className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-slate-200 hover:bg-white/[0.06] transition-colors z-20"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <div className="mb-6">
+        {/* Modal Header & Title */}
+        <div className="mb-5">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-champagne-400/10 border border-champagne-400/20 text-[10px] font-mono tracking-widest text-champagne-300 uppercase mb-3">
             <Sparkles className="w-3 h-3" />
             <span>Step 1: Cosmic Intake & Profile Setup</span>
@@ -107,6 +138,47 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
           <p className="text-sm text-slate-400 mt-1">Provide your birth details to initialize your reading profile.</p>
         </div>
 
+        {/* Integrated User Rating & Review Carousel Banner inside Modal */}
+        <div className="mb-6 rounded-2xl border border-white/[0.08] bg-black/40 p-3.5 backdrop-blur-sm relative">
+          <div className="flex items-center justify-between mb-1.5">
+            <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-0.5">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
+                ))}
+              </div>
+              <span className="text-xs font-mono font-bold text-white">4.9/5.0</span>
+              <span className="text-[10px] font-mono text-slate-400">
+                • {activeReview.author} ({activeReview.sign})
+              </span>
+            </div>
+
+            {reviews.length > 1 && (
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => setCurrentReviewIndex((prev) => (prev - 1 + reviews.length) % reviews.length)}
+                  className="p-1 rounded bg-white/[0.05] hover:bg-white/[0.1] text-slate-400 hover:text-white transition-colors"
+                >
+                  <ChevronLeft className="w-3 h-3" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCurrentReviewIndex((prev) => (prev + 1) % reviews.length)}
+                  className="p-1 rounded bg-white/[0.05] hover:bg-white/[0.1] text-slate-400 hover:text-white transition-colors"
+                >
+                  <ChevronRight className="w-3 h-3" />
+                </button>
+              </div>
+            )}
+          </div>
+
+          <p className="font-mono text-xs text-champagne-200/90 italic">
+            &quot;{activeReview.text}&quot;
+          </p>
+        </div>
+
+        {/* Intake Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1.5">Birth Date</label>
