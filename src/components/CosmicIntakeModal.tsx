@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Sparkles, Calendar, Clock, MapPin, ArrowRight, X, Loader2, ShieldCheck, Lock } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { createCheckoutSession } from '@/lib/stripe';
@@ -35,6 +35,27 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
+  // Handle post-Google-login auto-resume flow
+  useEffect(() => {
+    const pendingIntake = sessionStorage.getItem('pending_cosmic_intake');
+    const pendingPriceId = sessionStorage.getItem('pending_catalog_checkout');
+    const pendingMode = sessionStorage.getItem('pending_catalog_mode');
+
+    if (user && pendingIntake && pendingPriceId && pendingMode) {
+      setIsLoading(true);
+      createCheckoutSession(pendingPriceId, pendingMode as 'payment' | 'subscription')
+        .then((url) => {
+          sessionStorage.removeItem('pending_catalog_checkout');
+          sessionStorage.removeItem('pending_catalog_mode');
+          window.location.href = url;
+        })
+        .catch((err) => {
+          setErrorMsg(err instanceof Error ? err.message : 'Unable to initialize ephemeris calculation session.');
+          setIsLoading(false);
+        });
+    }
+  }, [user]);
+
   if (!product) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -70,7 +91,7 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
       const url = await createCheckoutSession(product.priceId, product.mode);
       window.location.href = url;
     } catch (err) {
-      setErrorMsg(err instanceof Error ? err.message : 'Failed to launch checkout');
+      setErrorMsg(err instanceof Error ? err.message : 'Failed to reach calculation backend.');
       setIsLoading(false);
     }
   };
@@ -102,11 +123,11 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
           <h3 className="text-2xl font-serif text-champagne-50">
             Calibrating: <span className="text-champagne-200">{product.name}</span>
           </h3>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 mt-1 font-mono">
             {user ? (
-              <span className="text-emerald-400 font-mono">Authenticated as {user.email}</span>
+              <span className="text-emerald-400">Authenticated as {user.email}</span>
             ) : (
-              <span>You will be prompted to sign in with Google securely upon submission.</span>
+              <span>Secure identity verification required to store your natal ephemeris coordinates.</span>
             )}
           </p>
         </div>
@@ -207,7 +228,7 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
                 <>
-                  <span>{user ? 'Proceed to Secure Checkout' : 'Sign in with Google & Proceed'}</span>
+                  <span>{user ? 'Calibrate & Calculate Chart' : 'Continue with Google'}</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
@@ -215,10 +236,10 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
 
             <div className="flex items-center justify-center gap-4 text-[10px] font-mono text-slate-400 mt-3">
               <span className="flex items-center gap-1">
-                <Lock className="w-3 h-3 text-champagne-400" /> Secure Google Auth
+                <Lock className="w-3 h-3 text-champagne-400" /> Encrypted Identity Sync
               </span>
               <span className="flex items-center gap-1">
-                <ShieldCheck className="w-3 h-3 text-champagne-400" /> 256-Bit Stripe Checkout
+                <ShieldCheck className="w-3 h-3 text-champagne-400" /> Ephemeris Engine 4.0
               </span>
             </div>
           </div>
