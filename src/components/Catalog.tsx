@@ -1,15 +1,14 @@
 import { useState } from 'react';
-import { Sparkles, Zap, BookOpen, Crown, Rocket, Compass, ArrowLeft, ShieldCheck, ArrowRight, Eye, Orbit } from 'lucide-react';
+import { Sparkles, Zap, BookOpen, Crown, Rocket, Compass, ArrowLeft, ShieldCheck, ArrowRight, Eye, Orbit, Image as ImageIcon } from 'lucide-react';
 import { StarryBackground } from '@/components/StarryBackground';
-import { CosmicIntakeModal } from '@/components/CosmicIntakeModal';
-import { ProductItem } from '@/components/CosmicIntakeModal'; // Assuming ProductItem matches
+import { CosmicIntakeModal, ProductItem } from '@/components/CosmicIntakeModal';
 
 interface CatalogProps {
   onNavigateHome: () => void;
   onNavigateDashboard: () => void;
 }
 
-const PRODUCTS = [
+const PRODUCTS: ProductItem[] = [
   {
     id: 'transit',
     priceId: 'price_transit_placeholder',
@@ -18,11 +17,10 @@ const PRODUCTS = [
     mysteryTeaser: '“Moon conjunct Midheaven at 14° Taurus. Favorable window detected for decisive career communication...”',
     price: '$1.00',
     numericValue: 1.0,
-    mode: 'payment' as const,
+    mode: 'payment',
     badge: 'MICRO-SCAN',
     icon: Compass,
     accentColor: '#38bdf8',
-    orbitPosition: 'Sector 01 // Daily Ephemeris',
   },
   {
     id: 'full_package',
@@ -32,11 +30,10 @@ const PRODUCTS = [
     mysteryTeaser: '“House 7 Activation: Saturn pressure clearing. Expect structural partnership shifts over the next 30 days...”',
     price: '$5.00',
     numericValue: 5.0,
-    mode: 'payment' as const,
+    mode: 'payment',
     badge: 'CORE BLUEPRINT',
     icon: BookOpen,
     accentColor: '#48bb78',
-    orbitPosition: 'Sector 02 // Natal Mapping',
   },
   {
     id: 'premium_membership',
@@ -46,11 +43,10 @@ const PRODUCTS = [
     mysteryTeaser: '“RECURRING SYNC: Live weekly planetary transit feeds mapped directly to your unique natal house coordinates.”',
     price: '$9.99',
     numericValue: 9.99,
-    mode: 'subscription' as const,
+    mode: 'subscription',
     badge: 'FLAGSHIP PASS',
     icon: Crown,
     accentColor: '#c4a374',
-    orbitPosition: 'Sector 03 // Unlimited Sync',
   },
   {
     id: 'vip_orbit',
@@ -60,11 +56,10 @@ const PRODUCTS = [
     mysteryTeaser: '“VIP DIRECT CHANNEL: Direct coordinate auditing with priority computational allocation and monthly concierge review.”',
     price: '$99.99',
     numericValue: 99.99,
-    mode: 'subscription' as const,
+    mode: 'subscription',
     badge: 'CONCIERGE TIER',
     icon: Rocket,
     accentColor: '#a855f7',
-    orbitPosition: 'Sector 04 // Priority Channel',
   },
   {
     id: 'cosmic_horizon',
@@ -74,11 +69,10 @@ const PRODUCTS = [
     mysteryTeaser: '“SWISS EPHEMERIS ARTIFACT: 300 DPI vector sky mapping with gold-foil border geometry layout for your exact birth minute.”',
     price: '$249.99',
     numericValue: 249.99,
-    mode: 'payment' as const,
+    mode: 'payment',
     badge: 'LUXURY ARTIFACT',
     icon: Sparkles,
     accentColor: '#f59e0b',
-    orbitPosition: 'Sector 05 // Masterpiece Canvas',
   },
   {
     id: 'test',
@@ -88,16 +82,15 @@ const PRODUCTS = [
     mysteryTeaser: '“SYSTEM_TEST_MODE_ACTIVE // 001 - Validating Google Ads dynamic conversion tracking pipeline.”',
     price: '$1.00',
     numericValue: 1.0,
-    mode: 'payment' as const,
+    mode: 'payment',
     badge: 'DEV ONLY',
     icon: Zap,
     accentColor: '#94a3b8',
-    orbitPosition: 'Sector 00 // System Sandbox',
   },
 ];
 
 export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
-  const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null);
 
   return (
     <div className="relative min-h-screen text-slate-100 selection:bg-champagne-400/20 bg-[#04060b] overflow-hidden">
@@ -110,7 +103,7 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
         onClose={() => setSelectedProduct(null)} 
       />
 
-      <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-12 pb-28">
+      <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-12 pb-40">
         
         {/* Navigation Header */}
         <div className="flex items-center justify-between mb-16 border-b border-white/[0.08] pb-6">
@@ -148,69 +141,71 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
           </p>
         </div>
 
-        {/* STAGGERED CELESTIAL RADAR FEED LAYOUT */}
-        <div className="relative space-y-8 before:absolute before:inset-0 before:left-8 sm:before:left-1/2 before:w-px before:bg-gradient-to-b before:from-transparent before:via-champagne-400/20 before:to-transparent">
+        {/* UNEVEN STAGGERED CELESTIAL FEED WITH IMAGE PLACEHOLDERS */}
+        <div className="space-y-12">
           {PRODUCTS.map((item, index) => {
             const Icon = item.icon;
-            const isEven = index % 2 === 0;
+            // Uneven layout: alternating widths and offsets to break standard card symmetry
+            const isWide = index % 3 === 0;
+            const alignClass = index % 2 === 0 ? 'sm:mr-12' : 'sm:ml-12 sm:translate-y-6';
 
             return (
               <div
                 key={item.id}
                 onClick={() => setSelectedProduct(item)}
-                className={`group relative flex flex-col sm:flex-row items-start sm:items-center gap-6 cursor-pointer ${
-                  isEven ? 'sm:flex-row-reverse' : ''
+                className={`group relative rounded-3xl border border-white/[0.08] bg-slate-900/40 hover:bg-slate-900/80 backdrop-blur-xl p-6 sm:p-8 transition-all duration-300 cursor-pointer group-hover:border-champagne-400/40 group-hover:shadow-[0_0_40px_rgba(196,163,116,0.1)] shadow-xl ${alignClass} ${
+                  isWide ? 'sm:max-w-[90%]' : 'sm:max-w-[85%]'
                 }`}
               >
-                {/* Central Node Indicator */}
-                <div className="absolute left-8 sm:left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-[#04060b] border-2 border-champagne-400/60 group-hover:border-champagne-300 group-hover:scale-125 transition-all z-20 flex items-center justify-center shadow-[0_0_15px_rgba(196,163,116,0.4)] hidden sm:flex">
-                  <div className="w-1.5 h-1.5 rounded-full bg-champagne-300 animate-pulse" />
-                </div>
-
-                {/* Transmission Node Card */}
-                <div className="w-full sm:w-[calc(50%-3rem)] relative rounded-3xl border border-white/[0.08] bg-slate-900/40 hover:bg-slate-900/80 backdrop-blur-xl p-7 transition-all duration-300 group-hover:border-champagne-400/40 group-hover:shadow-[0_0_40px_rgba(196,163,116,0.1)] shadow-xl">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
                   
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-[10px] font-mono tracking-widest text-champagne-300/80 uppercase">
-                      {item.orbitPosition}
-                    </span>
-                    <span className="text-[10px] font-mono tracking-widest uppercase px-2.5 py-0.5 rounded-full bg-white/[0.05] border border-white/[0.08] text-champagne-200">
-                      {item.badge}
-                    </span>
+                  {/* Side Image Placeholder */}
+                  <div className="md:col-span-4 h-36 sm:h-40 rounded-2xl border border-white/[0.1] bg-black/60 flex flex-col items-center justify-center p-4 text-center relative overflow-hidden group-hover:border-champagne-400/30 transition-colors">
+                    <div className="w-10 h-10 rounded-xl bg-champagne-400/10 border border-champagne-400/20 flex items-center justify-center mb-2">
+                      <ImageIcon className="w-5 h-5 text-champagne-300" />
+                    </div>
+                    <p className="text-[10px] font-mono text-champagne-300 uppercase tracking-wider">Specimen View #{index + 1}</p>
+                    <span className="text-[9px] font-mono text-slate-500 mt-0.5">Placeholder Mockup</span>
                   </div>
 
-                  <div className="flex items-start gap-4 mb-4">
-                    <div 
-                      className="w-12 h-12 rounded-2xl border flex items-center justify-center flex-shrink-0 shadow-inner group-hover:scale-105 transition-transform"
-                      style={{ borderColor: `${item.accentColor}40`, background: `${item.accentColor}15` }}
-                    >
-                      <Icon className="w-5 h-5" style={{ color: item.accentColor }} />
-                    </div>
+                  {/* Node Content */}
+                  <div className="md:col-span-8 flex flex-col justify-between">
                     <div>
-                      <h2 className="text-xl sm:text-2xl font-serif font-light text-champagne-50 group-hover:text-champagne-200 transition-colors leading-snug">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] font-mono tracking-widest uppercase px-2.5 py-0.5 rounded-full bg-white/[0.05] border border-white/[0.08] text-champagne-200">
+                          {item.badge}
+                        </span>
+                        <div 
+                          className="w-8 h-8 rounded-xl border flex items-center justify-center shadow-inner"
+                          style={{ borderColor: `${item.accentColor}40`, background: `${item.accentColor}15` }}
+                        >
+                          <Icon className="w-4 h-4" style={{ color: item.accentColor }} />
+                        </div>
+                      </div>
+
+                      <h2 className="text-xl sm:text-2xl font-serif font-light text-champagne-50 group-hover:text-champagne-200 transition-colors leading-snug mb-1">
                         {item.name}
                       </h2>
-                      <p className="text-xs text-slate-400 font-light mt-1">
+                      <p className="text-xs text-slate-400 font-light mb-3">
                         {item.tagline}
                       </p>
-                    </div>
-                  </div>
 
-                  {/* Mysterious Ephemeris Preview Snippet */}
-                  <div className="bg-black/40 border border-white/[0.05] rounded-xl p-3.5 mb-5 group-hover:border-champagne-400/20 transition-colors">
-                    <p className="text-[10px] font-mono text-slate-500 uppercase tracking-wider mb-1">// LIVE_FEED_SNIPPET</p>
-                    <p className="font-mono text-xs text-champagne-200/90 italic">
-                      {item.mysteryTeaser}
-                    </p>
-                  </div>
-
-                  <div className="flex items-center justify-between pt-3 border-t border-white/[0.06] text-xs font-mono">
-                    <span className="text-slate-500 group-hover:text-champagne-300 transition-colors flex items-center gap-1.5">
-                      <Eye className="w-3.5 h-3.5" /> Initialize Calibration
-                    </span>
-                    <div className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center group-hover:bg-champagne-400/10 group-hover:border-champagne-400/30 transition-all">
-                      <ArrowRight className="w-3.5 h-3.5 text-champagne-300 group-hover:translate-x-0.5 transition-transform" />
+                      <div className="bg-black/40 border border-white/[0.05] rounded-xl p-3 mb-4 group-hover:border-champagne-400/20 transition-colors">
+                        <p className="font-mono text-xs text-champagne-200/90 italic">
+                          {item.mysteryTeaser}
+                        </p>
+                      </div>
                     </div>
+
+                    <div className="flex items-center justify-between pt-3 border-t border-white/[0.06] text-xs font-mono">
+                      <span className="text-slate-500 group-hover:text-champagne-300 transition-colors flex items-center gap-1.5">
+                        <Eye className="w-3.5 h-3.5" /> Initialize Calibration
+                      </span>
+                      <div className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center group-hover:bg-champagne-400/10 group-hover:border-champagne-400/30 transition-all">
+                        <ArrowRight className="w-3.5 h-3.5 text-champagne-300 group-hover:translate-x-0.5 transition-transform" />
+                      </div>
+                    </div>
+
                   </div>
 
                 </div>
@@ -219,10 +214,13 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
           })}
         </div>
 
-        {/* Footer */}
-        <footer className="max-w-xl mx-auto text-center pt-20 border-t border-white/[0.06] flex items-center justify-center gap-2 text-xs font-mono text-slate-400">
-          <ShieldCheck className="w-4 h-4 text-champagne-400/60" />
-          <span>256-Bit Encrypted Secure Processing & Swiss Ephemeris Calculations</span>
+        {/* Footer with Infinite Observatory Fade */}
+        <footer className="relative max-w-xl mx-auto text-center pt-24 pb-12 mt-16 border-t border-white/[0.06] flex flex-col items-center justify-center gap-3 text-xs font-mono text-slate-400">
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#04060b] to-transparent pointer-events-none" />
+          <div className="relative z-10 flex items-center gap-2">
+            <ShieldCheck className="w-4 h-4 text-champagne-400/60" />
+            <span>256-Bit Encrypted Secure Processing & Swiss Ephemeris Calculations</span>
+          </div>
         </footer>
       </main>
     </div>
