@@ -103,7 +103,7 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
         onClose={() => setSelectedProduct(null)} 
       />
 
-      <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-12 pb-40">
+      <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-12 pb-48">
         
         {/* Navigation Header */}
         <div className="flex items-center justify-between mb-16 border-b border-white/[0.08] pb-6">
@@ -141,26 +141,38 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
           </p>
         </div>
 
-        {/* UNEVEN STAGGERED CELESTIAL FEED WITH IMAGE PLACEHOLDERS */}
-        <div className="space-y-12">
+        {/* JAGGED, CONSTELLATION-INSPIRED UNEVEN STAGGERED FEED */}
+        <div className="space-y-14 relative before:absolute before:top-10 before:bottom-10 before:left-6 sm:before:left-1/2 before:w-px before:bg-gradient-to-b before:from-transparent before:via-champagne-400/30 before:to-transparent before:opacity-40">
           {PRODUCTS.map((item, index) => {
-            const Icon = item.icon;
-            // Uneven layout: alternating widths and offsets to break standard card symmetry
-            const isWide = index % 3 === 0;
-            const alignClass = index % 2 === 0 ? 'sm:mr-12' : 'sm:ml-12 sm:translate-y-6';
+            const Icon = item.icon || Compass;
+            
+            // Constellation-like jagged offsets (varying left/right margins and vertical shifts)
+            const offsets = [
+              'sm:translate-x-0 sm:mr-16',
+              'sm:translate-x-12 sm:ml-12',
+              'sm:-translate-x-10 sm:mr-8',
+              'sm:translate-x-8 sm:ml-16',
+              'sm:-translate-x-6 sm:mr-12',
+              'sm:translate-x-4 sm:ml-8',
+            ];
+            const offsetClass = offsets[index % offsets.length];
+            const isFlipped = index % 2 !== 0;
 
             return (
               <div
                 key={item.id}
                 onClick={() => setSelectedProduct(item)}
-                className={`group relative rounded-3xl border border-white/[0.08] bg-slate-900/40 hover:bg-slate-900/80 backdrop-blur-xl p-6 sm:p-8 transition-all duration-300 cursor-pointer group-hover:border-champagne-400/40 group-hover:shadow-[0_0_40px_rgba(196,163,116,0.1)] shadow-xl ${alignClass} ${
-                  isWide ? 'sm:max-w-[90%]' : 'sm:max-w-[85%]'
-                }`}
+                className={`group relative rounded-3xl border border-white/[0.08] bg-slate-900/50 hover:bg-slate-900/90 backdrop-blur-xl p-6 sm:p-8 transition-all duration-300 cursor-pointer group-hover:border-champagne-400/50 group-hover:shadow-[0_0_50px_rgba(196,163,116,0.15)] shadow-xl ${offsetClass}`}
               >
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                {/* Connecting Star Node on the Axis Line */}
+                <div className="absolute top-1/2 -left-6 sm:left-1/2 -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-[#04060b] border-2 border-champagne-400 group-hover:scale-150 transition-transform z-20 hidden sm:flex items-center justify-center shadow-[0_0_12px_rgba(196,163,116,0.8)]">
+                  <div className="w-1 h-1 rounded-full bg-champagne-200 animate-pulse" />
+                </div>
+
+                <div className={`grid grid-cols-1 md:grid-cols-12 gap-6 items-center ${isFlipped ? 'md:grid-flow-dense' : ''}`}>
                   
                   {/* Side Image Placeholder */}
-                  <div className="md:col-span-4 h-36 sm:h-40 rounded-2xl border border-white/[0.1] bg-black/60 flex flex-col items-center justify-center p-4 text-center relative overflow-hidden group-hover:border-champagne-400/30 transition-colors">
+                  <div className={`md:col-span-4 h-36 sm:h-44 rounded-2xl border border-white/[0.1] bg-black/70 flex flex-col items-center justify-center p-4 text-center relative overflow-hidden group-hover:border-champagne-400/40 transition-colors ${isFlipped ? 'md:col-start-9' : ''}`}>
                     <div className="w-10 h-10 rounded-xl bg-champagne-400/10 border border-champagne-400/20 flex items-center justify-center mb-2">
                       <ImageIcon className="w-5 h-5 text-champagne-300" />
                     </div>
@@ -169,7 +181,7 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
                   </div>
 
                   {/* Node Content */}
-                  <div className="md:col-span-8 flex flex-col justify-between">
+                  <div className={`md:col-span-8 flex flex-col justify-between ${isFlipped ? 'md:col-start-1 md:row-start-1' : ''}`}>
                     <div>
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-[10px] font-mono tracking-widest uppercase px-2.5 py-0.5 rounded-full bg-white/[0.05] border border-white/[0.08] text-champagne-200">
@@ -190,7 +202,7 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
                         {item.tagline}
                       </p>
 
-                      <div className="bg-black/40 border border-white/[0.05] rounded-xl p-3 mb-4 group-hover:border-champagne-400/20 transition-colors">
+                      <div className="bg-black/40 border border-white/[0.05] rounded-xl p-3 mb-4 group-hover:border-champagne-400/25 transition-colors">
                         <p className="font-mono text-xs text-champagne-200/90 italic">
                           {item.mysteryTeaser}
                         </p>
@@ -198,7 +210,7 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
                     </div>
 
                     <div className="flex items-center justify-between pt-3 border-t border-white/[0.06] text-xs font-mono">
-                      <span className="text-slate-500 group-hover:text-champagne-300 transition-colors flex items-center gap-1.5">
+                      <span className="text-slate-400 group-hover:text-champagne-300 transition-colors flex items-center gap-1.5">
                         <Eye className="w-3.5 h-3.5" /> Initialize Calibration
                       </span>
                       <div className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center group-hover:bg-champagne-400/10 group-hover:border-champagne-400/30 transition-all">
@@ -214,9 +226,9 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
           })}
         </div>
 
-        {/* Footer with Infinite Observatory Fade */}
-        <footer className="relative max-w-xl mx-auto text-center pt-24 pb-12 mt-16 border-t border-white/[0.06] flex flex-col items-center justify-center gap-3 text-xs font-mono text-slate-400">
-          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#04060b] to-transparent pointer-events-none" />
+        {/* Footer with Bottom Gradient Fade */}
+        <footer className="relative max-w-xl mx-auto text-center pt-28 pb-16 mt-20 border-t border-white/[0.06] flex flex-col items-center justify-center gap-3 text-xs font-mono text-slate-400">
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#04060b] via-[#04060b]/80 to-transparent pointer-events-none" />
           <div className="relative z-10 flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-champagne-400/60" />
             <span>256-Bit Encrypted Secure Processing & Swiss Ephemeris Calculations</span>
