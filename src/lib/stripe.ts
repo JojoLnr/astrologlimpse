@@ -8,12 +8,12 @@ export async function createCheckoutSession(
   const user = session.session?.user;
   if (!user) throw new Error('Not authenticated');
 
-  // If it's a direct Stripe Payment Link URL, use it exactly as-is without appending query parameters
+  // Direct Stripe Payment Link return (must remain unmodified)
   if (priceIdOrUrl.startsWith('http')) {
     return priceIdOrUrl;
   }
 
-  // Fallback if someone passes a raw ID
+  // Direct payment link fallback
   return `https://buy.stripe.com/${priceIdOrUrl}`;
 }
 
