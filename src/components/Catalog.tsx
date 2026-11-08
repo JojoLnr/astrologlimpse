@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Sparkles, Compass, BookOpen, Crown, Rocket, ArrowLeft, ShieldCheck, ArrowRight, Eye, Orbit, Image as ImageIcon, Check, Star } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Sparkles, Compass, BookOpen, Crown, Rocket, ArrowLeft, ShieldCheck, ArrowRight, Eye, Orbit, Image as ImageIcon, Check, Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { StarryBackground } from '@/components/StarryBackground';
 import { CosmicIntakeModal, ProductItem } from '@/components/CosmicIntakeModal';
 
@@ -8,13 +8,15 @@ interface CatalogProps {
   onNavigateDashboard: () => void;
 }
 
+export interface ProductReview {
+  text: string;
+  author: string;
+  sign: string;
+}
+
 export interface CatalogProductItem extends ProductItem {
   features: string[];
-  review: {
-    text: string;
-    author: string;
-    sign: string;
-  };
+  reviews: ProductReview[];
 }
 
 const PRODUCTS: CatalogProductItem[] = [
@@ -32,11 +34,11 @@ const PRODUCTS: CatalogProductItem[] = [
     icon: Compass,
     accentColor: '#38bdf8',
     features: ['Single-page real-time transit scan', 'Live planetary degree positions', 'Actionable daily timing window'],
-    review: {
-      text: 'The transit breakdown showed me exactly when the pressure lifted. Incredible clarity.',
-      author: 'Sarah M.',
-      sign: 'Capricorn',
-    },
+    reviews: [
+      { text: 'The transit breakdown showed me exactly when the pressure lifted. Incredible clarity.', author: 'Sarah M.', sign: 'Capricorn' },
+      { text: 'Spot on timing for my team meeting today. Pinpointed the exact hour.', author: 'David L.', sign: 'Gemini' },
+      { text: 'Fast, precise, and cost next to nothing. Essential daily scan.', author: 'Chloe T.', sign: 'Virgo' },
+    ],
   },
   {
     id: 'full_package',
@@ -52,11 +54,11 @@ const PRODUCTS: CatalogProductItem[] = [
     icon: BookOpen,
     accentColor: '#48bb78',
     features: ['Complete 10-point cosmic blueprint', 'Sun, Moon & Rising Sign analysis', 'House 7 & 10 detailed alerts'],
-    review: {
-      text: 'The only app that gave me specific structural dates instead of vague personality text.',
-      author: 'Priya D.',
-      sign: 'Libra',
-    },
+    reviews: [
+      { text: 'The only app that gave me specific structural dates instead of vague personality text.', author: 'Priya D.', sign: 'Libra' },
+      { text: 'Uncanny accuracy regarding my current relationship transition period.', author: 'Marcus V.', sign: 'Scorpio' },
+      { text: 'Extremely thorough breakdown of my career nodes. Worth far more.', author: 'Elena K.', sign: 'Aries' },
+    ],
   },
   {
     id: 'premium_membership',
@@ -72,11 +74,11 @@ const PRODUCTS: CatalogProductItem[] = [
     icon: Crown,
     accentColor: '#c4a374',
     features: ['Up to 2 full readings every week', 'Unlimited web dashboard unblurs', 'Real-time ephemeris metrics'],
-    review: {
-      text: 'Having weekly updates mapped to my exact chart transformed how I plan business launches.',
-      author: 'Marcus K.',
-      sign: 'Scorpio',
-    },
+    reviews: [
+      { text: 'Having weekly updates mapped to my exact chart transformed how I plan business launches.', author: 'Marcus K.', sign: 'Scorpio' },
+      { text: 'The weekly unblur feed is my favorite Monday morning ritual.', author: 'Jessica W.', sign: 'Pisces' },
+      { text: 'Cancelled two other horoscope apps. This is the only one backed by real math.', author: 'Julian B.', sign: 'Aquarius' },
+    ],
   },
   {
     id: 'vip_orbit',
@@ -92,11 +94,10 @@ const PRODUCTS: CatalogProductItem[] = [
     icon: Rocket,
     accentColor: '#a855f7',
     features: ['Priority queue skip on all readings', 'Monthly direct Q&A submission', 'Dedicated cosmic concierge support'],
-    review: {
-      text: 'The concierge responses are remarkably thorough. It feels like having a personal astrologer on retainer.',
-      author: 'Elena R.',
-      sign: 'Leo',
-    },
+    reviews: [
+      { text: 'The concierge responses are remarkably thorough. It feels like having a personal astrologer on retainer.', author: 'Elena R.', sign: 'Leo' },
+      { text: 'Direct Q&A response answered my natal Saturn return questions in incredible detail.', author: 'Tom H.', sign: 'Cancer' },
+    ],
   },
   {
     id: 'cosmic_horizon',
@@ -112,13 +113,175 @@ const PRODUCTS: CatalogProductItem[] = [
     icon: Sparkles,
     accentColor: '#f59e0b',
     features: ['High-res digital birth sky art', 'Executive breakdown certificate', 'Swiss Ephemeris precision calculation'],
-    review: {
-      text: 'Museum-quality digital file hanging in my study. The astronomical precision is breathtaking.',
-      author: 'Jonathan W.',
-      sign: 'Taurus',
-    },
+    reviews: [
+      { text: 'Museum-quality digital file hanging in my study. The astronomical precision is breathtaking.', author: 'Jonathan W.', sign: 'Taurus' },
+      { text: 'Printed it on acrylic canvas for my anniversary. Spectacular detail.', author: 'Sophia R.', sign: 'Sagittarius' },
+    ],
   },
 ];
+
+// Product Card Component with Built-in Interactive Review Carousel
+function ProductCard({ 
+  item, 
+  isFlipped, 
+  onSelectProduct 
+}: { 
+  item: CatalogProductItem; 
+  isFlipped: boolean; 
+  onSelectProduct: (product: CatalogProductItem) => void;
+}) {
+  const Icon = item.icon || Compass;
+  const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
+
+  // Auto-rotate reviews every 6 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentReviewIndex((prev) => (prev + 1) % item.reviews.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, [item.reviews.length]);
+
+  const handleNextReview = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentReviewIndex((prev) => (prev + 1) % item.reviews.length);
+  };
+
+  const handlePrevReview = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentReviewIndex((prev) => (prev - 1 + item.reviews.length) % item.reviews.length);
+  };
+
+  const activeReview = item.reviews[currentReviewIndex];
+
+  return (
+    <div className="flex flex-col md:flex-row items-center gap-8 lg:gap-12">
+      {/* Detached Image Container with Fade Effect */}
+      <div
+        className={`w-full md:w-5/12 h-64 sm:h-80 relative flex flex-col items-center justify-center p-6 text-center overflow-hidden transition-all duration-300 ${
+          isFlipped ? 'md:order-2' : 'md:order-1'
+        }`}
+        style={{
+          maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)',
+        }}
+      >
+        <div
+          className="absolute inset-0 opacity-20 blur-3xl pointer-events-none"
+          style={{ background: item.accentColor }}
+        />
+
+        <div className="relative z-10 w-full h-full rounded-3xl border border-white/10 bg-slate-950/60 backdrop-blur-xl flex flex-col items-center justify-center p-6 shadow-[0_0_40px_rgba(0,0,0,0.6)]">
+          <div className="w-14 h-14 rounded-2xl bg-champagne-400/10 border border-champagne-400/20 flex items-center justify-center mb-3 shadow-inner">
+            <ImageIcon className="w-7 h-7 text-champagne-300" />
+          </div>
+          <p className="text-xs font-mono text-champagne-300 uppercase tracking-widest">
+            {item.name} Image
+          </p>
+          <span className="text-[10px] font-mono text-slate-500 mt-1">
+            [ External Specimen Frame ]
+          </span>
+        </div>
+      </div>
+
+      {/* Main Product Card */}
+      <div
+        onClick={() => onSelectProduct(item)}
+        className={`w-full md:w-7/12 group relative rounded-3xl border border-white/[0.08] bg-slate-900/50 hover:bg-slate-900/90 backdrop-blur-xl p-6 sm:p-8 transition-all duration-300 cursor-pointer group-hover:border-champagne-400/50 group-hover:shadow-[0_0_50px_rgba(196,163,116,0.15)] shadow-xl ${
+          isFlipped ? 'md:order-1' : 'md:order-2'
+        }`}
+      >
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-[10px] font-mono tracking-widest uppercase px-2.5 py-0.5 rounded-full bg-white/[0.05] border border-white/[0.08] text-champagne-200">
+            {item.badge}
+          </span>
+          <div 
+            className="w-8 h-8 rounded-xl border flex items-center justify-center shadow-inner"
+            style={{ borderColor: `${item.accentColor}40`, background: `${item.accentColor}15` }}
+          >
+            <Icon className="w-4 h-4" style={{ color: item.accentColor }} />
+          </div>
+        </div>
+
+        <h2 className="text-xl sm:text-2xl font-serif font-light text-champagne-50 group-hover:text-champagne-200 transition-colors leading-snug mb-1">
+          {item.name}
+        </h2>
+        <p className="text-xs text-slate-400 font-light mb-4">
+          {item.tagline}
+        </p>
+
+        {/* Features list */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
+          {item.features.map((feat, idx) => (
+            <div key={idx} className="flex items-center gap-1.5 text-xs text-slate-300">
+              <Check className="w-3.5 h-3.5 text-champagne-400 flex-shrink-0" />
+              <span className="font-light">{feat}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Interactive Reviews Carousel Container */}
+        <div className="bg-black/40 border border-white/[0.05] rounded-xl p-3.5 mb-4 group-hover:border-champagne-400/25 transition-colors relative">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-1">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-2.5 h-2.5 fill-champagne-400 text-champagne-400" />
+              ))}
+              <span className="text-[10px] font-mono text-slate-400 ml-1.5">
+                {activeReview.author} ({activeReview.sign})
+              </span>
+            </div>
+
+            {/* Carousel Controls */}
+            {item.reviews.length > 1 && (
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={handlePrevReview}
+                  className="p-1 rounded-md bg-white/[0.05] hover:bg-white/[0.12] text-slate-400 hover:text-champagne-200 transition-colors"
+                >
+                  <ChevronLeft className="w-3 h-3" />
+                </button>
+                <button
+                  onClick={handleNextReview}
+                  className="p-1 rounded-md bg-white/[0.05] hover:bg-white/[0.12] text-slate-400 hover:text-champagne-200 transition-colors"
+                >
+                  <ChevronRight className="w-3 h-3" />
+                </button>
+              </div>
+            )}
+          </div>
+
+          <p className="font-mono text-xs text-champagne-200/90 italic transition-all duration-300">
+            &quot;{activeReview.text}&quot;
+          </p>
+
+          {/* Dots Indicator */}
+          {item.reviews.length > 1 && (
+            <div className="flex justify-center gap-1 mt-2.5">
+              {item.reviews.map((_, idx) => (
+                <span
+                  key={idx}
+                  className={`w-1.5 h-1.5 rounded-full transition-all ${
+                    idx === currentReviewIndex ? 'bg-champagne-300 w-3' : 'bg-white/20'
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* CTA Footer */}
+        <div className="flex items-center justify-between pt-3 border-t border-white/[0.06] text-xs font-mono">
+          <span className="text-slate-400 group-hover:text-champagne-300 transition-colors flex items-center gap-1.5">
+            <Eye className="w-3.5 h-3.5" /> Initialize Calibration
+          </span>
+          <div className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center group-hover:bg-champagne-400/10 group-hover:border-champagne-400/30 transition-all">
+            <ArrowRight className="w-3.5 h-3.5 text-champagne-300 group-hover:translate-x-0.5 transition-transform" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
   const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null);
@@ -171,107 +334,16 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
           </p>
         </div>
 
-        {/* Alternating Product Feed with Detached Fading Image Containers */}
+        {/* Product Cards Grid with Carousel */}
         <div className="space-y-24">
-          {PRODUCTS.map((item, index) => {
-            const Icon = item.icon || Compass;
-            const isFlipped = index % 2 !== 0;
-
-            return (
-              <div
-                key={item.id}
-                className="flex flex-col md:flex-row items-center gap-8 lg:gap-12"
-              >
-                {/* Detached Image Container with Vertical Top/Bottom Fading */}
-                <div
-                  className={`w-full md:w-5/12 h-64 sm:h-80 relative flex flex-col items-center justify-center p-6 text-center overflow-hidden transition-all duration-300 ${
-                    isFlipped ? 'md:order-2' : 'md:order-1'
-                  }`}
-                  style={{
-                    maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)',
-                    WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)',
-                  }}
-                >
-                  <div
-                    className="absolute inset-0 opacity-20 blur-3xl pointer-events-none"
-                    style={{ background: item.accentColor }}
-                  />
-
-                  {/* Detached Image Box Surface */}
-                  <div className="relative z-10 w-full h-full rounded-3xl border border-white/10 bg-slate-950/60 backdrop-blur-xl flex flex-col items-center justify-center p-6 shadow-[0_0_40px_rgba(0,0,0,0.6)]">
-                    <div className="w-14 h-14 rounded-2xl bg-champagne-400/10 border border-champagne-400/20 flex items-center justify-center mb-3 shadow-inner">
-                      <ImageIcon className="w-7 h-7 text-champagne-300" />
-                    </div>
-                    <p className="text-xs font-mono text-champagne-300 uppercase tracking-widest">
-                      {item.name} Image
-                    </p>
-                    <span className="text-[10px] font-mono text-slate-500 mt-1">
-                      [ External Specimen Frame ]
-                    </span>
-                  </div>
-                </div>
-
-                {/* Main Product Card */}
-                <div
-                  onClick={() => setSelectedProduct(item)}
-                  className={`w-full md:w-7/12 group relative rounded-3xl border border-white/[0.08] bg-slate-900/50 hover:bg-slate-900/90 backdrop-blur-xl p-6 sm:p-8 transition-all duration-300 cursor-pointer group-hover:border-champagne-400/50 group-hover:shadow-[0_0_50px_rgba(196,163,116,0.15)] shadow-xl ${
-                    isFlipped ? 'md:order-1' : 'md:order-2'
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-[10px] font-mono tracking-widest uppercase px-2.5 py-0.5 rounded-full bg-white/[0.05] border border-white/[0.08] text-champagne-200">
-                      {item.badge}
-                    </span>
-                    <div 
-                      className="w-8 h-8 rounded-xl border flex items-center justify-center shadow-inner"
-                      style={{ borderColor: `${item.accentColor}40`, background: `${item.accentColor}15` }}
-                    >
-                      <Icon className="w-4 h-4" style={{ color: item.accentColor }} />
-                    </div>
-                  </div>
-
-                  <h2 className="text-xl sm:text-2xl font-serif font-light text-champagne-50 group-hover:text-champagne-200 transition-colors leading-snug mb-1">
-                    {item.name}
-                  </h2>
-                  <p className="text-xs text-slate-400 font-light mb-4">
-                    {item.tagline}
-                  </p>
-
-                  {/* Features */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
-                    {item.features.map((feat, idx) => (
-                      <div key={idx} className="flex items-center gap-1.5 text-xs text-slate-300">
-                        <Check className="w-3.5 h-3.5 text-champagne-400 flex-shrink-0" />
-                        <span className="font-light">{feat}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Review Quote */}
-                  <div className="bg-black/40 border border-white/[0.05] rounded-xl p-3 mb-4 group-hover:border-champagne-400/25 transition-colors">
-                    <div className="flex items-center gap-1 mb-1">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-2.5 h-2.5 fill-champagne-400 text-champagne-400" />
-                      ))}
-                      <span className="text-[10px] font-mono text-slate-400 ml-1.5">{item.review.author} ({item.review.sign})</span>
-                    </div>
-                    <p className="font-mono text-xs text-champagne-200/90 italic">
-                      &quot;{item.review.text}&quot;
-                    </p>
-                  </div>
-
-                  <div className="flex items-center justify-between pt-3 border-t border-white/[0.06] text-xs font-mono">
-                    <span className="text-slate-400 group-hover:text-champagne-300 transition-colors flex items-center gap-1.5">
-                      <Eye className="w-3.5 h-3.5" /> Initialize Calibration
-                    </span>
-                    <div className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center group-hover:bg-champagne-400/10 group-hover:border-champagne-400/30 transition-all">
-                      <ArrowRight className="w-3.5 h-3.5 text-champagne-300 group-hover:translate-x-0.5 transition-transform" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+          {PRODUCTS.map((item, index) => (
+            <ProductCard
+              key={item.id}
+              item={item}
+              isFlipped={index % 2 !== 0}
+              onSelectProduct={setSelectedProduct}
+            />
+          ))}
         </div>
 
         {/* Footer */}
