@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { 
   Sparkles, Zap, BookOpen, Crown, Rocket, Compass, 
-  ArrowLeft, Check, ShieldCheck, Star, Cpu, Shield, ArrowRight
+  ArrowLeft, Check, ShieldCheck, Star, Cpu, Shield, ArrowRight, Eye
 } from 'lucide-react';
 import { StarryBackground } from '@/components/StarryBackground';
 import { CosmicIntakeModal } from '@/components/CosmicIntakeModal';
@@ -16,6 +16,7 @@ export interface ProductItem {
   priceId: string;
   name: string;
   tagline: string;
+  mysteryTeaser: string;
   description: string;
   price: string;
   numericValue: number;
@@ -29,35 +30,15 @@ export interface ProductItem {
     author: string;
     sign: string;
   };
-  riskCopy: string;
 }
 
 const PRODUCTS: ProductItem[] = [
-  {
-    id: 'test',
-    priceId: 'price_test_placeholder',
-    name: 'Test Sandbox Entry',
-    tagline: 'Internal validation & conversion tag testing flow',
-    description: 'Designed exclusively for technical verification. Executes a $1.00 test charge in Stripe sandbox mode to confirm webhook triggers and Google Ads conversion tag dispatching.',
-    price: '$1.00',
-    numericValue: 1.0,
-    mode: 'payment',
-    badge: 'DEV ONLY',
-    features: ['Instant $1 checkout test', 'Validates Stripe redirection', 'Fires conversion tag verification'],
-    icon: Zap,
-    accentColor: '#94a3b8',
-    review: {
-      text: 'Runs clean test transactions instantly without hitting live merchant accounts.',
-      author: 'System Admin',
-      sign: 'Dev Mode',
-    },
-    riskCopy: 'Sandbox mode test transaction.',
-  },
   {
     id: 'transit',
     priceId: 'price_transit_placeholder',
     name: 'The Today Transit Flash',
     tagline: 'Instant single-transit scan for immediate planetary clarity',
+    mysteryTeaser: '“Moon conjunct Midheaven at 14° Taurus. Favorable window detected for decisive career communication...”',
     description: 'When you need a quick, highly specific answer to what today holds. This scan pinpoints active transits crossing your natal house cusps right now, giving you precise timing windows for daily action.',
     price: '$1.00',
     numericValue: 1.0,
@@ -67,11 +48,10 @@ const PRODUCTS: ProductItem[] = [
     icon: Compass,
     accentColor: '#38bdf8',
     review: {
-      text: 'The transit breakdown showed me exactly when the pressure lifted. Incredible clarity for a single dollar.',
+      text: 'The transit breakdown showed me exactly when the pressure lifted. Incredible clarity.',
       author: 'Sarah M.',
       sign: 'Capricorn',
     },
-    riskCopy: 'Instant digital access delivered on screen within seconds.',
   },
   {
     id: 'full_package',
@@ -79,6 +59,7 @@ const PRODUCTS: ProductItem[] = [
     name: 'The 10-Point Life Crossroads Blueprint',
     tagline: 'Comprehensive natal breakdown covering love, career & karmic nodes',
     description: 'A deep-dive reading examining your core psychological and structural roadmap. Analyzes 10 crucial chart points including House 7 (relationships) and House 10 (career trajectory) using Swiss Ephemeris math.',
+    mysteryTeaser: '“House 7 Activation: Saturn pressure clearing. Expect structural partnership shifts over the next 30 days...”',
     price: '$5.00',
     numericValue: 5.0,
     mode: 'payment',
@@ -87,17 +68,17 @@ const PRODUCTS: ProductItem[] = [
     icon: BookOpen,
     accentColor: '#48bb78',
     review: {
-      text: 'I have tried three other astrology apps. This is the only one that gave me specific dates instead of vague personality descriptions.',
+      text: 'The only app that gave me specific dates instead of vague personality descriptions.',
       author: 'Priya D.',
       sign: 'Libra',
     },
-    riskCopy: 'Instant access sent to your dashboard and email.',
   },
   {
     id: 'premium_membership',
     priceId: 'price_premium_sub_placeholder',
     name: 'The Premium Cosmic Access Pass',
     tagline: 'Continuous weekly ephemeris calculations & live dashboard unblurs',
+    mysteryTeaser: '“RECURRING SYNC: Live weekly planetary transit feeds mapped directly to your unique natal house coordinates.”',
     description: 'Our flagship subscription. Never miss a planetary shift again. Unlocks unlimited web dashboard access, weekly transit alerts mapped directly to your chart, and up to 2 full readings every week.',
     price: '$9.99',
     numericValue: 9.99,
@@ -111,13 +92,13 @@ const PRODUCTS: ProductItem[] = [
       author: 'Marcus K.',
       sign: 'Scorpio',
     },
-    riskCopy: 'Cancel anytime in 1 click from your account settings. No commitment.',
   },
   {
     id: 'vip_orbit',
     priceId: 'price_vip_orbit_placeholder',
     name: 'The VIP Orbit Pass',
     tagline: 'Priority queue skip & direct astrological Q&A access',
+    mysteryTeaser: '“VIP DIRECT CHANNEL: Direct coordinate auditing with priority computational allocation and monthly concierge review.”',
     description: 'For seekers who demand white-glove attention. Bypasses standard queue limits, unlocks all Premium features, and grants direct monthly Q&A submissions answered via computational coordinate audits.',
     price: '$99.99',
     numericValue: 99.99,
@@ -127,17 +108,17 @@ const PRODUCTS: ProductItem[] = [
     icon: Rocket,
     accentColor: '#a855f7',
     review: {
-      text: 'The concierge responses are remarkably thorough. It feels like having a personal astrologer on retainer.',
+      text: 'The concierge responses are remarkably thorough. It feels like having a personal astrologer.',
       author: 'Elena R.',
       sign: 'Leo',
     },
-    riskCopy: 'Priority queue entry with dedicated concierge support.',
   },
   {
     id: 'cosmic_horizon',
     priceId: 'price_cosmic_horizon_placeholder',
     name: 'Executive Custom Birth Sky Art',
     tagline: 'High-res digital masterpiece depicting your exact birth night sky coordinates',
+    mysteryTeaser: '“SWISS EPHEMERIS ARTIFACT: 300 DPI vector sky mapping with gold-foil border geometry layout for your exact birth minute.”',
     description: 'An heirloom-grade physical canvas paired with a digital vector file. Renders the exact celestial canopy above your birthplace down to the minute, accompanied by an executive Swiss Ephemeris breakdown certificate.',
     price: '$249.99',
     numericValue: 249.99,
@@ -156,13 +137,32 @@ const PRODUCTS: ProductItem[] = [
       author: 'Jonathan W.',
       sign: 'Taurus',
     },
-    riskCopy: 'Securely processed and printed to exact Swiss Ephemeris metrics.',
+  },
+  {
+    id: 'test',
+    priceId: 'price_test_placeholder',
+    name: 'Test Sandbox Entry',
+    tagline: 'Internal validation & conversion tag testing flow',
+    mysteryTeaser: '“SYSTEM_TEST_MODE_ACTIVE // 001 - Validating Google Ads dynamic conversion tracking pipeline.”',
+    description: 'Designed exclusively for technical verification. Executes a test check in Stripe sandbox mode to confirm webhook triggers and Google Ads conversion tag dispatching.',
+    price: '$1.00',
+    numericValue: 1.0,
+    mode: 'payment',
+    badge: 'DEV ONLY',
+    features: ['Instant test checkout', 'Validates Stripe redirection', 'Fires conversion tag verification'],
+    icon: Zap,
+    accentColor: '#94a3b8',
+    review: {
+      text: 'Runs clean test transactions instantly without hitting live merchant accounts.',
+      author: 'System Admin',
+      sign: 'Dev Mode',
+    },
   },
 ];
 
 const trustBadges = [
   { icon: Cpu, label: 'Swiss Ephemeris Calculation Engine' },
-  { icon: Shield, label: '256-Bit Encrypted Stripe Security' },
+  { icon: Shield, label: '256-Bit Encrypted Security' },
 ];
 
 export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
@@ -173,7 +173,6 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-950/40 via-[#04060b] to-[#04060b] pointer-events-none" />
       <StarryBackground />
 
-      {/* Intake Modal Overlay */}
       <CosmicIntakeModal 
         product={selectedProduct} 
         onClose={() => setSelectedProduct(null)} 
@@ -213,7 +212,7 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
             </span>
           </h1>
           <p className="text-slate-300 text-sm sm:text-base font-light tracking-wide max-w-xl mx-auto leading-relaxed">
-            Choose a reading below to initialize your exact birth coordinates and calibrate Swiss Ephemeris data before checkout.
+            Select a service below to preview its transmission snippet and initialize your birth coordinate intake. No upfront pricing.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-8 mt-8 pt-6 border-t border-white/[0.06]">
@@ -226,9 +225,7 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
           </div>
         </div>
 
-        {/* ================================================================ */}
-        {/* DOSSIER ROWS WITH LOW-FRICTION INTAKE CTAs                       */}
-        {/* ================================================================ */}
+        {/* CURIOSITY-FIRST DOSSIER ROWS (ZERO PRICES SHOWN UPFRONT) */}
         <div className="space-y-12">
           {PRODUCTS.map((item, index) => {
             const Icon = item.icon;
@@ -250,42 +247,34 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
               >
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
                   
-                  {/* Visual Frame */}
+                  {/* Curiosity Preview Box (Replaces upfront pricing with a mysterious snippet) */}
                   <div className="lg:col-span-5 h-72 sm:h-80 rounded-2xl border border-white/[0.1] bg-black/70 p-6 flex flex-col justify-between relative shadow-inner">
                     <div className="flex items-center justify-between pb-4 border-b border-white/[0.08]">
                       <div className="flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-champagne-400 animate-pulse" />
-                        <span className="text-[10px] font-mono tracking-widest text-slate-400 uppercase">Visual Specimen #{index + 1}</span>
+                        <span className="text-[10px] font-mono tracking-widest text-slate-400 uppercase">Transmission Preview #{index + 1}</span>
                       </div>
-                      <Icon className="w-4 h-4 text-champagne-400" />
+                      <Eye className="w-4 h-4 text-champagne-400" />
                     </div>
 
-                    <div className="my-auto text-center py-6">
-                      <div 
-                        className="w-14 h-14 rounded-2xl border flex items-center justify-center mx-auto mb-3 shadow-md"
-                        style={{ borderColor: `${item.accentColor}40`, background: `${item.accentColor}15` }}
-                      >
-                        <Icon className="w-7 h-7" style={{ color: item.accentColor }} />
-                      </div>
-                      <p className="font-serif text-lg text-champagne-100 mb-1">{item.name}</p>
-                      <p className="text-[11px] font-mono text-slate-400 uppercase tracking-widest">Interactive Artifact Placeholder</p>
+                    <div className="my-auto text-center py-4">
+                      <p className="font-mono text-xs text-champagne-200/90 italic leading-relaxed bg-champagne-400/[0.04] p-4 rounded-xl border border-champagne-400/10">
+                        {item.mysteryTeaser}
+                      </p>
                     </div>
 
                     <div className="flex items-center justify-between text-[10px] font-mono text-slate-500 pt-3 border-t border-white/[0.06]">
                       <span>ID: {item.id.toUpperCase()}</span>
-                      <span className="text-champagne-300">SWISS EPHEMERIS READY</span>
+                      <span className="text-champagne-300">LOCKED TRANSMISSION</span>
                     </div>
                   </div>
 
-                  {/* Narrative Details & Intake CTA */}
+                  {/* Narrative Details & Intake Trigger */}
                   <div className="lg:col-span-7 flex flex-col justify-between">
                     <div>
                       <div className="flex items-center justify-between mb-3">
                         <span className="text-[10px] font-mono tracking-widest uppercase px-3 py-1 rounded-full bg-white/[0.06] border border-white/[0.1] text-champagne-200">
                           {item.badge}
-                        </span>
-                        <span className="text-xl font-mono text-slate-400">
-                          {item.price} <span className="text-xs text-slate-500">{item.mode === 'subscription' ? '/mo' : ''}</span>
                         </span>
                       </div>
 
@@ -320,7 +309,6 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
                       </div>
                     </div>
 
-                    {/* Low Friction CTA Button */}
                     <div>
                       <button
                         onClick={() => setSelectedProduct(item)}
@@ -332,11 +320,11 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
                             : 'bg-white/[0.06] border border-white/[0.15] text-champagne-100 hover:bg-white/[0.1] hover:border-champagne-400/40'
                         }`}
                       >
-                        <span>Begin Reading Intake</span>
+                        <span>Initialize Coordinate Intake</span>
                         <ArrowRight className="w-4 h-4" />
                       </button>
                       <p className="text-[11px] font-mono text-slate-400 text-center">
-                        Input birth parameters before finalizing order ({item.price})
+                        Secure your email & birth parameters to unlock transmission
                       </p>
                     </div>
 
@@ -350,7 +338,7 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
         {/* Footer */}
         <footer className="max-w-xl mx-auto text-center pt-16 border-t border-white/[0.06] flex items-center justify-center gap-2 text-xs font-mono text-slate-400">
           <ShieldCheck className="w-4 h-4 text-champagne-400/60" />
-          <span>256-Bit Encrypted Stripe Processing & Swiss Ephemeris Calculations</span>
+          <span>256-Bit Encrypted Secure Processing & Swiss Ephemeris Calculations</span>
         </footer>
       </main>
     </div>
