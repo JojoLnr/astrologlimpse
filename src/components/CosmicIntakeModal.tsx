@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Sparkles, Calendar, Clock, MapPin, User, Mail, ArrowRight, X, Loader2, ShieldCheck, Lock } from 'lucide-react';
+import { Sparkles, Calendar, Clock, MapPin, ArrowRight, X, Loader2, ShieldCheck, Lock } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { createCheckoutSession } from '@/lib/stripe';
 
@@ -22,8 +22,6 @@ interface CosmicIntakeModalProps {
 export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) {
   const { user, signInWithGoogle } = useAuth();
   
-  const [email, setEmail] = useState(user?.email || '');
-  const [fullName, setFullName] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [birthTime, setBirthTime] = useState('');
   const [unknownTime, setUnknownTime] = useState(false);
@@ -39,10 +37,10 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
     e.preventDefault();
     setErrorMsg('');
 
-    // Save intake details in session storage so post-purchase handlers can tie it to the user
+    // Save intake details in session storage so post-purchase handlers tie it to the user's account
     const intakeData = {
-      email,
-      fullName,
+      email: user?.email || '',
+      fullName: user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Seeker',
       birthDate,
       birthTime: unknownTime ? '12:00 (Approx)' : birthTime,
       birthLocation,
@@ -51,19 +49,21 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
     };
     sessionStorage.setItem('pending_cosmic_intake', JSON.stringify(intakeData));
 
-    // If not authenticated via Google, trigger auth while retaining data
+    // If not authenticated via Google, trigger Google Auth first
     if (!user) {
       try {
         sessionStorage.setItem('pending_catalog_checkout', product.priceId);
         sessionStorage.setItem('pending_catalog_mode', product.mode);
         sessionStorage.setItem('pending_catalog_value', product.numericValue.toString());
         await signInWithGoogle();
+        return;
       } catch (err) {
         setErrorMsg(err instanceof Error ? err.message : 'Google authentication failed');
+        return;
       }
-      return;
     }
 
+    // If already signed in, proceed directly to Stripe Checkout
     setIsLoading(true);
     try {
       const url = await createCheckoutSession(product.priceId, product.mode);
@@ -95,14 +95,18 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
         <div className="mb-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-champagne-400/10 border border-champagne-400/20 text-[10px] font-mono tracking-widest text-champagne-300 uppercase mb-3">
             <Sparkles className="w-3 h-3" />
-            <span>Step 1: Secure Transmission & Intake</span>
+            <span>Step 1: Coordinate Calibration</span>
           </div>
 
           <h3 className="text-2xl font-serif text-champagne-50">
             Calibrating: <span className="text-champagne-200">{product.name}</span>
           </h3>
           <p className="text-xs text-slate-400 mt-1">
-            Provide your email and birth parameters to initialize chart calculation before unlocking access.
+            {user ? (
+              <span className="text-emerald-400 font-mono">Authenticated as {user.email}</span>
+            ) : (
+              <span>You will be prompted to sign in with Google securely upon submission.</span>
+            )}
           </p>
         </div>
 
@@ -113,42 +117,6 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-300 mb-1.5">
-                Email Address for Delivery
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="seeker@domain.com"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-champagne-400/50"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-300 mb-1.5">
-                Full Name
-              </label>
-              <div className="relative">
-                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                <input
-                  type="text"
-                  required
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Eleanor Vance"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-champagne-400/50"
-                />
-              </div>
-            </div>
-          </div>
-
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-300 mb-1.5">
@@ -238,7 +206,7 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
                 <>
-                  <span>Calculate Coordinates & Proceed</span>
+                  <span>{user ? 'Proceed to Secure Checkout' : 'Sign in with Google & Proceed'}</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
@@ -246,10 +214,10 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
 
             <div className="flex items-center justify-center gap-4 text-[10px] font-mono text-slate-400 mt-3">
               <span className="flex items-center gap-1">
-                <Lock className="w-3 h-3 text-champagne-400" /> Secure 256-Bit Stripe
+                <Lock className="w-3 h-3 text-champagne-400" /> Secure Google Auth
               </span>
               <span className="flex items-center gap-1">
-                <ShieldCheck className="w-3 h-3 text-champagne-400" /> No Price Shown Upfront
+                <ShieldCheck className="w-3 h-3 text-champagne-400" /> 256-Bit Stripe Checkout
               </span>
             </div>
           </div>
