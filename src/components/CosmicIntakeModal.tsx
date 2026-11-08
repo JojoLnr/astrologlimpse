@@ -47,7 +47,9 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
         .then((url) => {
           sessionStorage.removeItem('pending_catalog_checkout');
           sessionStorage.removeItem('pending_catalog_mode');
-          window.location.href = url;
+          if (url) {
+            window.location.href = url;
+          }
         })
         .catch((err) => {
           setErrorMsg(err instanceof Error ? err.message : 'Unable to initialize ephemeris calculation session.');
@@ -89,7 +91,9 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
     setIsLoading(true);
     try {
       const url = await createCheckoutSession(product.priceId, product.mode);
-      window.location.href = url;
+      if (url) {
+        window.location.href = url;
+      }
     } catch (err) {
       setErrorMsg(err instanceof Error ? err.message : 'Failed to reach calculation backend.');
       setIsLoading(false);
