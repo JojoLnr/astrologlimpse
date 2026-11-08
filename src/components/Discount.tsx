@@ -1,444 +1,370 @@
-import { useEffect, useState } from 'react';
-import { useAuth } from '@/context/AuthContext';
-import { loadStripe } from '@stripe/stripe-js';
+import { useState, useEffect } from 'react';
+import { Sparkles, Compass, BookOpen, Crown, Rocket, ArrowLeft, ShieldCheck, ArrowRight, Eye, Orbit, Image as ImageIcon, Check, Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { StarryBackground } from '@/components/StarryBackground';
-import { 
-  Sparkles, Loader2, ArrowLeft, CheckCircle2, 
-  Zap, Calendar, ShieldCheck, HelpCircle, Check,
-  Sun, Moon, ArrowUpRight, TrendingUp, Heart, Lock, Compass, Eye
-} from 'lucide-react';
+import { CosmicIntakeModal, ProductItem } from '@/components/CosmicIntakeModal';
 
-interface DiscountProps {
+interface CatalogProps {
   onNavigateHome: () => void;
+  onNavigateDashboard: () => void;
 }
 
-const readingPoints = [
-  { icon: Sun, title: 'Natal Sun Sign Analysis', subtitle: 'Core Identity', color: '#e9c46a' },
-  { icon: Moon, title: 'Natal Moon Sign', subtitle: 'Emotional Architecture', color: '#778da9' },
-  { icon: ArrowUpRight, title: 'Rising Sign (Ascendant)', subtitle: 'How You Present', color: '#8ab17d' },
-  { icon: Zap, title: 'Primary Active Transit', subtitle: 'Major Live Influence', color: '#e94560' },
-  { icon: TrendingUp, title: 'House 10: Career Check', subtitle: 'Career & Public Self', color: '#43aa8b' },
-  { icon: Heart, title: 'House 7: Relationships', subtitle: 'Partnership Check', color: '#bc6c8b' },
-  { icon: Moon, title: 'Current Lunar Phase Impact', subtitle: 'Emotional Timing', color: '#48cae4' },
-  { icon: Heart, title: 'Chiron Placement', subtitle: 'Core Wound & Healing', color: '#f4a261' },
-  { icon: Lock, title: 'Black Moon Lilith', subtitle: 'Hidden Desires', color: '#9d4edd' },
-  { icon: Calendar, title: 'Weekly Forecast Snapshot', subtitle: '7-Day Action Window', color: '#c4a374' },
+export interface ProductReview {
+  text: string;
+  author: string;
+  sign: string;
+}
+
+export interface CatalogProductItem extends ProductItem {
+  features: string[];
+  reviews: ProductReview[];
+  image?: string;
+}
+
+const PRODUCTS: CatalogProductItem[] = [
+  {
+    id: 'transit',
+    priceId: 'price_transit_placeholder',
+    name: 'The Today Transit Flash',
+    tagline: 'Instant single-transit planetary scan',
+    description: 'Pinpoints active transits crossing your natal house cusps right now for immediate timing clarity.',
+    mysteryTeaser: '“Moon conjunct Midheaven at 14° Taurus. Favorable window detected for decisive career communication...”',
+    price: '$1.00',
+    numericValue: 1.0,
+    mode: 'payment',
+    badge: 'MICRO-SCAN',
+    icon: Compass,
+    accentColor: '#38bdf8',
+    image: '/images/products/transit.jpg',
+    features: ['Single-page real-time transit scan', 'Live planetary degree positions', 'Actionable daily timing window'],
+    reviews: [
+      { text: 'The transit breakdown showed me exactly when the pressure lifted. Incredible clarity.', author: 'Sarah M.', sign: 'Capricorn' },
+      { text: 'Spot on timing for my team meeting today. Pinpointed the exact hour.', author: 'David L.', sign: 'Gemini' },
+      { text: 'Fast, precise, and cost next to nothing. Essential daily scan.', author: 'Chloe T.', sign: 'Virgo' },
+    ],
+  },
+  {
+    id: 'full_package',
+    priceId: 'price_full_package_placeholder',
+    name: 'The 10-Point Life Crossroads Blueprint',
+    tagline: 'Comprehensive natal breakdown for love & career',
+    description: 'Deep-dive reading examining your core psychological roadmap across House 7 and House 10.',
+    mysteryTeaser: '“House 7 Activation: Saturn pressure clearing. Expect structural partnership shifts over the next 30 days...”',
+    price: '$5.00',
+    numericValue: 5.0,
+    mode: 'payment',
+    badge: 'CORE BLUEPRINT',
+    icon: BookOpen,
+    accentColor: '#48bb78',
+    image: '/images/products/10points.jpg',
+    features: ['Complete 10-point cosmic blueprint', 'Sun, Moon & Rising Sign analysis', 'House 7 & 10 detailed alerts'],
+    reviews: [
+      { text: 'The only app that gave me specific structural dates instead of vague personality text.', author: 'Priya D.', sign: 'Libra' },
+      { text: 'Uncanny accuracy regarding my current relationship transition period.', author: 'Marcus V.', sign: 'Scorpio' },
+      { text: 'Extremely thorough breakdown of my career nodes. Worth far more.', author: 'Elena K.', sign: 'Aries' },
+    ],
+  },
+  {
+    id: 'premium_membership',
+    priceId: 'price_premium_sub_placeholder',
+    name: 'The Premium Cosmic Access Pass',
+    tagline: 'Continuous weekly ephemeris calculations & live unblurs',
+    description: 'Weekly transit alerts mapped directly to your chart with unlimited dashboard unblurs.',
+    mysteryTeaser: '“RECURRING SYNC: Live weekly planetary transit feeds mapped directly to your unique natal house coordinates.”',
+    price: '$9.99',
+    numericValue: 9.99,
+    mode: 'subscription',
+    badge: 'FLAGSHIP PASS',
+    icon: Crown,
+    accentColor: '#c4a374',
+    image: '/images/products/premium.jpg',
+    features: ['Up to 2 full readings every week', 'Unlimited web dashboard unblurs', 'Real-time ephemeris metrics'],
+    reviews: [
+      { text: 'Having weekly updates mapped to my exact chart transformed how I plan business launches.', author: 'Marcus K.', sign: 'Scorpio' },
+      { text: 'The weekly unblur feed is my favorite Monday morning ritual.', author: 'Jessica W.', sign: 'Pisces' },
+      { text: 'Cancelled two other horoscope apps. This is the only one backed by real math.', author: 'Julian B.', sign: 'Aquarius' },
+    ],
+  },
+  {
+    id: 'vip_orbit',
+    priceId: 'price_vip_orbit_placeholder',
+    name: 'The VIP Orbit Pass',
+    tagline: 'Priority queue skip & direct astrological Q&A access',
+    description: 'Priority queue allocation, full Premium features, and direct monthly Q&A submissions.',
+    mysteryTeaser: '“VIP DIRECT CHANNEL: Direct coordinate auditing with priority computational allocation and monthly concierge review.”',
+    price: '$99.99',
+    numericValue: 99.99,
+    mode: 'subscription',
+    badge: 'CONCIERGE TIER',
+    icon: Rocket,
+    accentColor: '#a855f7',
+    image: '/images/products/VIP.jpg',
+    features: ['Priority queue skip on all readings', 'Monthly direct Q&A submission', 'Dedicated cosmic concierge support'],
+    reviews: [
+      { text: 'The concierge responses are remarkably thorough. It feels like having a personal astrologer on retainer.', author: 'Elena R.', sign: 'Leo' },
+      { text: 'Direct Q&A response answered my natal Saturn return questions in incredible detail.', author: 'Tom H.', sign: 'Cancer' },
+    ],
+  },
+  {
+    id: 'cosmic_horizon',
+    priceId: 'price_cosmic_horizon_placeholder',
+    name: 'Executive Custom Birth Sky Art',
+    tagline: 'High-res digital masterpiece of your exact birth night sky',
+    description: 'Print-ready high-DPI vector rendering of the exact sky canopy at your minute of birth.',
+    mysteryTeaser: '“SWISS EPHEMERIS ARTIFACT: 300 DPI vector sky mapping with gold-foil border geometry layout for your exact birth minute.”',
+    price: '$249.99',
+    numericValue: 249.99,
+    mode: 'payment',
+    badge: 'LUXURY ARTIFACT',
+    icon: Sparkles,
+    accentColor: '#f59e0b',
+    image: '/images/products/skyArt.jpg',
+    features: ['High-res digital birth sky art', 'Executive breakdown certificate', 'Swiss Ephemeris precision calculation'],
+    reviews: [
+      { text: 'Museum-quality digital file hanging in my study. The astronomical precision is breathtaking.', author: 'Jonathan W.', sign: 'Taurus' },
+      { text: 'Printed it on acrylic canvas for my anniversary. Spectacular detail.', author: 'Sophia R.', sign: 'Sagittarius' },
+    ],
+  },
 ];
 
-export function Discount({ onNavigateHome }: DiscountProps) {
-  const { user, loading, signInWithGoogle } = useAuth();
-  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
-  const [errorMsg, setErrorMsg] = useState('');
+// Product Card Component with Built-in Interactive Review Carousel & Borderless Specimen Display
+function ProductCard({ 
+  item, 
+  isFlipped, 
+  onSelectProduct 
+}: { 
+  item: CatalogProductItem; 
+  isFlipped: boolean; 
+  onSelectProduct: (product: CatalogProductItem) => void;
+}) {
+  const Icon = item.icon || Compass;
+  const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
 
+  // Auto-rotate reviews every 6 seconds
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    const timer = setInterval(() => {
+      setCurrentReviewIndex((prev) => (prev + 1) % item.reviews.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, [item.reviews.length]);
 
-  useEffect(() => {
-    const pendingCheckout = sessionStorage.getItem('pending_discount_checkout');
-    if (user && pendingCheckout) {
-      sessionStorage.removeItem('pending_discount_checkout');
-      handleCheckout(pendingCheckout as 'single' | 'subscription');
-    }
-  }, [user]);
-
-  const handleCheckout = async (priceType: 'single' | 'subscription') => {
-    setErrorMsg('');
-
-    if (!user) {
-      try {
-        sessionStorage.setItem('pending_discount_checkout', priceType);
-        const { error } = await signInWithGoogle();
-        if (error) throw new Error(error);
-      } catch (err) {
-        setErrorMsg(err instanceof Error ? err.message : 'Redirect failed.');
-      }
-      return;
-    }
-
-    setCheckoutLoading(priceType);
-
-    try {
-      const response = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: user.id,
-          email: user.email,
-          priceType: priceType,
-          isDiscountRoute: true
-        }),
-      });
-
-      const session = await response.json();
-
-      if (!response.ok) {
-        throw new Error(session.message || 'Failed to initiate secure checkout.');
-      }
-
-      const stripe = await loadStripe(
-        import.meta.env.VITE_PUBLIC_STRIPE_PUBLISHABLE_KEY || 
-        import.meta.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || 
-        ''
-      );
-      
-      if (stripe && session.id) {
-        await stripe.redirectToCheckout({ sessionId: session.id });
-      } else {
-        throw new Error('Stripe configuration missing.');
-      }
-    } catch (err) {
-      setErrorMsg(err instanceof Error ? err.message : 'A connection error occurred. Please try again.');
-      setCheckoutLoading(null);
-    }
+  const handleNextReview = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentReviewIndex((prev) => (prev + 1) % item.reviews.length);
   };
 
-  if (loading) {
-    return (
-      <div className="relative min-h-screen flex items-center justify-center">
-        <StarryBackground />
-        <Loader2 className="w-8 h-8 animate-spin text-champagne-300" />
-      </div>
-    );
-  }
+  const handlePrevReview = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentReviewIndex((prev) => (prev - 1 + item.reviews.length) % item.reviews.length);
+  };
+
+  const activeReview = item.reviews[currentReviewIndex];
 
   return (
-    <div className="relative min-h-screen text-slate-100 selection:bg-champagne-400/20">
+    <div className="flex flex-col md:flex-row items-center gap-8 lg:gap-12">
+      {/* Detached Image Container with Fade Effect (Borderless) */}
+      <div
+        className={`w-full md:w-5/12 h-80 sm:h-96 relative flex flex-col items-center justify-center p-2 text-center overflow-hidden transition-all duration-300 ${
+          isFlipped ? 'md:order-2' : 'md:order-1'
+        }`}
+        style={{
+          maskImage: 'linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)',
+        }}
+      >
+        <div
+          className="absolute inset-0 opacity-25 blur-3xl pointer-events-none"
+          style={{ background: item.accentColor }}
+        />
+
+        <div className="relative z-10 w-full h-full flex items-center justify-center p-2 overflow-hidden">
+          {item.image ? (
+            <img
+              src={item.image}
+              alt={item.name}
+              className="w-full h-full object-contain rounded-xl hover:scale-105 transition-transform duration-500 shadow-2xl"
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center">
+              <div className="w-14 h-14 rounded-2xl bg-champagne-400/10 border border-champagne-400/20 flex items-center justify-center mb-3">
+                <ImageIcon className="w-7 h-7 text-champagne-300" />
+              </div>
+              <p className="text-xs font-mono text-champagne-300 uppercase tracking-widest">{item.name}</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Main Product Card */}
+      <div
+        onClick={() => onSelectProduct(item)}
+        className={`w-full md:w-7/12 group relative rounded-3xl border border-white/[0.08] bg-slate-900/50 hover:bg-slate-900/90 backdrop-blur-xl p-6 sm:p-8 transition-all duration-300 cursor-pointer group-hover:border-champagne-400/50 group-hover:shadow-[0_0_50px_rgba(196,163,116,0.15)] shadow-xl ${
+          isFlipped ? 'md:order-1' : 'md:order-2'
+        }`}
+      >
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-[10px] font-mono tracking-widest uppercase px-2.5 py-0.5 rounded-full bg-white/[0.05] border border-white/[0.08] text-champagne-200">
+            {item.badge}
+          </span>
+          <div 
+            className="w-8 h-8 rounded-xl border flex items-center justify-center shadow-inner"
+            style={{ borderColor: `${item.accentColor}40`, background: `${item.accentColor}15` }}
+          >
+            <Icon className="w-4 h-4" style={{ color: item.accentColor }} />
+          </div>
+        </div>
+
+        <h2 className="text-xl sm:text-2xl font-serif font-light text-champagne-50 group-hover:text-champagne-200 transition-colors leading-snug mb-1">
+          {item.name}
+        </h2>
+        <p className="text-xs text-slate-400 font-light mb-4">
+          {item.tagline}
+        </p>
+
+        {/* Features list */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
+          {item.features.map((feat, idx) => (
+            <div key={idx} className="flex items-center gap-1.5 text-xs text-slate-300">
+              <Check className="w-3.5 h-3.5 text-champagne-400 flex-shrink-0" />
+              <span className="font-light">{feat}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Interactive Reviews Carousel Container */}
+        <div className="bg-black/40 border border-white/[0.05] rounded-xl p-3.5 mb-4 group-hover:border-champagne-400/25 transition-colors relative">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-1">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-2.5 h-2.5 fill-champagne-400 text-champagne-400" />
+              ))}
+              <span className="text-[10px] font-mono text-slate-400 ml-1.5">
+                {activeReview.author} ({activeReview.sign})
+              </span>
+            </div>
+
+            {/* Carousel Controls */}
+            {item.reviews.length > 1 && (
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={handlePrevReview}
+                  className="p-1 rounded-md bg-white/[0.05] hover:bg-white/[0.12] text-slate-400 hover:text-champagne-200 transition-colors"
+                >
+                  <ChevronLeft className="w-3 h-3" />
+                </button>
+                <button
+                  onClick={handleNextReview}
+                  className="p-1 rounded-md bg-white/[0.05] hover:bg-white/[0.12] text-slate-400 hover:text-champagne-200 transition-colors"
+                >
+                  <ChevronRight className="w-3 h-3" />
+                </button>
+              </div>
+            )}
+          </div>
+
+          <p className="font-mono text-xs text-champagne-200/90 italic transition-all duration-300">
+            &quot;{activeReview.text}&quot;
+          </p>
+
+          {/* Dots Indicator */}
+          {item.reviews.length > 1 && (
+            <div className="flex justify-center gap-1 mt-2.5">
+              {item.reviews.map((_, idx) => (
+                <span
+                  key={idx}
+                  className={`w-1.5 h-1.5 rounded-full transition-all ${
+                    idx === currentReviewIndex ? 'bg-champagne-300 w-3' : 'bg-white/20'
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* CTA Footer */}
+        <div className="flex items-center justify-between pt-3 border-t border-white/[0.06] text-xs font-mono">
+          <span className="text-slate-400 group-hover:text-champagne-300 transition-colors flex items-center gap-1.5">
+            <Eye className="w-3.5 h-3.5" /> Initialize Calibration
+          </span>
+          <div className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center group-hover:bg-champagne-400/10 group-hover:border-champagne-400/30 transition-all">
+            <ArrowRight className="w-3.5 h-3.5 text-champagne-300 group-hover:translate-x-0.5 transition-transform" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
+  const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null);
+
+  return (
+    <div className="relative min-h-screen text-slate-100 selection:bg-champagne-400/20 bg-[#04060b] overflow-hidden">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-b from-indigo-950/30 via-champagne-400/[0.02] to-transparent rounded-full blur-3xl pointer-events-none" />
       <StarryBackground />
 
-      <main className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 py-12 pb-24">
-        
-        <button 
-          onClick={onNavigateHome}
-          className="group inline-flex items-center gap-2 mb-8 text-sm text-champagne-300 hover:text-champagne-200 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
-          Return Home
-        </button>
+      <CosmicIntakeModal 
+        product={selectedProduct} 
+        onClose={() => setSelectedProduct(null)} 
+      />
 
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-champagne-400/[0.08] border border-champagne-400/20 backdrop-blur-sm mb-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-champagne-300 animate-pulse" />
-            <span className="text-xs text-champagne-200 tracking-[0.15em] uppercase">Limited Alignment Offer</span>
+      <main className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-12 pb-48">
+        
+        {/* Navigation Header */}
+        <div className="flex items-center justify-between mb-16 border-b border-white/[0.08] pb-6">
+          <button
+            onClick={onNavigateHome}
+            className="group inline-flex items-center gap-2 text-xs font-mono tracking-[0.2em] text-champagne-300 uppercase hover:text-champagne-100 transition-colors"
+          >
+            <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
+            [ Return to Observatory ]
+          </button>
+          <button
+            onClick={onNavigateDashboard}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.03] border border-white/[0.08] text-xs font-mono text-slate-300 hover:bg-white/[0.06] hover:border-champagne-400/30 transition-all shadow-sm"
+          >
+            <Compass className="w-3.5 h-3.5 text-champagne-300" />
+            My Dashboard
+          </button>
+        </div>
+
+        {/* Observatory Header */}
+        <div className="text-center max-w-2xl mx-auto mb-20">
+          <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-champagne-400/[0.06] border border-champagne-400/25 backdrop-blur-md mb-6 shadow-[0_0_25px_rgba(196,163,116,0.1)]">
+            <Orbit className="w-3.5 h-3.5 text-champagne-300 animate-spin" style={{ animationDuration: '12s' }} />
+            <span className="text-[11px] font-mono tracking-[0.25em] uppercase text-champagne-200">Observatory Feed // Live Codex</span>
           </div>
-          
-          <h1 className="text-3xl sm:text-5xl font-serif font-light text-champagne-50 mb-4 tracking-tight leading-tight">
-            Claim Your Exclusive <br className="hidden sm:inline" />
-            <span className="bg-gradient-to-r from-champagne-200 via-champagne-300 to-champagne-200 bg-clip-text text-transparent">
-              Cosmic Discount Rates
+
+          <h1 className="text-4xl sm:text-6xl font-serif font-light text-champagne-50 mb-6 tracking-tight leading-[1.1]">
+            Select Your <br />
+            <span className="bg-gradient-to-r from-champagne-200 via-champagne-300 to-amber-200 bg-clip-text text-transparent italic font-normal">
+              Celestial Coordinate
             </span>
           </h1>
-          
-          <p className="text-slate-300 max-w-xl mx-auto text-sm sm:text-base font-light">
-            Access your comprehensive blueprint map at special promotional tier entries. Select your option below to complete your checkout process securely.
+          <p className="text-slate-400 text-xs sm:text-sm font-light tracking-wide font-mono">
+            // Click any transmission node below to calibrate parameters and unlock tailored insights.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto mb-16">
-          
-          {/* Card Option 1: Single Reading */}
-          <div className="relative group rounded-2xl border-2 border-white/[0.15] bg-gradient-to-br from-slate-900/90 to-midnight-950/90 backdrop-blur-xl p-6 flex flex-col justify-between transition-all duration-300 hover:border-champagne-400/50 hover:shadow-[0_0_40px_rgba(251,191,36,0.05)]">
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-xs font-mono text-slate-400 uppercase tracking-wider">Single Entry</span>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">Save 66% Now</span>
-              </div>
-              
-              <h3 className="text-xl font-serif text-champagne-50 mb-2">10-Point Cosmic Blueprint</h3>
-              <p className="text-xs text-slate-400 mb-6 leading-relaxed">
-                Full comprehensive reading derived from your deep natal charts and current house alignments.
-              </p>
-              
-              <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-4 mb-6">
-                <div className="text-xs text-slate-400 mb-2 flex justify-between items-center">
-                  <span>Regular Price:</span>
-                  <span className="line-through text-red-400 font-mono font-medium">$15.00</span>
-                </div>
-                <div className="flex items-baseline justify-between gap-2">
-                  <div className="flex items-baseline gap-1.5">
-                    <span className="text-3xl font-light text-champagne-100 font-mono">$5</span>
-                    <span className="text-xs text-slate-400">Promotional</span>
-                  </div>
-                  <span className="text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 whitespace-nowrap">
-                    Save 66%
-                  </span>
-                </div>
-              </div>
-
-              <ul className="space-y-3 mb-8">
-                {[
-                  'Complete Sun & Moon Architecture',
-                  'Rising Sign & Astrological Ephemeris',
-                  'Primary Active Transit Snapshot',
-                  'Actionable dates & clear timing windows'
-                ].map((text, idx) => (
-                  <li key={idx} className="flex items-start gap-2.5 text-xs text-slate-300">
-                    <CheckCircle2 className="w-4 h-4 text-champagne-400/70 flex-shrink-0 mt-0.5" />
-                    <span>{text}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <button
-              onClick={() => handleCheckout('single')}
-              disabled={checkoutLoading !== null}
-              className="w-full py-3 rounded-xl border border-champagne-400/30 bg-champagne-400/[0.04] text-champagne-200 text-sm font-semibold tracking-wide transition-all duration-300 hover:bg-champagne-400/10 hover:border-champagne-400/60 disabled:opacity-40"
-            >
-              {checkoutLoading === 'single' ? (
-                <Loader2 className="w-4 h-4 animate-spin mx-auto" />
-              ) : (
-                'Secure This Reading Rate'
-              )}
-            </button>
-          </div>
-
-          {/* Card Option 2: Subscription Tier */}
-          <div className="relative group rounded-2xl border-2 border-champagne-400/40 bg-gradient-to-br from-slate-900/90 to-midnight-950/90 backdrop-blur-xl p-6 flex flex-col justify-between transition-all duration-300 hover:border-champagne-400/70 hover:shadow-[0_0_45px_rgba(196,163,116,0.08)]">
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-xs font-mono text-champagne-300 uppercase tracking-wider">Unlimited Access</span>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">Save 66% Now</span>
-              </div>
-              
-              <h3 className="text-xl font-serif text-champagne-50 mb-2">Unlimited Access Membership</h3>
-              <p className="text-xs text-slate-400 mb-6 leading-relaxed">
-                Ongoing systemic updates mapping planetary trajectories, Chiron shifts, and recurring chart resets.
-              </p>
-              <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-4 mb-6">
-                <div className="text-xs text-slate-400 mb-2 flex justify-between items-center">
-                  <span>Regular Subscription:</span>
-                  <span className="line-through text-red-400 font-mono font-medium">$30.00/mo</span>
-                </div>
-                <div className="flex items-baseline justify-between gap-2">
-                  <div className="flex items-baseline gap-1.5">
-                    <span className="text-3xl font-light text-champagne-100 font-mono">$10</span>
-                    <span className="text-xs text-slate-400">/mo</span>
-                  </div>
-                  <span className="text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 whitespace-nowrap">
-                    Save 66%
-                  </span>
-                </div>
-              </div>
-
-              <ul className="space-y-3 mb-8">
-                {[
-                  'Everything included in the single tier',
-                  'Unlimited weekly forecast tracking',
-                  'Continuous real-time degree calculations',
-                  'Priority delivery flags for all updates'
-                ].map((text, idx) => (
-                  <li key={idx} className="flex items-start gap-2.5 text-xs text-slate-200">
-                    <CheckCircle2 className="w-4 h-4 text-champagne-300 flex-shrink-0 mt-0.5" />
-                    <span className="font-medium text-slate-300">{text}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <button
-              onClick={() => handleCheckout('subscription')}
-              disabled={checkoutLoading !== null}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-champagne-300 to-champagne-400 text-midnight-950 text-sm font-semibold tracking-wide transition-all duration-300 hover:from-champagne-200 hover:to-champagne-300 shadow-md disabled:opacity-40"
-            >
-              {checkoutLoading === 'subscription' ? (
-                <Loader2 className="w-4 h-4 animate-spin mx-auto text-midnight-950" />
-              ) : (
-                'Secure Membership Rate'
-              )}
-            </button>
-          </div>
+        {/* Product Cards Grid with Carousel */}
+        <div className="space-y-24">
+          {PRODUCTS.map((item, index) => (
+            <ProductCard
+              key={item.id}
+              item={item}
+              isFlipped={index % 2 !== 0}
+              onSelectProduct={setSelectedProduct}
+            />
+          ))}
         </div>
 
-        {errorMsg && (
-          <div className="max-w-md mx-auto mb-12 p-3 rounded-xl border border-red-500/20 bg-red-500/5 text-center">
-            <p className="text-xs text-red-400 font-medium">{errorMsg}</p>
-          </div>
-        )}
-
-        {/* ===== ITEM 1: THE 10 POINTS FIRST ===== */}
-        <section className="mb-20 border-t border-white/[0.06] pt-16">
-          <div className="text-center mb-10">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-champagne-400/[0.08] border border-champagne-400/20 backdrop-blur-sm mb-4">
-              <Check className="w-4 h-4 text-champagne-300" />
-              <span className="text-xs text-champagne-200 tracking-[0.15em] uppercase">Blueprint Value Details</span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-serif font-light text-champagne-50 mb-2 tracking-tight">
-              10 Specific Cosmic Blueprint Points Included
-            </h2>
-            <p className="text-slate-400 max-w-lg mx-auto text-xs sm:text-sm font-serif font-light italic">
-              Every point below is calculated from your exact natal data fields, mapping actionable windows directly.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-4xl mx-auto">
-            {readingPoints.map((point, i) => (
-              <div
-                key={i}
-                className="group flex items-start gap-4 rounded-xl border border-white/[0.1] bg-white/[0.04] p-4 hover:bg-white/[0.06] hover:border-white/[0.15] transition-all duration-300"
-              >
-                <div
-                  className="flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center border relative overflow-hidden"
-                  style={{
-                    borderColor: `${point.color}30`,
-                    background: `linear-gradient(135deg, ${point.color}18, ${point.color}06)`,
-                  }}
-                >
-                  <point.icon className="w-5 h-5 relative z-10" style={{ color: point.color }} />
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono text-slate-400">{String(i + 1).padStart(2, '0')}</span>
-                    <h3 className="text-sm font-medium text-champagne-50">{point.title}</h3>
-                  </div>
-                  <p className="text-xs text-slate-400 mt-0.5">{point.subtitle}</p>
-                </div>
-                <Check className="w-4 h-4 text-champagne-400/60 flex-shrink-0 mt-1" />
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ===== ITEM 2: THE DIAGRAM (8-PLANET MODEL, SLOWED SPIN, NO RINGS, INTEGRATED INSIGHTS) ===== */}
-        <section className="mb-20 rounded-2xl border-2 border-white/[0.12] bg-gradient-to-br from-slate-900/90 to-midnight-950/90 backdrop-blur-xl p-8 text-center max-w-3xl mx-auto overflow-hidden shadow-2xl">
-          <div className="mb-8">
-            <h3 className="text-lg font-serif text-champagne-50 mb-1">Systemic Solar System Simulation</h3>
-            <p className="text-xs text-slate-400">8-Planet full astronomical coordinate trajectory mapping</p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-            <div className="md:col-span-2 relative w-72 h-72 sm:w-80 sm:h-80 mx-auto flex items-center justify-center rounded-full border border-white/[0.04] bg-slate-950/80 shadow-2xl">
-              <div className="absolute w-12 h-12 bg-gradient-to-r from-amber-300 via-amber-500 to-orange-500 rounded-full flex items-center justify-center shadow-[0_0_40px_rgba(245,158,11,0.6)] animate-pulse z-10">
-                <Sun className="w-6 h-6 text-slate-950 animate-spin [animation-duration:60s]" />
-              </div>
-              
-              <div className="absolute w-16 h-16 border border-white/[0.02] rounded-full" />
-              <div className="absolute w-16 h-16 animate-[spin_12s_linear_infinite]">
-                <div className="w-1.5 h-1.5 bg-slate-400 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
-              </div>
-
-              <div className="absolute w-24 h-24 border border-white/[0.02] rounded-full" />
-              <div className="absolute w-24 h-24 animate-[spin_20s_linear_infinite_reverse]">
-                <div className="w-2 h-2 bg-amber-200 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
-              </div>
-
-              <div className="absolute w-32 h-32 border border-white/[0.03] rounded-full" />
-              <div className="absolute w-32 h-32 animate-[spin_30s_linear_infinite]">
-                <div className="w-2.5 h-2.5 bg-blue-400 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
-              </div>
-
-              <div className="absolute w-40 h-40 border border-white/[0.03] rounded-full" />
-              <div className="absolute w-40 h-40 animate-[spin_42s_linear_infinite_reverse]">
-                <div className="w-2 h-2 bg-red-400 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
-              </div>
-
-              <div className="absolute w-48 h-48 border border-white/[0.02] rounded-full" />
-              <div className="absolute w-48 h-48 animate-[spin_60s_linear_infinite]">
-                <div className="w-3.5 h-3.5 bg-amber-600 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
-              </div>
-
-              <div className="absolute w-56 h-56 border border-white/[0.02] rounded-full" />
-              <div className="absolute w-56 h-56 animate-[spin_80s_linear_infinite_reverse]">
-                <div className="w-3 h-3 bg-yellow-600 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
-              </div>
-
-              <div className="absolute w-64 h-64 border border-white/[0.02] rounded-full" />
-              <div className="absolute w-64 h-64 animate-[spin_110s_linear_infinite]">
-                <div className="w-2.5 h-2.5 bg-cyan-400 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
-              </div>
-
-              <div className="absolute w-72 h-72 border border-white/[0.02] rounded-full" />
-              <div className="absolute w-72 h-72 animate-[spin_150s_linear_infinite_reverse]">
-                <div className="w-2.5 h-2.5 bg-indigo-500 rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
-              </div>
-            </div>
-
-            <div className="text-left bg-white/[0.02] border border-white/[0.06] rounded-xl p-5 space-y-4 h-full flex flex-col justify-center">
-              <div className="flex items-center gap-2 text-champagne-300 font-serif text-sm font-medium">
-                <Eye className="w-4 h-4" />
-                <span>Cosmic Tracking Insights</span>
-              </div>
-              <p className="text-xs text-slate-300 leading-relaxed font-light">
-                By calculating the exact structural locations and geometric degrees of all 8 primary celestial bodies relative to your birth window, we uncover hidden behavioral matrices.
-              </p>
-              <div className="text-[11px] text-slate-400 space-y-2 border-t border-white/[0.06] pt-3">
-                <p>• <strong className="text-champagne-100">Inner Alignment:</strong> Governs temporary emotional tides, mood architectures, and micro-expressions.</p>
-                <p>• <strong className="text-champagne-100">Outer Alignment:</strong> Projects long-term career horizons, public destiny paths, and relational crossroads.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ===== ITEM 3: THE CHART WITH INTERPRETATION VALUE ADDS ===== */}
-        <section className="max-w-3xl mx-auto mb-16 rounded-2xl border-2 border-white/[0.12] bg-gradient-to-br from-slate-900/90 to-midnight-950/90 backdrop-blur-xl p-6 shadow-2xl">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/[0.06] pb-4 mb-6">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-champagne-400/10 border border-champagne-400/20 flex items-center justify-center">
-                <Compass className="w-4 h-4 text-champagne-300" />
-              </div>
-              <div>
-                <h3 className="text-sm font-serif text-champagne-50 font-medium">Ephemeris Live Metric Feed</h3>
-                <p className="text-[11px] text-slate-400">Current active systemic weight balances</p>
-              </div>
-            </div>
-            <div className="text-right">
-              <span className="text-[10px] font-mono px-2 py-1 rounded bg-white/[0.04] border border-white/[0.08] text-champagne-200">
-                Calculations: 3,600s intervals
-              </span>
-            </div>
-          </div>
-
-          <div className="space-y-6">
-            <div className="space-y-4">
-              {[
-                { label: 'Natal Sun Alignment Density', value: '88%', width: 'w-[88%]', color: 'from-amber-400 to-orange-500' },
-                { label: 'Lunar Aspect Synthesis Vector', value: '74%', width: 'w-[74%]', color: 'from-blue-400 to-indigo-500' },
-                { label: 'House 10 Midheaven Velocity', value: '92%', width: 'w-[92%]', color: 'from-emerald-400 to-teal-500' },
-                { label: 'Chiron Vulnerability Delta', value: '41%', width: 'w-[41%]', color: 'from-pink-400 to-rose-500' }
-              ].map((chartRow, index) => (
-                <div key={index} className="space-y-1.5">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-slate-300 font-light">{chartRow.label}</span>
-                    <span className="font-mono text-champagne-300 font-medium">{chartRow.value}</span>
-                  </div>
-                  <div className="h-2 w-full bg-white/[0.04] rounded-full overflow-hidden border border-white/[0.06]">
-                    <div className={`h-full bg-gradient-to-r ${chartRow.color} ${chartRow.width} rounded-full`} />
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="bg-white/[0.01] border border-white/[0.04] rounded-xl p-4 text-xs text-slate-400 leading-relaxed font-light">
-              <span className="text-champagne-200 font-medium font-serif block mb-1">Interpretation Blueprint Guide:</span>
-              These real-time metrics indicate the current planetary pressure matrix applied to your unique baseline chart. Sudden high-velocity thresholds reveal open windows of action where cosmic resistance is lowest—ideal for timing corporate initiatives, unlocking deep self-healing states, or initiating critical interpersonal dialogues.
-            </div>
-          </div>
-        </section>
-
-        <footer className="max-w-2xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 pt-8 border-t border-white/[0.06] text-center sm:text-left">
-          <div className="flex flex-col items-center sm:items-start">
-            <ShieldCheck className="w-5 h-5 text-champagne-400/60 mb-2" />
-            <h5 className="text-xs font-semibold text-champagne-50 mb-1">Encrypted Checkout</h5>
-            <p className="text-[11px] text-slate-400 leading-normal">
-              Stripe compliance ensures absolute isolation of processing layers.
-            </p>
-          </div>
-          <div className="flex flex-col items-center sm:items-start">
-            <Calendar className="w-5 h-5 text-champagne-400/60 mb-2" />
-            <h5 className="text-xs font-semibold text-champagne-50 mb-1">Flexible Adjustments</h5>
-            <p className="text-[11px] text-slate-400 leading-normal">
-              Cancel recurring subscription paths easily anytime direct via your custom user panel.
-            </p>
-          </div>
-          <div className="flex flex-col items-center sm:items-start">
-            <HelpCircle className="w-5 h-5 text-champagne-400/60 mb-2" />
-            <h5 className="text-xs font-semibold text-champagne-50 mb-1">Support Linkage</h5>
-            <p className="text-[11px] text-slate-400 leading-normal">
-              Direct connection metrics monitoring available at support@astrologlimpse.com.
-            </p>
+        {/* Footer */}
+        <footer className="relative max-w-xl mx-auto text-center pt-28 pb-16 mt-20 border-t border-white/[0.06] flex flex-col items-center justify-center gap-3 text-xs font-mono text-slate-400">
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#04060b] via-[#04060b]/80 to-transparent pointer-events-none" />
+          <div className="relative z-10 flex items-center gap-2">
+            <ShieldCheck className="w-4 h-4 text-champagne-400/60" />
+            <span>256-Bit Encrypted Secure Processing & Swiss Ephemeris Calculations</span>
           </div>
         </footer>
-
       </main>
     </div>
   );
