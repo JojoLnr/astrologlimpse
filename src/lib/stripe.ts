@@ -1,18 +1,20 @@
 import { supabase } from './supabase';
 
 export async function createCheckoutSession(
-  priceId: string,
-  mode: 'payment' | 'subscription'
+  priceIdOrUrl: string,
+  _mode: 'payment' | 'subscription'
 ): Promise<string> {
   const { data: session } = await supabase.auth.getSession();
   const user = session.session?.user;
   if (!user) throw new Error('Not authenticated');
 
-  // Fallback to direct checkout URL or local proxy route
-  const checkoutUrl = `https://checkout.stripe.com/pay/${priceId}?prefilled_email=${encodeURIComponent(user.email || '')}`;
-  
-  // Return target URL for direct redirection
-  return checkoutUrl;
+  // If it's a direct Stripe Payment Link URL, use it exactly as-is without appending query parameters
+  if (priceIdOrUrl.startsWith('http')) {
+    return priceIdOrUrl;
+  }
+
+  // Fallback if someone passes a raw ID
+  return `https://buy.stripe.com/${priceIdOrUrl}`;
 }
 
 export async function createPortalSession(): Promise<string> {
