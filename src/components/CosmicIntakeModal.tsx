@@ -25,7 +25,7 @@ interface CosmicIntakeModalProps {
 
 export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) {
   const { user, signInWithGoogle } = useAuth();
-  
+
   const [birthDate, setBirthDate] = useState('');
   const [birthTime, setBirthTime] = useState('');
   const [unknownTime, setUnknownTime] = useState(false);
@@ -59,7 +59,7 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
         sessionStorage.setItem('pending_catalog_checkout', product.priceId);
         sessionStorage.setItem('pending_catalog_mode', product.mode);
         sessionStorage.setItem('pending_catalog_value', product.numericValue.toString());
-        
+
         // Triggers sign up / sign in so we capture their email immediately
         await signInWithGoogle();
         return;
@@ -82,16 +82,16 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div 
+      <div
         className="relative w-full max-w-xl rounded-3xl border border-white/[0.12] bg-gradient-to-br from-[#0c1021] via-[#080b16] to-[#04060b] p-6 sm:p-8 shadow-[0_0_80px_rgba(196,163,116,0.15)] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <div 
+        <div
           className="absolute -top-24 -right-24 w-72 h-72 rounded-full blur-3xl opacity-20 pointer-events-none"
           style={{ background: product.accentColor }}
         />
 
-        <button 
+        <button
           onClick={onClose}
           className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-slate-200 hover:bg-white/[0.06] transition-colors"
         >
@@ -194,7 +194,7 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
                 </>
               ) : (
                 <>
-                  <span>{user ? `Proceed to Secure Checkout (${product.price})` : 'Continue with Google & Save Profile'}</span>
+                  <span>{user ? `Proceed to Secure Checkout (${product.price})` : 'Continue with Google'}</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
