@@ -1,18 +1,17 @@
 import { useState } from 'react';
 import { 
   Sparkles, Zap, BookOpen, Crown, Rocket, Compass, 
-  ArrowLeft, Check, ShieldCheck, Loader2, Star, Cpu, Shield, Eye
+  ArrowLeft, Check, ShieldCheck, Star, Cpu, Shield, ArrowRight
 } from 'lucide-react';
 import { StarryBackground } from '@/components/StarryBackground';
-import { createCheckoutSession } from '@/lib/stripe';
-import { useAuth } from '@/context/AuthContext';
+import { CosmicIntakeModal } from '@/components/CosmicIntakeModal';
 
 interface CatalogProps {
   onNavigateHome: () => void;
   onNavigateDashboard: () => void;
 }
 
-interface ProductItem {
+export interface ProductItem {
   id: string;
   priceId: string;
   name: string;
@@ -167,39 +166,18 @@ const trustBadges = [
 ];
 
 export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
-  const { user, signInWithGoogle } = useAuth();
-  const [loadingId, setLoadingId] = useState<string | null>(null);
-  const [errorMsg, setErrorMsg] = useState<string>('');
-
-  const handleBuy = async (product: ProductItem) => {
-    setErrorMsg('');
-
-    if (!user) {
-      try {
-        sessionStorage.setItem('pending_catalog_checkout', product.priceId);
-        sessionStorage.setItem('pending_catalog_mode', product.mode);
-        sessionStorage.setItem('pending_catalog_value', product.numericValue.toString());
-        await signInWithGoogle();
-      } catch (err) {
-        setErrorMsg(err instanceof Error ? err.message : 'Google sign-in failed');
-      }
-      return;
-    }
-
-    setLoadingId(product.id);
-    try {
-      const url = await createCheckoutSession(product.priceId, product.mode);
-      window.location.href = url;
-    } catch (err) {
-      setErrorMsg(err instanceof Error ? err.message : 'Failed to launch checkout');
-      setLoadingId(null);
-    }
-  };
+  const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null);
 
   return (
     <div className="relative min-h-screen text-slate-100 selection:bg-champagne-400/20 bg-[#04060b]">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-950/40 via-[#04060b] to-[#04060b] pointer-events-none" />
       <StarryBackground />
+
+      {/* Intake Modal Overlay */}
+      <CosmicIntakeModal 
+        product={selectedProduct} 
+        onClose={() => setSelectedProduct(null)} 
+      />
 
       <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-12 pb-28">
         
@@ -229,13 +207,13 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
           </div>
 
           <h1 className="text-4xl sm:text-6xl font-serif font-light text-champagne-50 mb-6 tracking-tight leading-[1.15]">
-            Complete Catalog & <br />
+            Select Your Desired <br />
             <span className="bg-gradient-to-r from-champagne-200 via-champagne-300 to-amber-200 bg-clip-text text-transparent italic font-normal">
-              Service Dossiers
+              Astrological Service
             </span>
           </h1>
           <p className="text-slate-300 text-sm sm:text-base font-light tracking-wide max-w-xl mx-auto leading-relaxed">
-            Every product is custom calculated using precise Swiss Ephemeris planetary coordinates. Explore each offering below.
+            Choose a reading below to initialize your exact birth coordinates and calibrate Swiss Ephemeris data before checkout.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-8 mt-8 pt-6 border-t border-white/[0.06]">
@@ -248,19 +226,12 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
           </div>
         </div>
 
-        {errorMsg && (
-          <div className="max-w-md mx-auto mb-10 p-3.5 rounded-xl border border-red-500/30 bg-red-500/10 text-center text-xs text-red-300 font-mono">
-            {errorMsg}
-          </div>
-        )}
-
         {/* ================================================================ */}
-        {/* EQUAL-SPACE FULL-WIDTH EDITORIAL DOSSIER ROWS                    */}
+        {/* DOSSIER ROWS WITH LOW-FRICTION INTAKE CTAs                       */}
         {/* ================================================================ */}
         <div className="space-y-12">
           {PRODUCTS.map((item, index) => {
             const Icon = item.icon;
-            const isLoading = loadingId === item.id;
             const isAnchor = item.id === 'cosmic_horizon';
             const isHero = item.id === 'premium_membership';
 
@@ -277,12 +248,9 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
                     : 'border-white/[0.12] bg-gradient-to-br from-slate-900/90 via-[#080c18]/90 to-midnight-950/95'
                 }`}
               >
-                {/* Background glow flare */}
-                <div className="absolute top-0 right-0 w-80 h-80 bg-champagne-400/[0.03] rounded-full blur-3xl pointer-events-none" />
-
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
                   
-                  {/* LEFT COLUMN: Image Placeholder & Visual Specimen */}
+                  {/* Visual Frame */}
                   <div className="lg:col-span-5 h-72 sm:h-80 rounded-2xl border border-white/[0.1] bg-black/70 p-6 flex flex-col justify-between relative shadow-inner">
                     <div className="flex items-center justify-between pb-4 border-b border-white/[0.08]">
                       <div className="flex items-center gap-2">
@@ -309,28 +277,25 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
                     </div>
                   </div>
 
-                  {/* RIGHT COLUMN: Description, Features, Review & Checkout */}
+                  {/* Narrative Details & Intake CTA */}
                   <div className="lg:col-span-7 flex flex-col justify-between">
                     <div>
-                      {/* Badge & Title */}
                       <div className="flex items-center justify-between mb-3">
                         <span className="text-[10px] font-mono tracking-widest uppercase px-3 py-1 rounded-full bg-white/[0.06] border border-white/[0.1] text-champagne-200">
                           {item.badge}
                         </span>
-                        <span className="text-3xl sm:text-4xl font-serif text-champagne-100 font-light">
-                          {item.price} <span className="text-xs font-mono text-slate-400">{item.mode === 'subscription' ? '/mo' : ''}</span>
+                        <span className="text-xl font-mono text-slate-400">
+                          {item.price} <span className="text-xs text-slate-500">{item.mode === 'subscription' ? '/mo' : ''}</span>
                         </span>
                       </div>
 
                       <h2 className="text-2xl sm:text-3xl font-serif font-light text-champagne-50 mb-2">{item.name}</h2>
                       <p className="text-xs font-mono text-champagne-300/90 tracking-wider mb-4">{item.tagline}</p>
                       
-                      {/* What it does / How it helps */}
                       <p className="text-sm text-slate-300 font-light leading-relaxed mb-6">
                         {item.description}
                       </p>
 
-                      {/* Feature Checklist */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
                         {item.features.map((feat, idx) => (
                           <div key={idx} className="flex items-start gap-2 text-xs text-slate-200">
@@ -340,7 +305,6 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
                         ))}
                       </div>
 
-                      {/* Embedded Review */}
                       <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 mb-8">
                         <div className="flex items-center gap-1 mb-2">
                           {[...Array(5)].map((_, i) => (
@@ -356,12 +320,11 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
                       </div>
                     </div>
 
-                    {/* Action Button & Risk Reversal */}
+                    {/* Low Friction CTA Button */}
                     <div>
                       <button
-                        onClick={() => handleBuy(item)}
-                        disabled={loadingId !== null}
-                        className={`w-full py-4 rounded-xl font-mono text-xs tracking-[0.2em] uppercase font-bold transition-all shadow-lg disabled:opacity-40 flex items-center justify-center gap-2.5 mb-2.5 ${
+                        onClick={() => setSelectedProduct(item)}
+                        className={`w-full py-4 rounded-xl font-mono text-xs tracking-[0.2em] uppercase font-bold transition-all shadow-lg flex items-center justify-center gap-2.5 mb-2.5 ${
                           isAnchor
                             ? 'bg-gradient-to-r from-amber-500/30 to-amber-600/40 border border-amber-500/60 text-amber-100 hover:bg-amber-500/40 shadow-[0_4px_30px_rgba(245,158,11,0.25)]'
                             : isHero
@@ -369,9 +332,12 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
                             : 'bg-white/[0.06] border border-white/[0.15] text-champagne-100 hover:bg-white/[0.1] hover:border-champagne-400/40'
                         }`}
                       >
-                        {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : `Acquire ${item.name} (${item.price}${item.mode === 'subscription' ? '/mo' : ''})`}
+                        <span>Begin Reading Intake</span>
+                        <ArrowRight className="w-4 h-4" />
                       </button>
-                      <p className="text-[11px] font-mono text-slate-400 text-center">{item.riskCopy}</p>
+                      <p className="text-[11px] font-mono text-slate-400 text-center">
+                        Input birth parameters before finalizing order ({item.price})
+                      </p>
                     </div>
 
                   </div>
