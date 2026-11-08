@@ -3,14 +3,18 @@ import { Sparkles, Calendar, Clock, MapPin, ArrowRight, X, Loader2, ShieldCheck,
 import { useAuth } from '@/context/AuthContext';
 import { createCheckoutSession } from '@/lib/stripe';
 
-interface ProductItem {
+export interface ProductItem {
   id: string;
   priceId: string;
   name: string;
   tagline: string;
+  mysteryTeaser?: string;
+  description?: string;
   price: string;
   numericValue: number;
   mode: 'payment' | 'subscription';
+  badge: string;
+  icon?: React.ElementType;
   accentColor: string;
 }
 
@@ -37,7 +41,6 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
     e.preventDefault();
     setErrorMsg('');
 
-    // Save intake details in session storage so post-purchase handlers tie it to the user's account
     const intakeData = {
       email: user?.email || '',
       fullName: user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Seeker',
@@ -49,7 +52,6 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
     };
     sessionStorage.setItem('pending_cosmic_intake', JSON.stringify(intakeData));
 
-    // If not authenticated via Google, trigger Google Auth first
     if (!user) {
       try {
         sessionStorage.setItem('pending_catalog_checkout', product.priceId);
@@ -63,7 +65,6 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
       }
     }
 
-    // If already signed in, proceed directly to Stripe Checkout
     setIsLoading(true);
     try {
       const url = await createCheckoutSession(product.priceId, product.mode);
