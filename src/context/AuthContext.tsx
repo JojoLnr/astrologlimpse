@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
 import { supabase, type Profile } from '@/lib/supabase';
+import { createCheckoutSession } from '@/lib/stripe';
 
 interface AuthContextValue {
   session: Session | null;
@@ -34,6 +35,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     setProfile(data as Profile | null);
   };
+
+  // Check for pending checkout after authentication completes
+  useEffect(() => {
+    if (!user) return;
+
+    const pendingPriceId = sessionStorage.getItem('pending_catalog_checkout');
+    const pendingMode = sessionStorage.getItem('pending_catalog_mode');
+
+    if (pendingPriceId && pendingMode) {
+      sessionStorage.removeItem('pending_catalog_checkout');
+      sessionStorage.removeItem('pending_catalog_mode');
+
+      createCheckoutSession(pendingPriceId, pendingMode as 'payment' | 'subscription')
+        .then((url) => {
+          window.location.href = url;
+        })
+        .catch((err) => {
+          console.error('Failed to trigger pending checkout session:', err);
+        });
+    }
+  }, [user]);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -73,12 +95,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             }
           }
           // ---------------------------------------------
-
-          
         } else {
           setProfile(null);
         }
-        setLoading(false); // Clean instantaneous update prevents home-route snapping
+        setLoading(false);
       })();
     });
 
@@ -103,7 +123,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/`,
+        redirectTo: `${window.location.origin}${window.location.pathname}`,
       },
     });
     return { error: error?.message ?? null };
