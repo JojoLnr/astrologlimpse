@@ -133,7 +133,7 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
         onClose={() => setSelectedProduct(null)} 
       />
 
-      <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-12 pb-48">
+      <main className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-12 pb-48">
         
         {/* Navigation Header */}
         <div className="flex items-center justify-between mb-16 border-b border-white/[0.08] pb-6">
@@ -153,7 +153,7 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
           </button>
         </div>
 
-        {/* Header */}
+        {/* Observatory Header */}
         <div className="text-center max-w-2xl mx-auto mb-20">
           <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-champagne-400/[0.06] border border-champagne-400/25 backdrop-blur-md mb-6 shadow-[0_0_25px_rgba(196,163,116,0.1)]">
             <Orbit className="w-3.5 h-3.5 text-champagne-300 animate-spin" style={{ animationDuration: '12s' }} />
@@ -171,93 +171,103 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
           </p>
         </div>
 
-        {/* Product Cards Grid */}
-        <div className="space-y-12">
-          {PRODUCTS.map((item) => {
+        {/* Alternating Product Feed with Detached Fading Image Containers */}
+        <div className="space-y-24">
+          {PRODUCTS.map((item, index) => {
             const Icon = item.icon || Compass;
+            const isFlipped = index % 2 !== 0;
 
             return (
               <div
                 key={item.id}
-                onClick={() => setSelectedProduct(item)}
-                className="group relative rounded-3xl border border-white/[0.08] bg-slate-900/50 hover:bg-slate-900/90 backdrop-blur-xl p-6 sm:p-8 transition-all duration-300 cursor-pointer group-hover:border-champagne-400/50 group-hover:shadow-[0_0_50px_rgba(196,163,116,0.15)] shadow-xl"
+                className="flex flex-col md:flex-row items-center gap-8 lg:gap-12"
               >
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-                  
-                  {/* Left Product Image Placeholder */}
-                  <div className="md:col-span-4 h-56 sm:h-64 rounded-2xl border border-white/[0.1] bg-black/70 flex flex-col items-center justify-center p-4 text-center relative overflow-hidden group-hover:border-champagne-400/40 transition-colors">
-                    <div 
-                      className="absolute inset-0 opacity-20 blur-2xl pointer-events-none"
-                      style={{ background: item.accentColor }}
-                    />
-                    <div className="w-12 h-12 rounded-xl bg-champagne-400/10 border border-champagne-400/20 flex items-center justify-center mb-3">
-                      <ImageIcon className="w-6 h-6 text-champagne-300" />
+                {/* Detached Image Container with Vertical Top/Bottom Fading */}
+                <div
+                  className={`w-full md:w-5/12 h-64 sm:h-80 relative flex flex-col items-center justify-center p-6 text-center overflow-hidden transition-all duration-300 ${
+                    isFlipped ? 'md:order-2' : 'md:order-1'
+                  }`}
+                  style={{
+                    maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)',
+                    WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)',
+                  }}
+                >
+                  <div
+                    className="absolute inset-0 opacity-20 blur-3xl pointer-events-none"
+                    style={{ background: item.accentColor }}
+                  />
+
+                  {/* Detached Image Box Surface */}
+                  <div className="relative z-10 w-full h-full rounded-3xl border border-white/10 bg-slate-950/60 backdrop-blur-xl flex flex-col items-center justify-center p-6 shadow-[0_0_40px_rgba(0,0,0,0.6)]">
+                    <div className="w-14 h-14 rounded-2xl bg-champagne-400/10 border border-champagne-400/20 flex items-center justify-center mb-3 shadow-inner">
+                      <ImageIcon className="w-7 h-7 text-champagne-300" />
                     </div>
-                    <p className="text-xs font-mono text-champagne-300 uppercase tracking-wider">
+                    <p className="text-xs font-mono text-champagne-300 uppercase tracking-widest">
                       {item.name} Image
                     </p>
                     <span className="text-[10px] font-mono text-slate-500 mt-1">
-                      [ Image Placeholder ]
+                      [ External Specimen Frame ]
                     </span>
                   </div>
+                </div>
 
-                  {/* Right Product Node Details */}
-                  <div className="md:col-span-8 flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-[10px] font-mono tracking-widest uppercase px-2.5 py-0.5 rounded-full bg-white/[0.05] border border-white/[0.08] text-champagne-200">
-                          {item.badge}
-                        </span>
-                        <div 
-                          className="w-8 h-8 rounded-xl border flex items-center justify-center shadow-inner"
-                          style={{ borderColor: `${item.accentColor}40`, background: `${item.accentColor}15` }}
-                        >
-                          <Icon className="w-4 h-4" style={{ color: item.accentColor }} />
-                        </div>
-                      </div>
-
-                      <h2 className="text-xl sm:text-2xl font-serif font-light text-champagne-50 group-hover:text-champagne-200 transition-colors leading-snug mb-1">
-                        {item.name}
-                      </h2>
-                      <p className="text-xs text-slate-400 font-light mb-3">
-                        {item.tagline}
-                      </p>
-
-                      {/* Features */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
-                        {item.features.map((feat, idx) => (
-                          <div key={idx} className="flex items-center gap-1.5 text-xs text-slate-300">
-                            <Check className="w-3.5 h-3.5 text-champagne-400 flex-shrink-0" />
-                            <span className="font-light">{feat}</span>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Review Quote */}
-                      <div className="bg-black/40 border border-white/[0.05] rounded-xl p-3 mb-4 group-hover:border-champagne-400/25 transition-colors">
-                        <div className="flex items-center gap-1 mb-1">
-                          {[...Array(5)].map((_, i) => (
-                            <Star key={i} className="w-2.5 h-2.5 fill-champagne-400 text-champagne-400" />
-                          ))}
-                          <span className="text-[10px] font-mono text-slate-400 ml-1.5">{item.review.author} ({item.review.sign})</span>
-                        </div>
-                        <p className="font-mono text-xs text-champagne-200/90 italic">
-                          &quot;{item.review.text}&quot;
-                        </p>
-                      </div>
+                {/* Main Product Card */}
+                <div
+                  onClick={() => setSelectedProduct(item)}
+                  className={`w-full md:w-7/12 group relative rounded-3xl border border-white/[0.08] bg-slate-900/50 hover:bg-slate-900/90 backdrop-blur-xl p-6 sm:p-8 transition-all duration-300 cursor-pointer group-hover:border-champagne-400/50 group-hover:shadow-[0_0_50px_rgba(196,163,116,0.15)] shadow-xl ${
+                    isFlipped ? 'md:order-1' : 'md:order-2'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-[10px] font-mono tracking-widest uppercase px-2.5 py-0.5 rounded-full bg-white/[0.05] border border-white/[0.08] text-champagne-200">
+                      {item.badge}
+                    </span>
+                    <div 
+                      className="w-8 h-8 rounded-xl border flex items-center justify-center shadow-inner"
+                      style={{ borderColor: `${item.accentColor}40`, background: `${item.accentColor}15` }}
+                    >
+                      <Icon className="w-4 h-4" style={{ color: item.accentColor }} />
                     </div>
-
-                    <div className="flex items-center justify-between pt-3 border-t border-white/[0.06] text-xs font-mono">
-                      <span className="text-slate-400 group-hover:text-champagne-300 transition-colors flex items-center gap-1.5">
-                        <Eye className="w-3.5 h-3.5" /> Initialize Calibration
-                      </span>
-                      <div className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center group-hover:bg-champagne-400/10 group-hover:border-champagne-400/30 transition-all">
-                        <ArrowRight className="w-3.5 h-3.5 text-champagne-300 group-hover:translate-x-0.5 transition-transform" />
-                      </div>
-                    </div>
-
                   </div>
 
+                  <h2 className="text-xl sm:text-2xl font-serif font-light text-champagne-50 group-hover:text-champagne-200 transition-colors leading-snug mb-1">
+                    {item.name}
+                  </h2>
+                  <p className="text-xs text-slate-400 font-light mb-4">
+                    {item.tagline}
+                  </p>
+
+                  {/* Features */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
+                    {item.features.map((feat, idx) => (
+                      <div key={idx} className="flex items-center gap-1.5 text-xs text-slate-300">
+                        <Check className="w-3.5 h-3.5 text-champagne-400 flex-shrink-0" />
+                        <span className="font-light">{feat}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Review Quote */}
+                  <div className="bg-black/40 border border-white/[0.05] rounded-xl p-3 mb-4 group-hover:border-champagne-400/25 transition-colors">
+                    <div className="flex items-center gap-1 mb-1">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="w-2.5 h-2.5 fill-champagne-400 text-champagne-400" />
+                      ))}
+                      <span className="text-[10px] font-mono text-slate-400 ml-1.5">{item.review.author} ({item.review.sign})</span>
+                    </div>
+                    <p className="font-mono text-xs text-champagne-200/90 italic">
+                      &quot;{item.review.text}&quot;
+                    </p>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-3 border-t border-white/[0.06] text-xs font-mono">
+                    <span className="text-slate-400 group-hover:text-champagne-300 transition-colors flex items-center gap-1.5">
+                      <Eye className="w-3.5 h-3.5" /> Initialize Calibration
+                    </span>
+                    <div className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center group-hover:bg-champagne-400/10 group-hover:border-champagne-400/30 transition-all">
+                      <ArrowRight className="w-3.5 h-3.5 text-champagne-300 group-hover:translate-x-0.5 transition-transform" />
+                    </div>
+                  </div>
                 </div>
               </div>
             );
