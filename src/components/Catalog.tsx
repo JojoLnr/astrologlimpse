@@ -17,6 +17,7 @@ export interface ProductReview {
 export interface CatalogProductItem extends ProductItem {
   features: string[];
   reviews: ProductReview[];
+  image?: string;
 }
 
 const PRODUCTS: CatalogProductItem[] = [
@@ -33,6 +34,7 @@ const PRODUCTS: CatalogProductItem[] = [
     badge: 'MICRO-SCAN',
     icon: Compass,
     accentColor: '#38bdf8',
+    image: '/images/products/transit.jpg',
     features: ['Single-page real-time transit scan', 'Live planetary degree positions', 'Actionable daily timing window'],
     reviews: [
       { text: 'The transit breakdown showed me exactly when the pressure lifted. Incredible clarity.', author: 'Sarah M.', sign: 'Capricorn' },
@@ -53,6 +55,7 @@ const PRODUCTS: CatalogProductItem[] = [
     badge: 'CORE BLUEPRINT',
     icon: BookOpen,
     accentColor: '#48bb78',
+    image: '/images/products/10points.jpg',
     features: ['Complete 10-point cosmic blueprint', 'Sun, Moon & Rising Sign analysis', 'House 7 & 10 detailed alerts'],
     reviews: [
       { text: 'The only app that gave me specific structural dates instead of vague personality text.', author: 'Priya D.', sign: 'Libra' },
@@ -73,6 +76,7 @@ const PRODUCTS: CatalogProductItem[] = [
     badge: 'FLAGSHIP PASS',
     icon: Crown,
     accentColor: '#c4a374',
+    image: '/images/products/premium.jpg',
     features: ['Up to 2 full readings every week', 'Unlimited web dashboard unblurs', 'Real-time ephemeris metrics'],
     reviews: [
       { text: 'Having weekly updates mapped to my exact chart transformed how I plan business launches.', author: 'Marcus K.', sign: 'Scorpio' },
@@ -93,6 +97,7 @@ const PRODUCTS: CatalogProductItem[] = [
     badge: 'CONCIERGE TIER',
     icon: Rocket,
     accentColor: '#a855f7',
+    image: '/images/products/VIP.jpg',
     features: ['Priority queue skip on all readings', 'Monthly direct Q&A submission', 'Dedicated cosmic concierge support'],
     reviews: [
       { text: 'The concierge responses are remarkably thorough. It feels like having a personal astrologer on retainer.', author: 'Elena R.', sign: 'Leo' },
@@ -112,6 +117,7 @@ const PRODUCTS: CatalogProductItem[] = [
     badge: 'LUXURY ARTIFACT',
     icon: Sparkles,
     accentColor: '#f59e0b',
+    image: '/images/products/skyArt.jpg',
     features: ['High-res digital birth sky art', 'Executive breakdown certificate', 'Swiss Ephemeris precision calculation'],
     reviews: [
       { text: 'Museum-quality digital file hanging in my study. The astronomical precision is breathtaking.', author: 'Jonathan W.', sign: 'Taurus' },
@@ -120,7 +126,7 @@ const PRODUCTS: CatalogProductItem[] = [
   },
 ];
 
-// Product Card Component with Built-in Interactive Review Carousel
+// Product Card Component with Built-in Interactive Review Carousel & Actual Images
 function ProductCard({ 
   item, 
   isFlipped, 
@@ -170,16 +176,21 @@ function ProductCard({
           style={{ background: item.accentColor }}
         />
 
-        <div className="relative z-10 w-full h-full rounded-3xl border border-white/10 bg-slate-950/60 backdrop-blur-xl flex flex-col items-center justify-center p-6 shadow-[0_0_40px_rgba(0,0,0,0.6)]">
-          <div className="w-14 h-14 rounded-2xl bg-champagne-400/10 border border-champagne-400/20 flex items-center justify-center mb-3 shadow-inner">
-            <ImageIcon className="w-7 h-7 text-champagne-300" />
-          </div>
-          <p className="text-xs font-mono text-champagne-300 uppercase tracking-widest">
-            {item.name} Image
-          </p>
-          <span className="text-[10px] font-mono text-slate-500 mt-1">
-            [ External Specimen Frame ]
-          </span>
+        <div className="relative z-10 w-full h-full rounded-3xl border border-white/10 bg-slate-950/60 backdrop-blur-xl flex items-center justify-center p-4 shadow-[0_0_40px_rgba(0,0,0,0.6)] overflow-hidden">
+          {item.image ? (
+            <img
+              src={item.image}
+              alt={item.name}
+              className="w-full h-full object-cover rounded-2xl hover:scale-105 transition-transform duration-300"
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center">
+              <div className="w-14 h-14 rounded-2xl bg-champagne-400/10 border border-champagne-400/20 flex items-center justify-center mb-3">
+                <ImageIcon className="w-7 h-7 text-champagne-300" />
+              </div>
+              <p className="text-xs font-mono text-champagne-300 uppercase tracking-widest">{item.name}</p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -293,7 +304,9 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
 
       <CosmicIntakeModal 
         product={selectedProduct} 
+        isOpen={!!selectedProduct}
         onClose={() => setSelectedProduct(null)} 
+        onNavigateDashboard={onNavigateDashboard}
       />
 
       <main className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-12 pb-48">
