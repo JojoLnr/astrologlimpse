@@ -35,24 +35,22 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
-  // Handle post-Google-login auto-resume flow
+  // Auto-resume checkout when user returns authenticated from Google sign-in
   useEffect(() => {
     const pendingIntake = sessionStorage.getItem('pending_cosmic_intake');
     const pendingPriceId = sessionStorage.getItem('pending_catalog_checkout');
     const pendingMode = sessionStorage.getItem('pending_catalog_mode');
 
-    if (user && pendingIntake && pendingPriceId && pendingMode) {
+    if (user && pendingPriceId && pendingMode) {
       setIsLoading(true);
       createCheckoutSession(pendingPriceId, pendingMode as 'payment' | 'subscription')
         .then((url) => {
           sessionStorage.removeItem('pending_catalog_checkout');
           sessionStorage.removeItem('pending_catalog_mode');
-          if (url) {
-            window.location.href = url;
-          }
+          window.location.href = url;
         })
         .catch((err) => {
-          setErrorMsg(err instanceof Error ? err.message : 'Unable to initialize ephemeris calculation session.');
+          setErrorMsg(err instanceof Error ? err.message : 'Unable to initialize checkout session.');
           setIsLoading(false);
         });
     }
@@ -91,9 +89,7 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
     setIsLoading(true);
     try {
       const url = await createCheckoutSession(product.priceId, product.mode);
-      if (url) {
-        window.location.href = url;
-      }
+      window.location.href = url;
     } catch (err) {
       setErrorMsg(err instanceof Error ? err.message : 'Failed to reach calculation backend.');
       setIsLoading(false);
@@ -111,7 +107,7 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
           style={{ background: product.accentColor }}
         />
 
-        <button
+        <button 
           onClick={onClose}
           className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-slate-200 hover:bg-white/[0.06] transition-colors"
         >
@@ -123,132 +119,106 @@ export function CosmicIntakeModal({ product, onClose }: CosmicIntakeModalProps) 
             <Sparkles className="w-3 h-3" />
             <span>Step 1: Coordinate Calibration</span>
           </div>
-
-          <h3 className="text-2xl font-serif text-champagne-50">
-            Calibrating: <span className="text-champagne-200">{product.name}</span>
-          </h3>
-          <p className="text-xs text-slate-400 mt-1 font-mono">
-            {user ? (
-              <span className="text-emerald-400">Authenticated as {user.email}</span>
-            ) : (
-              <span>Secure identity verification required to store your natal ephemeris coordinates.</span>
-            )}
-          </p>
+          <h2 className="text-2xl font-serif text-white tracking-wide">{product.name}</h2>
+          <p className="text-sm text-slate-400 mt-1">{product.tagline}</p>
         </div>
 
-        {errorMsg && (
-          <div className="mb-4 p-3 rounded-xl border border-red-500/20 bg-red-500/10 text-xs text-red-300 font-mono text-center">
-            {errorMsg}
-          </div>
-        )}
-
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-300 mb-1.5">
-                Date of Birth
-              </label>
-              <div className="relative">
-                <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                <input
-                  type="date"
-                  required
-                  value={birthDate}
-                  onChange={(e) => setBirthDate(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs text-slate-100 focus:outline-none focus:border-champagne-400/50"
-                />
-              </div>
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-300">
-                  Exact Time of Birth
-                </label>
-                <label className="inline-flex items-center gap-1.5 text-[10px] font-mono text-slate-400 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={unknownTime}
-                    onChange={(e) => setUnknownTime(e.target.checked)}
-                    className="rounded border-slate-700 bg-slate-900 text-champagne-400 focus:ring-0"
-                  />
-                  <span>Unknown</span>
-                </label>
-              </div>
-              <div className="relative">
-                <Clock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                <input
-                  type="time"
-                  disabled={unknownTime}
-                  required={!unknownTime}
-                  value={birthTime}
-                  onChange={(e) => setBirthTime(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs text-slate-100 focus:outline-none focus:border-champagne-400/50 disabled:opacity-30"
-                />
-              </div>
-            </div>
-          </div>
-
           <div>
-            <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-300 mb-1.5">
-              Birth Location (City, Country)
-            </label>
+            <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1.5">Birth Date</label>
             <div className="relative">
-              <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-champagne-400/60" />
               <input
-                type="text"
+                type="date"
                 required
-                value={birthLocation}
-                onChange={(e) => setBirthLocation(e.target.value)}
-                placeholder="Chicago, IL, USA"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.1] text-xs text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-champagne-400/50"
+                value={birthDate}
+                onChange={(e) => setBirthDate(e.target.value)}
+                className="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-2.5 pl-10 text-sm text-white focus:outline-none focus:border-champagne-400/50"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-300 mb-1.5">
-              Primary Focus Area
-            </label>
+            <div className="flex justify-between items-center mb-1.5">
+              <label className="text-xs font-mono uppercase tracking-wider text-slate-300">Birth Time</label>
+              <label className="flex items-center gap-2 text-xs text-slate-400 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={unknownTime}
+                  onChange={(e) => setUnknownTime(e.target.checked)}
+                  className="rounded border-white/20 bg-slate-900 text-champagne-500 focus:ring-0"
+                />
+                <span>Time Unknown</span>
+              </label>
+            </div>
+            <div className="relative">
+              <Clock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-champagne-400/60" />
+              <input
+                type="time"
+                disabled={unknownTime}
+                required={!unknownTime}
+                value={birthTime}
+                onChange={(e) => setBirthTime(e.target.value)}
+                className="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-2.5 pl-10 text-sm text-white focus:outline-none focus:border-champagne-400/50 disabled:opacity-40"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1.5">Birth Location (City, Country)</label>
+            <div className="relative">
+              <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-champagne-400/60" />
+              <input
+                type="text"
+                required
+                placeholder="e.g. Paris, France"
+                value={birthLocation}
+                onChange={(e) => setBirthLocation(e.target.value)}
+                className="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-2.5 pl-10 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-champagne-400/50"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1.5">Primary Focus Area</label>
             <select
               value={focusArea}
               onChange={(e) => setFocusArea(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-white/[0.1] text-xs text-slate-200 focus:outline-none focus:border-champagne-400/50"
+              className="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-champagne-400/50"
             >
               <option value="General Life Path">General Life Path & Destiny</option>
-              <option value="Love & Relationships">Love, House 7 & Soulmate Timing</option>
-              <option value="Career & Wealth">Career, House 10 & Financial Shift</option>
-              <option value="Karmic Chiron Healing">Karmic Chiron & Wounding</option>
+              <option value="Career & Wealth">Career, Purpose & Wealth</option>
+              <option value="Love & Relationships">Love, Synastry & Relationships</option>
+              <option value="Current Transits">Current Energetic Transits</option>
             </select>
           </div>
 
-          <div className="pt-4 border-t border-white/[0.08]">
+          {errorMsg && (
+            <p className="text-xs text-red-400 bg-red-500/10 border border-red-500/20 p-2.5 rounded-lg">{errorMsg}</p>
+          )}
+
+          <div className="pt-2">
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-4 rounded-xl bg-gradient-to-r from-champagne-200 via-champagne-300 to-amber-300 text-midnight-950 font-mono text-xs tracking-[0.2em] uppercase font-bold hover:brightness-110 transition-all shadow-[0_4px_30px_rgba(196,163,116,0.3)] disabled:opacity-40 flex items-center justify-center gap-2"
+              className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-champagne-400 via-champagne-300 to-amber-200 text-slate-950 font-semibold text-sm shadow-lg shadow-champagne-500/20 hover:brightness-105 active:scale-[0.99] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {isLoading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Connecting to Stripe...</span>
+                </>
               ) : (
                 <>
-                  <span>{user ? 'Calibrate & Calculate Chart' : 'Continue with Google'}</span>
+                  <span>Proceed to Secure Checkout ({product.price})</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
             </button>
-
-            <div className="flex items-center justify-center gap-4 text-[10px] font-mono text-slate-400 mt-3">
-              <span className="flex items-center gap-1">
-                <Lock className="w-3 h-3 text-champagne-400" /> Encrypted Identity Sync
-              </span>
-              <span className="flex items-center gap-1">
-                <ShieldCheck className="w-3 h-3 text-champagne-400" /> Ephemeris Engine 4.0
-              </span>
-            </div>
           </div>
         </form>
       </div>
     </div>
   );
 }
+```[cite: 10]
