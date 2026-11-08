@@ -92,13 +92,23 @@ async function handleEvent(event: Stripe.Event) {
     } else if (mode === 'payment' && payment_status === 'paid') {
       try {
         // Extract the necessary information from the session
+        const session = stripeData as Stripe.Checkout.Session;
         const {
           id: checkout_session_id,
           payment_intent,
           amount_subtotal,
           amount_total,
           currency,
-        } = stripeData as Stripe.Checkout.Session;
+        } = session;
+
+        const userEmail = session.customer_details?.email || session.customer_email || 'unknown@example.com';
+
+        // Retrieve product line items for product name
+        const lineItems = await stripe.checkout.sessions.listLineItems(checkout_session_id);
+        const productName = lineItems.data[0]?.description || 'Astrologlimpse Reading';
+
+        // Extract user query/intake details from metadata or client reference
+        const userQuery = session.metadata?.user_query || session.client_reference_id || null;
 
         // Insert the order into the stripe_orders table
         const { error: orderError } = await supabase.from('stripe_orders').insert({
@@ -109,13 +119,31 @@ async function handleEvent(event: Stripe.Event) {
           amount_total,
           currency,
           payment_status,
-          status: 'completed', // assuming we want to mark it as completed since payment is successful
+          status: 'completed',
         });
 
         if (orderError) {
           console.error('Error inserting order:', orderError);
           return;
         }
+
+        // Insert into the new dedicated purchases table
+        const { error: purchaseError } = await supabase.from('purchases').insert({
+          user_email: userEmail,
+          stripe_session_id: checkout_session_id,
+          product_name: productName,
+          user_query: userQuery,
+          amount_paid: amount_total ? amount_total / 100 : 0,
+          currency: currency || 'usd',
+          status: payment_status,
+        });
+
+        if (purchaseError) {
+          console.error('Error inserting purchase record:', purchaseError);
+        } else {
+          console.info(`Successfully logged purchase for session: ${checkout_session_id}`);
+        }
+
         console.info(`Successfully processed one-time payment for session: ${checkout_session_id}`);
 
         // Grant weekly unlock on the user's profile
@@ -215,7 +243,7 @@ async function syncCustomerFromStripe(customerId: string) {
       const { error: profileError } = await supabase
         .from('profiles')
         .update({ subscription_status: isMonthly ? 'monthly' : 'none' })
-        .eq('id', customerRow.user_id);
+        .eq('id', customerRow.id);
       if (profileError) {
         console.error('Error updating profile subscription status:', profileError);
       } else {
