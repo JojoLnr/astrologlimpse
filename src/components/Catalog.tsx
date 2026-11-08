@@ -90,7 +90,7 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
         onClose={() => setSelectedProduct(null)} 
       />
 
-      <main className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 py-12 pb-48">
+      <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-12 pb-48">
         
         {/* Navigation Header */}
         <div className="flex items-center justify-between mb-16 border-b border-white/[0.08] pb-6">
@@ -128,91 +128,84 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
           </p>
         </div>
 
-        {/* Product Cards Container */}
-        <div className="relative">
-          {/* Constellation SVG Connecting Line */}
-          <svg className="absolute inset-0 w-full h-full pointer-events-none z-0 hidden sm:block stroke-champagne-400/30" fill="none" strokeWidth="1.5" strokeDasharray="4 4">
-            <path d="M 400 50 L 350 220 L 440 390 L 370 560 L 420 730" />
-          </svg>
+        {/* Product Transmission Nodes with Standalone Outside Image Containers */}
+        <div className="space-y-16 relative">
+          {PRODUCTS.map((item, index) => {
+            const Icon = item.icon || Compass;
+            const isFlipped = index % 2 !== 0;
 
-          <div className="space-y-12 relative z-10">
-            {PRODUCTS.map((item, index) => {
-              const Icon = item.icon || Compass;
+            return (
+              <div
+                key={item.id}
+                onClick={() => setSelectedProduct(item)}
+                className={`group relative flex flex-col md:flex-row items-stretch gap-6 cursor-pointer ${
+                  isFlipped ? 'md:flex-row-reverse' : ''
+                }`}
+              >
+                {/* 1. STANDALONE EXTERNAL IMAGE CONTAINER (Outside the card) */}
+                <div className="w-full md:w-5/12 h-56 md:h-auto rounded-3xl border border-white/[0.1] bg-slate-950/80 backdrop-blur-xl flex flex-col items-center justify-center p-6 text-center relative overflow-hidden group-hover:border-champagne-400/50 group-hover:shadow-[0_0_40px_rgba(196,163,116,0.15)] transition-all">
+                  <div
+                    className="absolute -top-16 -left-16 w-48 h-48 rounded-full blur-3xl opacity-20 pointer-events-none"
+                    style={{ background: item.accentColor }}
+                  />
 
-              const constellationOffsets = [
-                'sm:-translate-x-8',
-                'sm:translate-x-12',
-                'sm:-translate-x-4',
-                'sm:translate-x-10',
-                'sm:-translate-x-6',
-              ];
-              const offsetClass = constellationOffsets[index % constellationOffsets.length];
+                  <div 
+                    className="w-14 h-14 rounded-2xl border flex items-center justify-center mb-3 shadow-lg group-hover:scale-110 transition-transform"
+                    style={{ borderColor: `${item.accentColor}50`, background: `${item.accentColor}15` }}
+                  >
+                    <Icon className="w-7 h-7" style={{ color: item.accentColor }} />
+                  </div>
+                  
+                  <div className="flex items-center gap-1.5 text-champagne-300 mb-1">
+                    <ImageIcon className="w-4 h-4" />
+                    <span className="text-[11px] font-mono uppercase tracking-widest">{item.badge}</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-slate-500">[ Image Artifact Placeholder ]</span>
+                </div>
 
-              return (
-                <div
-                  key={item.id}
-                  onClick={() => setSelectedProduct(item)}
-                  className={`group relative w-full rounded-3xl border border-white/[0.08] bg-slate-900/60 hover:bg-slate-900/90 backdrop-blur-xl p-6 sm:p-8 transition-all duration-300 cursor-pointer group-hover:border-champagne-400/50 group-hover:shadow-[0_0_50px_rgba(196,163,116,0.15)] shadow-xl ${offsetClass}`}
-                >
-                  <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-                    
-                    {/* Left Image Placeholder Container */}
-                    <div className="md:col-span-4 h-40 sm:h-48 rounded-2xl border border-white/[0.1] bg-black/70 flex flex-col items-center justify-center p-4 text-center relative overflow-hidden group-hover:border-champagne-400/40 transition-colors">
-                      <div className="w-12 h-12 rounded-2xl bg-champagne-400/10 border border-champagne-400/20 flex items-center justify-center mb-3">
-                        <ImageIcon className="w-6 h-6 text-champagne-300" />
-                      </div>
-                      <p className="text-[10px] font-mono text-champagne-300 uppercase tracking-wider">{item.badge}</p>
-                      <span className="text-[9px] font-mono text-slate-500 mt-0.5">Image Placeholder</span>
+                {/* 2. MAIN CARD CONTAINER */}
+                <div className="w-full md:w-7/12 rounded-3xl border border-white/[0.08] bg-slate-900/60 group-hover:bg-slate-900/90 backdrop-blur-xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 group-hover:border-champagne-400/40 group-hover:shadow-[0_0_40px_rgba(196,163,116,0.12)] shadow-xl">
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-[10px] font-mono tracking-widest text-champagne-300/80 uppercase">
+                        Sector 0{index + 1} // Codex Entry
+                      </span>
+                      <span className="text-sm font-serif font-semibold text-champagne-200 px-3 py-1 rounded-full bg-champagne-400/10 border border-champagne-400/20">
+                        {item.price}
+                      </span>
                     </div>
 
-                    {/* Card Content */}
-                    <div className="md:col-span-8 flex flex-col justify-between">
-                      <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-[10px] font-mono tracking-widest uppercase px-2.5 py-0.5 rounded-full bg-white/[0.05] border border-white/[0.08] text-champagne-200">
-                            {item.badge}
-                          </span>
-                          <div 
-                            className="w-8 h-8 rounded-xl border flex items-center justify-center shadow-inner"
-                            style={{ borderColor: `${item.accentColor}40`, background: `${item.accentColor}15` }}
-                          >
-                            <Icon className="w-4 h-4" style={{ color: item.accentColor }} />
-                          </div>
-                        </div>
+                    <h2 className="text-2xl sm:text-3xl font-serif font-light text-champagne-50 group-hover:text-champagne-200 transition-colors leading-snug mb-1">
+                      {item.name}
+                    </h2>
+                    <p className="text-xs sm:text-sm text-slate-400 font-light mb-4 leading-relaxed">
+                      {item.tagline}
+                    </p>
 
-                        <h2 className="text-xl sm:text-2xl font-serif font-light text-champagne-50 group-hover:text-champagne-200 transition-colors leading-snug mb-1">
-                          {item.name}
-                        </h2>
-                        <p className="text-xs text-slate-400 font-light mb-3">
-                          {item.tagline}
-                        </p>
-
-                        <div className="bg-black/40 border border-white/[0.05] rounded-xl p-3 mb-4 group-hover:border-champagne-400/25 transition-colors">
-                          <p className="font-mono text-xs text-champagne-200/90 italic">
-                            {item.mysteryTeaser}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-between pt-3 border-t border-white/[0.06] text-xs font-mono">
-                        <span className="text-slate-400 group-hover:text-champagne-300 transition-colors flex items-center gap-1.5">
-                          <Eye className="w-3.5 h-3.5" /> Initialize Calibration
-                        </span>
-                        <div className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center group-hover:bg-champagne-400/10 group-hover:border-champagne-400/30 transition-all">
-                          <ArrowRight className="w-3.5 h-3.5 text-champagne-300 group-hover:translate-x-0.5 transition-transform" />
-                        </div>
-                      </div>
-
+                    <div className="bg-black/50 border border-white/[0.06] rounded-2xl p-4 mb-6 group-hover:border-champagne-400/20 transition-colors">
+                      <p className="text-[9px] font-mono text-slate-500 uppercase tracking-wider mb-1">// TRANSMISSION_PREVIEW</p>
+                      <p className="font-mono text-xs text-champagne-200/90 italic leading-relaxed">
+                        {item.mysteryTeaser}
+                      </p>
                     </div>
+                  </div>
 
+                  <div className="flex items-center justify-between pt-4 border-t border-white/[0.06] text-xs font-mono">
+                    <span className="text-slate-400 group-hover:text-champagne-300 transition-colors flex items-center gap-1.5">
+                      <Eye className="w-3.5 h-3.5" /> Initialize Calibration
+                    </span>
+                    <div className="w-9 h-9 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center group-hover:bg-champagne-400/10 group-hover:border-champagne-400/30 transition-all">
+                      <ArrowRight className="w-4 h-4 text-champagne-300 group-hover:translate-x-0.5 transition-transform" />
+                    </div>
                   </div>
                 </div>
-              );
-            })}
-          </div>
+
+              </div>
+            );
+          })}
         </div>
 
-        {/* Footer */}
+        {/* Footer with Gradient Fade Out */}
         <footer className="relative max-w-xl mx-auto text-center pt-28 pb-16 mt-20 border-t border-white/[0.06] flex flex-col items-center justify-center gap-3 text-xs font-mono text-slate-400">
           <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#04060b] via-[#04060b]/80 to-transparent pointer-events-none" />
           <div className="relative z-10 flex items-center gap-2">
