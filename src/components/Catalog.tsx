@@ -304,9 +304,7 @@ export function Catalog({ onNavigateHome, onNavigateDashboard }: CatalogProps) {
 
       <CosmicIntakeModal 
         product={selectedProduct} 
-        isOpen={!!selectedProduct}
         onClose={() => setSelectedProduct(null)} 
-        onNavigateDashboard={onNavigateDashboard}
       />
 
       <main className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-12 pb-48">
