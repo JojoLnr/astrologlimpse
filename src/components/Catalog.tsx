@@ -12,7 +12,7 @@ const PRODUCTS: ProductItem[] = [
   {
     id: 'transit',
     priceId: import.meta.env.VITE_STRIPE_PRICE_TRANSIT || 'price_transit_placeholder',
-    name: 'The Today Transit Flash',
+    name: 'Transit Insight',
     tagline: 'Instant single-transit planetary scan',
     mysteryTeaser: '“Moon conjunct Midheaven at 14° Taurus. Favorable window detected for decisive career communication...”',
     price: '$1.00',
@@ -25,7 +25,7 @@ const PRODUCTS: ProductItem[] = [
   {
     id: 'full_package',
     priceId: import.meta.env.VITE_STRIPE_PRICE_BLUEPRINT || 'price_full_package_placeholder',
-    name: 'The 10-Point Life Crossroads Blueprint',
+    name: 'Full Package Reading',
     tagline: 'Comprehensive natal breakdown for love & career',
     mysteryTeaser: '“House 7 Activation: Saturn pressure clearing. Expect structural partnership shifts over the next 30 days...”',
     price: '$5.00',
@@ -38,7 +38,7 @@ const PRODUCTS: ProductItem[] = [
   {
     id: 'premium_membership',
     priceId: import.meta.env.VITE_STRIPE_PRICE_PREMIUM || 'price_premium_sub_placeholder',
-    name: 'The Premium Cosmic Access Pass',
+    name: 'Astrologlimpse Premium Membership',
     tagline: 'Continuous weekly ephemeris calculations & live unblurs',
     mysteryTeaser: '“RECURRING SYNC: Live weekly planetary transit feeds mapped directly to your unique natal house coordinates.”',
     price: '$9.99',
@@ -51,7 +51,7 @@ const PRODUCTS: ProductItem[] = [
   {
     id: 'vip_orbit',
     priceId: import.meta.env.VITE_STRIPE_PRICE_VIP || 'price_vip_orbit_placeholder',
-    name: 'The VIP Orbit Pass',
+    name: 'VIP Orbit Pass',
     tagline: 'Priority queue skip & direct astrological Q&A access',
     mysteryTeaser: '“VIP DIRECT CHANNEL: Direct coordinate auditing with priority computational allocation and monthly concierge review.”',
     price: '$99.99',
@@ -64,7 +64,7 @@ const PRODUCTS: ProductItem[] = [
   {
     id: 'cosmic_horizon',
     priceId: import.meta.env.VITE_STRIPE_PRICE_ART || 'price_cosmic_horizon_placeholder',
-    name: 'Executive Custom Birth Sky Art',
+    name: 'Cosmic Horizon Custom Birth Sky Art',
     tagline: 'High-res digital masterpiece of your exact birth night sky',
     mysteryTeaser: '“SWISS EPHEMERIS ARTIFACT: 300 DPI vector sky mapping with gold-foil border geometry layout for your exact birth minute.”',
     price: '$249.99',
